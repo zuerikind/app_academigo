@@ -45,6 +45,8 @@ export function AuthShell({
             href={localizedPath(locale, "/")}
             label={c.brand}
             variant="light"
+            layout="full"
+            showWordmark={false}
           />
         </div>
 
@@ -92,7 +94,12 @@ export function AuthShell({
       {/* Right — form */}
       <div className="flex min-h-screen flex-col bg-white">
         <div className="flex items-center justify-between border-b border-academy-line px-6 py-5 lg:hidden">
-          <BrandMark href={localizedPath(locale, "/")} label={c.brand} />
+          <BrandMark
+            href={localizedPath(locale, "/")}
+            label={c.brand}
+            layout="full"
+            showWordmark={false}
+          />
           <LanguageSwitcher
             locale={locale}
             ariaLabel={dict.nav.languageSwitcher}

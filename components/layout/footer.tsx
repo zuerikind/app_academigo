@@ -43,6 +43,8 @@ export function Footer({
               href={localizedPath(locale, "/")}
               label={c.brand}
               variant="light"
+              layout="full"
+              showWordmark={false}
             />
             <p className="mt-5 max-w-xs text-[13.5px] leading-relaxed text-white/65">
               {c.footerTagline}
