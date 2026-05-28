@@ -115,61 +115,61 @@
 
 ## Traceability
 
-*Populated during roadmap creation.*
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | — | Pending |
-| AUTH-02 | — | Pending |
-| AUTH-03 | — | Pending |
-| AUTH-04 | — | Pending |
-| TIER-01 | — | Pending |
-| TIER-02 | — | Pending |
-| TIER-03 | — | Pending |
-| TIER-04 | — | Pending |
-| TIER-05 | — | Pending |
-| TIER-06 | — | Pending |
-| TIER-07 | — | Pending |
-| ADMIN-01 | — | Pending |
-| ADMIN-02 | — | Pending |
-| ADMIN-03 | — | Pending |
-| ADMIN-04 | — | Pending |
-| ADMIN-05 | — | Pending |
-| ADMIN-06 | — | Pending |
-| ADMIN-07 | — | Pending |
-| ADMIN-08 | — | Pending |
-| AVAIL-01 | — | Pending |
-| AVAIL-02 | — | Pending |
-| AVAIL-03 | — | Pending |
-| BOOK-01 | — | Pending |
-| BOOK-02 | — | Pending |
-| BOOK-03 | — | Pending |
-| BOOK-04 | — | Pending |
-| BOOK-05 | — | Pending |
-| BOOK-06 | — | Pending |
-| BOOK-07 | — | Pending |
-| BOOK-08 | — | Pending |
-| BOOK-09 | — | Pending |
-| PAY-01 | — | Pending |
-| PAY-02 | — | Pending |
-| PAY-03 | — | Pending |
-| PAY-04 | — | Pending |
-| PAY-05 | — | Pending |
-| REV-01 | — | Pending |
-| REV-02 | — | Pending |
-| REV-03 | — | Pending |
-| REV-04 | — | Pending |
-| EARN-01 | — | Pending |
-| EARN-02 | — | Pending |
-| EARN-03 | — | Pending |
-| EARN-04 | — | Pending |
-| EARN-05 | — | Pending |
+| AUTH-01 | Phase 1 | Pending |
+| AUTH-02 | Phase 1 | Pending |
+| AUTH-03 | Phase 1 | Pending |
+| AUTH-04 | Phase 1 | Pending |
+| TIER-01 | Phase 1 | Pending |
+| ADMIN-01 | Phase 2 | Pending |
+| ADMIN-02 | Phase 2 | Pending |
+| ADMIN-03 | Phase 2 | Pending |
+| ADMIN-04 | Phase 2 | Pending |
+| ADMIN-05 | Phase 2 | Pending |
+| ADMIN-06 | Phase 2 | Pending |
+| ADMIN-07 | Phase 2 | Pending |
+| ADMIN-08 | Phase 2 | Pending |
+| AVAIL-01 | Phase 3 | Pending |
+| AVAIL-02 | Phase 3 | Pending |
+| AVAIL-03 | Phase 3 | Pending |
+| BOOK-01 | Phase 3 | Pending |
+| BOOK-02 | Phase 3 | Pending |
+| BOOK-03 | Phase 3 | Pending |
+| BOOK-04 | Phase 3 | Pending |
+| BOOK-05 | Phase 3 | Pending |
+| BOOK-06 | Phase 3 | Pending |
+| BOOK-07 | Phase 3 | Pending |
+| BOOK-08 | Phase 3 | Pending |
+| BOOK-09 | Phase 3 | Pending |
+| PAY-01 | Phase 3 | Pending |
+| PAY-02 | Phase 3 | Pending |
+| PAY-03 | Phase 3 | Pending |
+| PAY-04 | Phase 3 | Pending |
+| PAY-05 | Phase 3 | Pending |
+| REV-01 | Phase 3 | Pending |
+| REV-02 | Phase 3 | Pending |
+| REV-03 | Phase 3 | Pending |
+| REV-04 | Phase 3 | Pending |
+| EARN-01 | Phase 3 | Pending |
+| EARN-02 | Phase 3 | Pending |
+| EARN-03 | Phase 3 | Pending |
+| EARN-04 | Phase 3 | Pending |
+| EARN-05 | Phase 3 | Pending |
+| TIER-02 | Phase 4 | Pending |
+| TIER-03 | Phase 4 | Pending |
+| TIER-04 | Phase 4 | Pending |
+| TIER-05 | Phase 4 | Pending |
+| TIER-06 | Phase 4 | Pending |
+| TIER-07 | Phase 4 | Pending |
 
 **Coverage:**
-- v1 requirements: 44 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 44 ⚠️
+- v1 requirements: 45 total
+- Mapped to phases: 45
+- Unmapped: 0
+
+**Note:** The original coverage note stated 44 requirements. A recount of all defined requirement IDs yields 45 (AUTH×4, TIER×7, ADMIN×8, AVAIL×3, BOOK×9, PAY×5, REV×4, EARN×5). All 45 are mapped.
 
 ---
 *Requirements defined: 2026-05-28*
-*Last updated: 2026-05-28 after initial definition*
+*Last updated: 2026-05-28 — Traceability populated from ROADMAP.md*
