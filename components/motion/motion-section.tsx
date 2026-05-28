@@ -21,7 +21,7 @@ export function MotionSection({
 
   return (
     <motion.section
-      initial="hidden"
+      initial={false}
       whileInView="visible"
       viewport={{ once: true, margin: "-48px" }}
       variants={stagger ? staggerContainer : fadeUp}
@@ -47,7 +47,7 @@ export function MotionItem({
   }
 
   return (
-    <motion.div variants={fadeUp} className={className}>
+    <motion.div initial={false} variants={fadeUp} className={className}>
       {children}
     </motion.div>
   );

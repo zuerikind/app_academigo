@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowUpRight } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
 import { useI18n } from "@/components/i18n/locale-provider";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
@@ -11,20 +10,6 @@ export function HomeHero() {
   const { locale, dict } = useI18n();
   const t = dict.home;
   const c = dict.common;
-  const reduced = useReducedMotion();
-
-  const fade = (delay = 0) =>
-    reduced
-      ? {}
-      : {
-          initial: { opacity: 0, y: 14 },
-          animate: { opacity: 1, y: 0 },
-          transition: {
-            duration: 0.6,
-            ease: [0.16, 1, 0.3, 1] as const,
-            delay,
-          },
-        };
 
   return (
     <section className="relative isolate overflow-hidden bg-white">
@@ -35,7 +20,7 @@ export function HomeHero() {
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
         <div className="grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-12 lg:gap-14 lg:py-32">
           {/* Headline column */}
-          <motion.div {...fade(0)} className="lg:col-span-7">
+          <div className="lg:col-span-7">
             <p className="text-meta-brand inline-flex items-center gap-2.5">
               <span
                 aria-hidden
@@ -83,10 +68,10 @@ export function HomeHero() {
               <Stat value="3" caption={t.trust.subjects.split(":")[0]} />
               <Stat value="ZH" caption={t.trust.locations} />
             </dl>
-          </motion.div>
+          </div>
 
           {/* Side editorial panel */}
-          <motion.div {...fade(0.08)} className="lg:col-span-5">
+          <div className="lg:col-span-5">
             <div className="relative overflow-hidden rounded-[18px] border border-academy-line bg-white shadow-card">
               {/* hairline header */}
               <div className="flex items-center justify-between border-b border-academy-line px-5 py-3">
@@ -131,7 +116,7 @@ export function HomeHero() {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
