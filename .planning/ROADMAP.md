@@ -28,7 +28,14 @@
   3. The `teacher_level` column accepts `junior`, `academigo_teacher`, and `verified` values; the old `standard` value is migrated.
   4. Atomic RPCs for `create_booking` (with FOR UPDATE credit lock), `complete_booking`, and `cancel_booking` exist in the database and TypeScript types are regenerated.
   5. The `handle_new_user` trigger rejects `role=admin` from signup metadata (security patch applied before admin portal ships).
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — DB schema migrations: teacher_level, booking RPCs, security patch, types update
+- [ ] 01-02-PLAN.md — Jest test infrastructure + failing RED test stubs for all auth behaviors
+- [ ] 01-03-PLAN.md — Email verification flow: verify-email page, signUp action, callback update
+- [ ] 01-04-PLAN.md — Password reset flows: forgot-password + update-password pages and actions
+- [ ] 01-05-PLAN.md — Human verification checkpoint for all Phase 1 deliverables
 
 ### Phase 2: Admin Portal
 **Goal**: An admin who signs in reaches a functioning dashboard and can approve teachers, manage students, view bookings, and process payouts.
@@ -73,7 +80,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/? | Not started | - |
+| 1. Foundation | 0/5 | In progress | - |
 | 2. Admin Portal | 0/? | Not started | - |
 | 3. Core Transaction | 0/? | Not started | - |
 | 4. Teacher Progression | 0/? | Not started | - |
@@ -146,4 +153,4 @@
 ---
 
 *Roadmap created: 2026-05-28*
-*Next: `/gsd:plan-phase 1`*
+*Updated: 2026-05-28 — Phase 1 planned (5 plans across 3 waves)*
