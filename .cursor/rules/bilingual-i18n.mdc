@@ -1,0 +1,24 @@
+---
+description: All user-facing text must be bilingual (German + English)
+globs: "**/*.{tsx,ts}"
+alwaysApply: true
+---
+
+# Bilingual UI (DE + EN)
+
+Academigo supports **German (`de`)** and **English (`en`)**. Default locale: `de`.
+
+## Rules
+
+1. **Never hardcode user-facing strings** in components, pages, or server actions (labels, buttons, errors, empty states, emails templates shown to users).
+2. Add copy to **`messages/de.ts`** and **`messages/en.ts`** (keep keys identical).
+3. Use **`getDictionary(locale)`** in Server Components and **`useI18n()`** in Client Components.
+4. Build URLs with **`localizedPath(locale, '/path')`** — routes live under `/[locale]/...` (e.g. `/de/student/dashboard`).
+5. Pass **`locale`** in forms (`<input type="hidden" name="locale" />`) for server actions that redirect.
+6. Translate DB-backed names by **slug** when possible (`translateSubjectName(dict, slug, fallback)`).
+7. Config numbers (CHF prices) stay in `config/`; **display names** for packages use `dict.pricing.packages`.
+
+## Adding a new page
+
+- Read `locale` from `params`, validate with `isLocale`, `notFound()` if invalid.
+- Pass `locale` to layouts, links, and redirects.
