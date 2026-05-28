@@ -41,6 +41,8 @@ export function Navbar({ isAuthenticated }: { isAuthenticated?: boolean }) {
             <BrandMark
               href={localizedPath(locale, "/")}
               label={c.brand}
+              layout="full"
+              showWordmark={false}
             />
             <nav className="hidden items-center gap-7 lg:flex">
               {publicNav.map((item) => (

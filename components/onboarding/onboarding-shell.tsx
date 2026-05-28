@@ -23,7 +23,12 @@ export function OnboardingShell({
     <div className="min-h-screen bg-academy-mist">
       <header className="border-b border-academy-line bg-white">
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-5 py-4 sm:px-8">
-          <BrandMark href={localizedPath(locale, "/")} label={dict.common.brand} />
+          <BrandMark
+            href={localizedPath(locale, "/")}
+            label={dict.common.brand}
+            layout="full"
+            showWordmark={false}
+          />
           <LanguageSwitcher
             locale={locale}
             ariaLabel={dict.nav.languageSwitcher}

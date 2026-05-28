@@ -24,6 +24,10 @@ export const metadata: Metadata = {
   },
   description:
     "Strukturierte Nachhilfe in Mathematik, Physik und Chemie — online und in Zürich.",
+  icons: {
+    icon: [{ url: "/brand/logo-icon.png", type: "image/png" }],
+    apple: [{ url: "/brand/logo-icon.png", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({
