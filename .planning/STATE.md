@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: executing
+stopped_at: Completed 01-04-PLAN.md (password reset flow — forgot-password, update-password, signUp email verification)
+last_updated: "2026-05-29T22:38:23.627Z"
+last_activity: 2026-05-29 — Plans 01-01, 01-02, 01-03 complete
+progress:
+  total_phases: 4
+  completed_phases: 0
+  total_plans: 5
+  completed_plans: 4
+  percent: 80
+---
+
 # Project State
 
 ## Project Reference
@@ -10,24 +26,24 @@ See: .planning/PROJECT.md (updated 2026-05-28)
 ## Current Position
 
 Phase: 1 of 4 (Foundation)
-Plan: 2 of 5 in current phase
+Plan: 4 of 5 in current phase (01-03 complete — 01-04 also committed in prior session)
 Status: In progress
-Last activity: 2026-05-29 — Plans 01-01 and 01-02 complete
+Last activity: 2026-05-29 — Plans 01-01, 01-02, 01-03 complete
 
-Progress: [██░░░░░░░░] 20%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: ~19min
-- Total execution time: ~38min
+- Total plans completed: 4
+- Average duration: ~12min
+- Total execution time: ~46min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Foundation | 2/5 | ~38min | ~19min |
+| 1. Foundation | 4/5 | ~46min | ~12min |
 | 2. Admin Portal | 0/? | — | — |
 | 3. Core Transaction | 0/? | — | — |
 | 4. Teacher Progression | 0/? | — | — |
@@ -37,6 +53,8 @@ Progress: [██░░░░░░░░] 20%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01-foundation P03 | 4 | 2 tasks | 5 files |
+| Phase 01-foundation P01-04 | 22 | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -51,6 +69,10 @@ Recent decisions affecting current work:
 - Phase 3: Stripe webhook must be idempotent on `stripe_session_id`; credit ops must use Supabase RPC with FOR UPDATE locks
 - Plan 01-02: Use mocks object pattern (not top-level const mocks) to avoid Jest hoisting temporal dead zone issues in test files
 - Plan 01-02: Add TypeScript stubs for requestPasswordReset/updatePassword in auth.ts so tsc passes; behavioral RED failures remain for Plan 03/04
+- [Phase 01-foundation]: Plan 01-03: emailRedirectTo pattern uses NEXT_PUBLIC_SITE_URL + /auth/callback?type=signup&next=<encoded-locale-path>
+- [Phase 01-foundation]: Plan 01-03: verify-email page has no auth guard — users are unconfirmed at this point and must be able to reach the page freely
+- [Phase 01-foundation]: Plan 01-04: requestPasswordReset returns {} on both success AND error (AUTH-03 neutral response — never exposes whether email exists)
+- [Phase 01-foundation]: Plan 01-04: update-password session guard uses supabase.auth.getUser() directly (not requireProfile) to redirect to /forgot-password instead of /login
 
 ### Pending Todos
 
@@ -64,6 +86,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-29
-Stopped at: Completed 01-02-PLAN.md (Jest test infrastructure + RED auth stubs)
+Last session: 2026-05-29T22:38:15.806Z
+Stopped at: Completed 01-04-PLAN.md (password reset flow — forgot-password, update-password, signUp email verification)
 Resume file: None

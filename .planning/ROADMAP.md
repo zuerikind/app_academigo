@@ -80,7 +80,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/5 | In progress | - |
+| 1. Foundation | 4/5 | In Progress|  |
 | 2. Admin Portal | 0/? | Not started | - |
 | 3. Core Transaction | 0/? | Not started | - |
 | 4. Teacher Progression | 0/? | Not started | - |
