@@ -71,7 +71,7 @@ export type Database = {
           is_verified: boolean;
           is_approved: boolean;
           is_active: boolean;
-          teacher_level: string;
+          teacher_level: 'junior' | 'academigo_teacher' | 'verified';
           payout_rate: number;
           location: string | null;
           languages: string[];
@@ -91,7 +91,7 @@ export type Database = {
           is_verified?: boolean;
           is_approved?: boolean;
           is_active?: boolean;
-          teacher_level?: string;
+          teacher_level?: 'junior' | 'academigo_teacher' | 'verified';
           payout_rate?: number;
           location?: string | null;
           languages?: string[];
