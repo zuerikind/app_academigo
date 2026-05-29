@@ -1,9 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { useI18n } from "@/components/i18n/locale-provider";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Label, Select } from "@/components/ui/input";
+import { localizedPath } from "@/lib/i18n/path";
 import type { AuthState } from "@/lib/actions/auth";
 
 function ErrorMessage({ children }: { children: React.ReactNode }) {
@@ -53,6 +55,14 @@ export function LoginForm({
       <Button type="submit" variant="primary" fullWidth disabled={pending}>
         {pending ? t.signingIn : t.signIn}
       </Button>
+      <div className="text-center">
+        <Link
+          href={localizedPath(locale, "/forgot-password")}
+          className="text-sm text-[color:var(--brand-deep)] hover:underline"
+        >
+          {t.forgotPassword.forgotPasswordLink}
+        </Link>
+      </div>
     </form>
   );
 }
