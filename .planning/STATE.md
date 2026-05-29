@@ -10,24 +10,24 @@ See: .planning/PROJECT.md (updated 2026-05-28)
 ## Current Position
 
 Phase: 1 of 4 (Foundation)
-Plan: 0 of ? in current phase
-Status: Ready to plan
-Last activity: 2026-05-28 — Roadmap created; 45 v1 requirements mapped across 4 phases
+Plan: 2 of 5 in current phase
+Status: In progress
+Last activity: 2026-05-29 — Plans 01-01 and 01-02 complete
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: 0 hours
+- Total plans completed: 2
+- Average duration: ~19min
+- Total execution time: ~38min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Foundation | 0/? | — | — |
+| 1. Foundation | 2/5 | ~38min | ~19min |
 | 2. Admin Portal | 0/? | — | — |
 | 3. Core Transaction | 0/? | — | — |
 | 4. Teacher Progression | 0/? | — | — |
@@ -49,6 +49,8 @@ Recent decisions affecting current work:
 - Phase 1: `handle_new_user` trigger security patch must ship before admin portal (Phase 2) to close admin signup bypass
 - Phase 2: Admin approval gate is a hard blocker — no student booking flow works until at least one teacher is approved
 - Phase 3: Stripe webhook must be idempotent on `stripe_session_id`; credit ops must use Supabase RPC with FOR UPDATE locks
+- Plan 01-02: Use mocks object pattern (not top-level const mocks) to avoid Jest hoisting temporal dead zone issues in test files
+- Plan 01-02: Add TypeScript stubs for requestPasswordReset/updatePassword in auth.ts so tsc passes; behavioral RED failures remain for Plan 03/04
 
 ### Pending Todos
 
@@ -62,6 +64,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-28
-Stopped at: Roadmap created, STATE.md initialized, REQUIREMENTS.md traceability updated
+Last session: 2026-05-29
+Stopped at: Completed 01-02-PLAN.md (Jest test infrastructure + RED auth stubs)
 Resume file: None

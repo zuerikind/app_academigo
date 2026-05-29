@@ -7,8 +7,8 @@
 
 ### Authentication
 
-- [ ] **AUTH-01**: User sees a "check your email" confirmation page after signing up
-- [ ] **AUTH-02**: User can verify their email via the link sent to their inbox
+- [x] **AUTH-01**: User sees a "check your email" confirmation page after signing up
+- [x] **AUTH-02**: User can verify their email via the link sent to their inbox
 - [ ] **AUTH-03**: User can request a password reset from the login page
 - [ ] **AUTH-04**: User can set a new password via the emailed reset link
 
@@ -117,8 +117,8 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 1 | Pending |
-| AUTH-02 | Phase 1 | Pending |
+| AUTH-01 | Phase 1 | Complete |
+| AUTH-02 | Phase 1 | Complete |
 | AUTH-03 | Phase 1 | Pending |
 | AUTH-04 | Phase 1 | Pending |
 | TIER-01 | Phase 1 | Pending |
