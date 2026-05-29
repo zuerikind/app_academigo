@@ -9,8 +9,8 @@
 
 - [x] **AUTH-01**: User sees a "check your email" confirmation page after signing up
 - [x] **AUTH-02**: User can verify their email via the link sent to their inbox
-- [ ] **AUTH-03**: User can request a password reset from the login page
-- [ ] **AUTH-04**: User can set a new password via the emailed reset link
+- [x] **AUTH-03**: User can request a password reset from the login page
+- [x] **AUTH-04**: User can set a new password via the emailed reset link
 
 ### Teacher Tier System
 
@@ -119,8 +119,8 @@
 |-------------|-------|--------|
 | AUTH-01 | Phase 1 | Complete |
 | AUTH-02 | Phase 1 | Complete |
-| AUTH-03 | Phase 1 | Pending |
-| AUTH-04 | Phase 1 | Pending |
+| AUTH-03 | Phase 1 | Complete |
+| AUTH-04 | Phase 1 | Complete |
 | TIER-01 | Phase 1 | Pending |
 | ADMIN-01 | Phase 2 | Pending |
 | ADMIN-02 | Phase 2 | Pending |
