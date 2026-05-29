@@ -118,3 +118,19 @@ export async function signOut(formData: FormData) {
   await supabase.auth.signOut();
   redirect(localizedPath(locale, "/login"));
 }
+
+// Stub: implemented in Plan 03
+export async function requestPasswordReset(
+  _prev: AuthState,
+  _formData: FormData,
+): Promise<AuthState> {
+  return { error: "Not implemented" };
+}
+
+// Stub: implemented in Plan 04
+export async function updatePassword(
+  _prev: AuthState,
+  _formData: FormData,
+): Promise<AuthState> {
+  return { error: "Not implemented" };
+}
