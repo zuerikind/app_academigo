@@ -96,6 +96,13 @@ export const en: Dictionary = {
       emailPasswordRequired: "Email and password are required.",
       invalidAccountType: "Invalid account type.",
     },
+    verifyEmail: {
+      title: "Verify your email",
+      subtitle: "We've sent you a confirmation link.",
+      instruction: "Please check your inbox and click the link to activate your account.",
+      spam: "Can't find the link? Check your spam folder.",
+      backToLogin: "Back to login",
+    },
   },
   home: {
     badge: "Tutoring · Switzerland",

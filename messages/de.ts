@@ -94,6 +94,13 @@ export const de = {
       emailPasswordRequired: "E-Mail und Passwort sind erforderlich.",
       invalidAccountType: "Ungültiger Kontotyp.",
     },
+    verifyEmail: {
+      title: "E-Mail bestätigen",
+      subtitle: "Wir haben dir einen Bestätigungslink gesendet.",
+      instruction: "Bitte überprüfe deinen Posteingang und klicke auf den Link, um dein Konto zu aktivieren.",
+      spam: "Den Link nicht gefunden? Überprüfe deinen Spam-Ordner.",
+      backToLogin: "Zurück zur Anmeldung",
+    },
   },
   home: {
     badge: "Nachhilfe · Schweiz",
