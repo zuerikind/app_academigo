@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getActionLocale } from "@/lib/actions/locale";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
@@ -36,18 +35,18 @@ export async function signUp(
     password,
     options: {
       data: { role, full_name: fullName },
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?type=signup&next=${encodeURIComponent(
+        localizedPath(
+          locale,
+          role === "teacher" ? "/teacher/onboarding" : "/student/onboarding",
+        ),
+      )}`,
     },
   });
 
   if (error) return { error: error.message };
 
-  revalidatePath("/", "layout");
-  redirect(
-    localizedPath(
-      locale,
-      role === "teacher" ? "/teacher/onboarding" : "/student/onboarding",
-    ),
-  );
+  redirect(localizedPath(locale, "/verify-email"));
 }
 
 export async function signIn(
@@ -119,18 +118,48 @@ export async function signOut(formData: FormData) {
   redirect(localizedPath(locale, "/login"));
 }
 
-// Stub: implemented in Plan 03
 export async function requestPasswordReset(
   _prev: AuthState,
-  _formData: FormData,
+  formData: FormData,
 ): Promise<AuthState> {
-  return { error: "Not implemented" };
+  const locale = await getActionLocale(formData);
+  const dict = getDictionary(locale);
+  const supabase = await createClient();
+
+  const email = String(formData.get("email") ?? "").trim();
+  if (!email) return { error: dict.auth.errors.emailPasswordRequired };
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?type=recovery&next=${encodeURIComponent(
+      localizedPath(locale, "/update-password"),
+    )}`,
+  });
+
+  // AUTH-03 SECURITY REQUIREMENT: Return the SAME empty response on both success AND error.
+  // This intentionally does NOT confirm or deny whether the email address exists in the system.
+  if (error) {
+    console.error(error.message); // Log silently — never expose to user
+    return {}; // Intentional: same response as success (AUTH-03 neutral response)
+  }
+
+  return {}; // Empty state = "check your email" — UI renders success message
 }
 
-// Stub: implemented in Plan 04
 export async function updatePassword(
   _prev: AuthState,
-  _formData: FormData,
+  formData: FormData,
 ): Promise<AuthState> {
-  return { error: "Not implemented" };
+  const locale = await getActionLocale(formData);
+  const dict = getDictionary(locale);
+  const supabase = await createClient();
+
+  const password = String(formData.get("password") ?? "");
+  if (!password || password.length < 8) {
+    return { error: dict.auth.errors.passwordTooShort };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) return { error: error.message };
+
+  redirect(localizedPath(locale, "/login"));
 }

@@ -95,6 +95,7 @@ export const en: Dictionary = {
     errors: {
       emailPasswordRequired: "Email and password are required.",
       invalidAccountType: "Invalid account type.",
+      passwordTooShort: "Password must be at least 8 characters.",
     },
     verifyEmail: {
       title: "Verify your email",
@@ -102,6 +103,23 @@ export const en: Dictionary = {
       instruction: "Please check your inbox and click the link to activate your account.",
       spam: "Can't find the link? Check your spam folder.",
       backToLogin: "Back to login",
+    },
+    forgotPassword: {
+      title: "Forgot password",
+      subtitle: "Enter your email address and we'll send you a reset link.",
+      submit: "Send link",
+      submitting: "Sending link…",
+      successTitle: "Link sent",
+      successMessage: "If an account with that email address exists, we've sent a reset link.",
+      backToLogin: "Back to login",
+      forgotPasswordLink: "Forgot password?",
+    },
+    updatePassword: {
+      title: "Set new password",
+      subtitle: "Enter your new password.",
+      passwordLabel: "New password",
+      submit: "Update password",
+      submitting: "Updating…",
     },
   },
   home: {

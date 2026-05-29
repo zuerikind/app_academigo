@@ -93,6 +93,7 @@ export const de = {
     errors: {
       emailPasswordRequired: "E-Mail und Passwort sind erforderlich.",
       invalidAccountType: "Ungültiger Kontotyp.",
+      passwordTooShort: "Das Passwort muss mindestens 8 Zeichen lang sein.",
     },
     verifyEmail: {
       title: "E-Mail bestätigen",
@@ -100,6 +101,23 @@ export const de = {
       instruction: "Bitte überprüfe deinen Posteingang und klicke auf den Link, um dein Konto zu aktivieren.",
       spam: "Den Link nicht gefunden? Überprüfe deinen Spam-Ordner.",
       backToLogin: "Zurück zur Anmeldung",
+    },
+    forgotPassword: {
+      title: "Passwort vergessen",
+      subtitle: "Gib deine E-Mail-Adresse ein. Wir senden dir einen Link zum Zurücksetzen.",
+      submit: "Link anfordern",
+      submitting: "Link wird gesendet…",
+      successTitle: "Link gesendet",
+      successMessage: "Wenn ein Konto mit dieser E-Mail-Adresse existiert, haben wir dir einen Link zugesandt.",
+      backToLogin: "Zurück zur Anmeldung",
+      forgotPasswordLink: "Passwort vergessen?",
+    },
+    updatePassword: {
+      title: "Neues Passwort festlegen",
+      subtitle: "Gib dein neues Passwort ein.",
+      passwordLabel: "Neues Passwort",
+      submit: "Passwort aktualisieren",
+      submitting: "Wird aktualisiert…",
     },
   },
   home: {
