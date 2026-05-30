@@ -47,7 +47,16 @@ Plans:
   3. Admin can view all student accounts with their credit balance and booking count.
   4. Admin can view all bookings across the platform, filterable by status.
   5. Admin can view pending teacher tier promotion requests and approve or reject them with an optional note.
-**Plans**: TBD
+**Plans**: 7 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — DB type extensions (level_promotion_requests, payout_requests) + RED test stubs
+- [ ] 02-02-PLAN.md — Shared infra: Table component, lib/queries/admin.ts, lib/actions/admin.ts, getAdminNav(), i18n
+- [ ] 02-03-PLAN.md — Admin layout (role guard + DashboardLayout) + dashboard page (stat cards + needs-attention)
+- [ ] 02-04-PLAN.md — Teachers page (inline Approve) + Students page
+- [ ] 02-05-PLAN.md — Bookings page (tab filter) + Payouts page (Mark Processed)
+- [ ] 02-06-PLAN.md — Promotions page (expandable row + Approve/Reject with note)
+- [ ] 02-07-PLAN.md — Human verification checkpoint for all Phase 2 deliverables
 
 ### Phase 3: Core Transaction
 **Goal**: Students can purchase credits, browse teacher availability, complete a full booking cycle, leave a review, and teachers can record earnings and request payouts.
@@ -81,7 +90,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 4/5 | In Progress|  |
-| 2. Admin Portal | 0/? | Not started | - |
+| 2. Admin Portal | 0/7 | Not started | - |
 | 3. Core Transaction | 0/? | Not started | - |
 | 4. Teacher Progression | 0/? | Not started | - |
 
@@ -154,3 +163,4 @@ Plans:
 
 *Roadmap created: 2026-05-28*
 *Updated: 2026-05-28 — Phase 1 planned (5 plans across 3 waves)*
+*Updated: 2026-05-30 — Phase 2 planned (7 plans across 5 waves)*
