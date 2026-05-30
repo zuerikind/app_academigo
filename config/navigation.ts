@@ -77,3 +77,38 @@ export function getTeacherNav(dict: Dictionary, locale: Locale): NavItem[] {
     },
   ];
 }
+
+export function getAdminNav(dict: Dictionary, locale: Locale): NavItem[] {
+  return [
+    {
+      label: dict.admin.nav.dashboard,
+      href: localizedPath(locale, "/admin/dashboard"),
+      icon: "layoutDashboard",
+    },
+    {
+      label: dict.admin.nav.teachers,
+      href: localizedPath(locale, "/admin/teachers"),
+      icon: "users",
+    },
+    {
+      label: dict.admin.nav.students,
+      href: localizedPath(locale, "/admin/students"),
+      icon: "user",
+    },
+    {
+      label: dict.admin.nav.bookings,
+      href: localizedPath(locale, "/admin/bookings"),
+      icon: "calendar",
+    },
+    {
+      label: dict.admin.nav.promotions,
+      href: localizedPath(locale, "/admin/promotions"),
+      icon: "award",
+    },
+    {
+      label: dict.admin.nav.payouts,
+      href: localizedPath(locale, "/admin/payouts"),
+      icon: "coins",
+    },
+  ];
+}
