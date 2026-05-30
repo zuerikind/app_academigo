@@ -190,6 +190,48 @@ export type Database = {
         };
         Update: Partial<Database["public"]["Tables"]["credit_packages"]["Insert"]>;
       };
+      level_promotion_requests: {
+        Row: {
+          id: string;
+          teacher_id: string;
+          requested_level: 'academigo_teacher' | 'verified';
+          status: 'pending' | 'approved' | 'rejected';
+          note: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          teacher_id: string;
+          requested_level: 'academigo_teacher' | 'verified';
+          status?: 'pending' | 'approved' | 'rejected';
+          note?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["level_promotion_requests"]["Insert"]>;
+      };
+      payout_requests: {
+        Row: {
+          id: string;
+          teacher_id: string;
+          amount_chf: number;
+          status: 'pending' | 'processed';
+          note: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          teacher_id: string;
+          amount_chf: number;
+          status?: 'pending' | 'processed';
+          note?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["payout_requests"]["Insert"]>;
+      };
     };
     Views: Record<string, never>;
     Functions: {
