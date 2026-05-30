@@ -25,13 +25,13 @@
 ### Admin Portal
 
 - [ ] **ADMIN-01**: Admin user who signs in is redirected to a functioning admin dashboard (not a 404)
-- [ ] **ADMIN-02**: Admin can view all teacher accounts with their approval status, tier level, and key stats
-- [ ] **ADMIN-03**: Admin can approve a pending teacher account (sets `is_approved = true`, making them visible to students)
-- [ ] **ADMIN-04**: Admin can review and action teacher tier promotion requests
-- [ ] **ADMIN-05**: Admin can view all student accounts with credit balance and booking count
-- [ ] **ADMIN-06**: Admin can view all bookings across the platform, filterable by status
-- [ ] **ADMIN-07**: Admin can view all pending payout requests from teachers
-- [ ] **ADMIN-08**: Admin can mark a payout request as processed
+- [x] **ADMIN-02**: Admin can view all teacher accounts with their approval status, tier level, and key stats
+- [x] **ADMIN-03**: Admin can approve a pending teacher account (sets `is_approved = true`, making them visible to students)
+- [x] **ADMIN-04**: Admin can review and action teacher tier promotion requests
+- [x] **ADMIN-05**: Admin can view all student accounts with credit balance and booking count
+- [x] **ADMIN-06**: Admin can view all bookings across the platform, filterable by status
+- [x] **ADMIN-07**: Admin can view all pending payout requests from teachers
+- [x] **ADMIN-08**: Admin can mark a payout request as processed
 
 ### Availability
 
@@ -123,13 +123,13 @@
 | AUTH-04 | Phase 1 | Complete |
 | TIER-01 | Phase 1 | Pending |
 | ADMIN-01 | Phase 2 | Pending |
-| ADMIN-02 | Phase 2 | Pending |
-| ADMIN-03 | Phase 2 | Pending |
-| ADMIN-04 | Phase 2 | Pending |
-| ADMIN-05 | Phase 2 | Pending |
-| ADMIN-06 | Phase 2 | Pending |
-| ADMIN-07 | Phase 2 | Pending |
-| ADMIN-08 | Phase 2 | Pending |
+| ADMIN-02 | Phase 2 | Complete |
+| ADMIN-03 | Phase 2 | Complete |
+| ADMIN-04 | Phase 2 | Complete |
+| ADMIN-05 | Phase 2 | Complete |
+| ADMIN-06 | Phase 2 | Complete |
+| ADMIN-07 | Phase 2 | Complete |
+| ADMIN-08 | Phase 2 | Complete |
 | AVAIL-01 | Phase 3 | Pending |
 | AVAIL-02 | Phase 3 | Pending |
 | AVAIL-03 | Phase 3 | Pending |

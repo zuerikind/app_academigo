@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-04-PLAN.md (password reset flow — forgot-password, update-password, signUp email verification)
-last_updated: "2026-05-29T22:38:26.303Z"
+stopped_at: Completed 02-01-PLAN.md (admin DB types, SQL migration, RED test stubs)
+last_updated: "2026-05-30T16:55:33.493Z"
 last_activity: 2026-05-29 — Plans 01-01, 01-02, 01-03 complete
 progress:
   total_phases: 4
-  completed_phases: 0
-  total_plans: 5
-  completed_plans: 4
+  completed_phases: 1
+  total_plans: 12
+  completed_plans: 6
   percent: 80
 ---
 
@@ -55,6 +55,7 @@ Progress: [████████░░] 80%
 *Updated after each plan completion*
 | Phase 01-foundation P03 | 4 | 2 tasks | 5 files |
 | Phase 01-foundation P01-04 | 22 | 2 tasks | 8 files |
+| Phase 02-admin-portal P01 | 8 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,8 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: Plan 01-03: verify-email page has no auth guard — users are unconfirmed at this point and must be able to reach the page freely
 - [Phase 01-foundation]: Plan 01-04: requestPasswordReset returns {} on both success AND error (AUTH-03 neutral response — never exposes whether email exists)
 - [Phase 01-foundation]: Plan 01-04: update-password session guard uses supabase.auth.getUser() directly (not requireProfile) to redirect to /forgot-password instead of /login
+- [Phase 02-admin-portal]: Plan 02-01: level_promotion_requests and payout_requests use TEXT CHECK constraints (not enums) to match existing schema pattern
+- [Phase 02-admin-portal]: Plan 02-01: RED test stubs use mocks object pattern consistent with auth.test.ts to avoid Jest hoisting TDZ issues
 
 ### Pending Todos
 
@@ -86,6 +89,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-29T22:38:15.806Z
-Stopped at: Completed 01-04-PLAN.md (password reset flow — forgot-password, update-password, signUp email verification)
+Last session: 2026-05-30T16:55:33.490Z
+Stopped at: Completed 02-01-PLAN.md (admin DB types, SQL migration, RED test stubs)
 Resume file: None
