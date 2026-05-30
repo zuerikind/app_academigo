@@ -24,7 +24,7 @@
 
 ### Admin Portal
 
-- [ ] **ADMIN-01**: Admin user who signs in is redirected to a functioning admin dashboard (not a 404)
+- [x] **ADMIN-01**: Admin user who signs in is redirected to a functioning admin dashboard (not a 404)
 - [x] **ADMIN-02**: Admin can view all teacher accounts with their approval status, tier level, and key stats
 - [x] **ADMIN-03**: Admin can approve a pending teacher account (sets `is_approved = true`, making them visible to students)
 - [x] **ADMIN-04**: Admin can review and action teacher tier promotion requests
@@ -122,7 +122,7 @@
 | AUTH-03 | Phase 1 | Complete |
 | AUTH-04 | Phase 1 | Complete |
 | TIER-01 | Phase 1 | Pending |
-| ADMIN-01 | Phase 2 | Pending |
+| ADMIN-01 | Phase 2 | Complete |
 | ADMIN-02 | Phase 2 | Complete |
 | ADMIN-03 | Phase 2 | Complete |
 | ADMIN-04 | Phase 2 | Complete |

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-02-PLAN.md (Table component, admin queries, actions, nav, i18n)
-last_updated: "2026-05-30T17:03:29.366Z"
+stopped_at: Completed 02-03-PLAN.md (Admin layout role guard + Dashboard with stat cards)
+last_updated: "2026-05-30T17:08:04.016Z"
 last_activity: 2026-05-29 — Plans 01-01, 01-02, 01-03 complete
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 12
-  completed_plans: 7
+  completed_plans: 8
   percent: 80
 ---
 
@@ -57,6 +57,7 @@ Progress: [████████░░] 80%
 | Phase 01-foundation P01-04 | 22 | 2 tasks | 8 files |
 | Phase 02-admin-portal P01 | 8 | 2 tasks | 5 files |
 | Phase 02-admin-portal P02 | 12 | 2 tasks | 8 files |
+| Phase 02-admin-portal P03 | 8 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,8 @@ Recent decisions affecting current work:
 - [Phase 02-admin-portal]: Table component returns emptyState (or null if none) when rows=[], not an empty table shell
 - [Phase 02-admin-portal]: Admin actions call requireRole before validating formData inputs for defense-in-depth
 - [Phase 02-admin-portal]: queries test stub TDZ fix: use makeChainable() factory for Supabase fluent API mocking (consistent with auth test pattern)
+- [Phase 02-admin-portal]: Plan 02-03: DashboardLayout title/subtitle set in layout.tsx from dict — child admin pages render body content only without repeating header
+- [Phase 02-admin-portal]: Plan 02-03: Revenue StatCard uses string value (revenueStub) since StatCard accepts string|number — no type coercion needed
 
 ### Pending Todos
 
@@ -93,6 +96,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-30T17:03:29.363Z
-Stopped at: Completed 02-02-PLAN.md (Table component, admin queries, actions, nav, i18n)
+Last session: 2026-05-30T17:08:04.007Z
+Stopped at: Completed 02-03-PLAN.md (Admin layout role guard + Dashboard with stat cards)
 Resume file: None
