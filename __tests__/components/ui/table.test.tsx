@@ -1,6 +1,7 @@
 /**
+ * @jest-environment jsdom
+ *
  * Unit tests for components/ui/table.tsx
- * RED phase: components/ui/table.tsx does not exist yet.
  */
 
 import React from "react";

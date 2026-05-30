@@ -1,22 +1,27 @@
 /**
  * Unit tests for lib/queries/admin.ts
- * RED phase: lib/queries/admin.ts does not exist yet.
  */
 
 const mocks = {
   select: jest.fn(),
   eq: jest.fn(),
   order: jest.fn(),
-  head: jest.fn(),
 };
 
+// Chainable mock result that resolves to { data: null, error: null, count: 0 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function makeChainable(): any {
+  const obj: any = Promise.resolve({ data: null, error: null, count: 0 });
+  obj.select = (...args: unknown[]) => { mocks.select(...args); return makeChainable(); };
+  obj.eq = (...args: unknown[]) => { mocks.eq(...args); return makeChainable(); };
+  obj.order = (...args: unknown[]) => { mocks.order(...args); return makeChainable(); };
+  return obj;
+}
+
+// Use lazy references inside the factory to avoid TDZ hoisting issues
 jest.mock("@/lib/supabase/server", () => ({
   createClient: jest.fn().mockResolvedValue({
-    from: jest.fn().mockReturnValue({
-      select: (...args: unknown[]) => { mocks.select(...args); return { eq: mocks.eq, order: mocks.order, data: [], error: null }; },
-      eq: mocks.eq,
-      order: mocks.order,
-    }),
+    from: () => makeChainable(),
   }),
 }));
 
