@@ -10,7 +10,7 @@
 ## Phases
 
 - [ ] **Phase 1: Foundation** — Schema migrations, atomic booking RPCs, auth security patch, email verification and password reset flows
-- [ ] **Phase 2: Admin Portal** — Functioning admin dashboard, teacher approval gate, student/booking/payout management views
+- [x] **Phase 2: Admin Portal** — Functioning admin dashboard, teacher approval gate, student/booking/payout management views (completed 2026-05-30)
 - [ ] **Phase 3: Core Transaction** — Availability management, Stripe credit purchase, end-to-end booking, post-session reviews, teacher earnings and payouts
 - [ ] **Phase 4: Teacher Progression** — 3-tier badge display, in-app promotion requests, admin promotion review, directory sort by tier
 
@@ -90,7 +90,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 4/5 | In Progress|  |
-| 2. Admin Portal | 5/7 | In Progress|  |
+| 2. Admin Portal | 7/7 | Complete   | 2026-05-30 |
 | 3. Core Transaction | 0/? | Not started | - |
 | 4. Teacher Progression | 0/? | Not started | - |
 
