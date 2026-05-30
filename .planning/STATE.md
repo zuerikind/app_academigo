@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-04-PLAN.md (Teachers and Students management pages)
-last_updated: "2026-05-30T17:10:08.708Z"
+stopped_at: Completed 02-06-PLAN.md (Promotions management page)
+last_updated: "2026-05-30T17:13:51.912Z"
 last_activity: 2026-05-29 — Plans 01-01, 01-02, 01-03 complete
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 12
-  completed_plans: 9
+  completed_plans: 10
   percent: 80
 ---
 
@@ -59,6 +59,7 @@ Progress: [████████░░] 80%
 | Phase 02-admin-portal P02 | 12 | 2 tasks | 8 files |
 | Phase 02-admin-portal P03 | 8 | 2 tasks | 2 files |
 | Phase 02-admin-portal P04 | 10 | 2 tasks | 2 files |
+| Phase 02-admin-portal P06 | 8 | 1 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,8 @@ Recent decisions affecting current work:
 - [Phase 02-admin-portal]: Plan 02-03: Revenue StatCard uses string value (revenueStub) since StatCard accepts string|number — no type coercion needed
 - [Phase 02-admin-portal]: Plan 02-04: Wrap approveTeacher (2-arg useActionState signature) in inline async function for plain form action to satisfy TypeScript form action type
 - [Phase 02-admin-portal]: Plan 02-04: Supabase infers profiles join as array type — cast to array and use [0] indexing for teachers and students pages
+- [Phase 02-admin-portal]: Plan 02-06: Supabase join types for nested teachers/profiles normalized in Server Component page with explicit union casts — no as any in render path
+- [Phase 02-admin-portal]: Plan 02-06: Badge approved state uses 'verified' variant (no 'success' variant in badge.tsx — confirmed by reading component)
 
 ### Pending Todos
 
@@ -99,6 +102,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-30T17:10:08.705Z
-Stopped at: Completed 02-04-PLAN.md (Teachers and Students management pages)
+Last session: 2026-05-30T17:13:51.910Z
+Stopped at: Completed 02-06-PLAN.md (Promotions management page)
 Resume file: None
