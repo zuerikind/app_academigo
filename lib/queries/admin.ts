@@ -132,3 +132,27 @@ export async function getAdminPayouts() {
   if (error || !data) return [];
   return data;
 }
+
+export async function getAdminPromotions() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("level_promotion_requests")
+    .select(
+      `
+      id,
+      requested_level,
+      status,
+      note,
+      created_at,
+      teachers (
+        id,
+        teacher_level,
+        profiles ( full_name, email )
+      )
+    `,
+    )
+    .order("created_at", { ascending: false });
+
+  if (error || !data) return [];
+  return data;
+}
