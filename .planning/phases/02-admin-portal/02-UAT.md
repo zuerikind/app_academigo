@@ -67,17 +67,11 @@ skipped: 0
   reason: "User reported: GET /de/admin/dashboard 404 (and /de/admin/teachers same result). proxy.ts takes 370-400ms of the ~406ms response time; next.js is only 8ms. Reproduces consistently across multiple login attempts."
   severity: blocker
   test: 2
-  root_cause: "All /de/admin/* routes (dashboard, teachers) 404 with identical timing: proxy.ts ~370ms (Supabase getUser), application-code 28ms. Key diagnostic: 'generate-params' timing is ABSENT on the 404 responses but present on working routes (/de, /de/login). This means Next.js is returning 404 before resolving the [locale] route parameter — the router is not finding app/[locale]/admin/*/page.tsx routes. Two leading hypotheses: (1) The admin layout's requireRoleFromParams calls redirect() which in Next.js 16 may not properly bubble from a nested layout, resulting in 404 instead of 307. (2) The Supabase migration (20260530000001_admin_tables.sql) has not been applied to the remote database, causing a runtime error in getAdminStats() that triggers notFound() behavior. Both require investigation."
+  root_cause: "Turbopack build cache (.next) did not pick up newly created admin route files after phase 2 execution. Deleting .next and restarting npm run dev resolved all 404s immediately. The 'generate-params' timing was absent on 404 requests (vs present on working routes) because Turbopack never compiled the admin route modules."
   artifacts:
-    - path: "app/[locale]/admin/layout.tsx"
-      issue: "requireRoleFromParams('admin', locale) may cause redirect() that Next.js 16 renders as 404 from a nested layout"
-    - path: "lib/auth/session.ts"
-      issue: "requireRoleFromParams/requireRole/requireProfile chain calls redirect() — behavior in Next.js 16 nested layout untested"
-    - path: "supabase/migrations/20260530000001_admin_tables.sql"
-      issue: "Migration may not be applied to remote Supabase — level_promotion_requests and payout_requests tables may not exist"
+    - path: ".next/"
+      issue: "Stale Turbopack cache — did not discover admin route files created during phase 2 execution"
   missing:
-    - "Verify migration was applied: check Supabase dashboard for level_promotion_requests and payout_requests tables"
-    - "If not applied: run `npx supabase db push` or apply migration manually via Supabase dashboard"
-    - "If applied: add console.log to admin layout to confirm it runs, and check if redirect() from nested layout causes 404 in Next.js 16"
-    - "Consider adding error.tsx to app/[locale]/admin/ to catch runtime errors and prevent silent 404"
+    - "No code fix needed — resolved by clearing .next cache and restarting dev server"
+    - "Document: after adding new route files in this project, clear .next before testing"
   debug_session: ""
