@@ -70,7 +70,19 @@ Plans:
   5. A student can purchase a credit package via Stripe Checkout and credits are granted automatically on successful payment (webhook is idempotent on `stripe_session_id`).
   6. A student can submit a star rating and comment after a completed session; the teacher's profile shows all reviews, average rating, and review count.
   7. A teacher can view their earnings history and submit a payout request; admin can view and mark payout requests as processed.
-**Plans**: TBD
+**Plans**: 10 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Phase 3 schema migration (availability tables, bookings columns, reviews constraint, credit RPCs) + type regen
+- [ ] 03-02-PLAN.md — Wave 0 RED test stubs (slots, availability, bookings, payments, webhook, reviews, earnings)
+- [ ] 03-03-PLAN.md — Availability: generateSlots utility, queries, Server Actions, teacher availability page
+- [ ] 03-04-PLAN.md — Stripe: install + createCheckoutSession action + webhook handler + student packages page buy buttons
+- [ ] 03-05-PLAN.md — Booking library: requestBooking/confirmBooking/declineBooking/markComplete/cancelBooking actions + queries + ICS utility
+- [ ] 03-06-PLAN.md — Teacher bookings page (confirm/decline/mark-complete UI with inline forms)
+- [ ] 03-07-PLAN.md — Student teacher profile: monthly calendar + slot picker + booking request form
+- [ ] 03-08-PLAN.md — Student bookings page + inline review forms + review data on teacher profile/cards
+- [ ] 03-09-PLAN.md — Teacher earnings page + requestPayout action + teacher nav update
+- [ ] 03-10-PLAN.md — Human verification checkpoint for all Phase 3 deliverables
 
 ### Phase 4: Teacher Progression
 **Goal**: Teachers have visible tier badges, can apply for level promotion, and verified teachers rank higher in the directory.
@@ -91,7 +103,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Foundation | 4/5 | In Progress|  |
 | 2. Admin Portal | 7/7 | Complete   | 2026-05-30 |
-| 3. Core Transaction | 0/? | Not started | - |
+| 3. Core Transaction | 0/10 | Planned | - |
 | 4. Teacher Progression | 0/? | Not started | - |
 
 ---
@@ -164,3 +176,4 @@ Plans:
 *Roadmap created: 2026-05-28*
 *Updated: 2026-05-28 — Phase 1 planned (5 plans across 3 waves)*
 *Updated: 2026-05-30 — Phase 2 planned (7 plans across 5 waves)*
+*Updated: 2026-05-31 — Phase 3 planned (10 plans across 5 waves)*
