@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  AlertTriangle,
   Award,
   BookOpen,
   Calendar,
@@ -20,6 +21,7 @@ import {
 import type { IconName } from "@/lib/icons";
 
 const registry = {
+  alertTriangle: AlertTriangle,
   award: Award,
   globe: Globe,
   users: Users,

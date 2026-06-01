@@ -14,4 +14,5 @@ export type IconName =
   | "layoutDashboard"
   | "user"
   | "settings"
-  | "book";
+  | "book"
+  | "alertTriangle";

@@ -115,5 +115,10 @@ export function getAdminNav(dict: Dictionary, locale: Locale): NavItem[] {
       href: localizedPath(locale, "/admin/payouts"),
       icon: "coins",
     },
+    {
+      label: dict.admin.nav.missingLinks,
+      href: localizedPath(locale, "/admin/missing-links"),
+      icon: "alertTriangle",
+    },
   ];
 }

@@ -189,6 +189,26 @@ export async function getPayoutRequests() {
   return data ?? [];
 }
 
+export async function getMissingMeetLinks() {
+  const supabase = await createClient();
+  const now = new Date().toISOString();
+  const { data, error } = await supabase
+    .from("bookings")
+    .select(
+      `
+      id, start_time,
+      teachers ( id, profiles ( full_name ) ),
+      students ( profiles ( full_name ) )
+    `,
+    )
+    .eq("status", "confirmed")
+    .is("meeting_link", null)
+    .gte("start_time", now)
+    .order("start_time", { ascending: true });
+  if (error) throw error;
+  return data ?? [];
+}
+
 export async function getAdminPromotions() {
   const supabase = await createClient();
   const { data, error } = await supabase

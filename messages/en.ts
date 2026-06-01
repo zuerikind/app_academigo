@@ -642,6 +642,7 @@ export const en: Dictionary = {
       bookings: "Bookings",
       promotions: "Promotions",
       payouts: "Payouts",
+      missingLinks: "Missing Meet Links",
     },
     dashboard: {
       title: "Admin",

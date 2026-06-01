@@ -643,6 +643,7 @@ export const de = {
       bookings: "Buchungen",
       promotions: "Stufenaufstiege",
       payouts: "Auszahlungen",
+      missingLinks: "Fehlende Meet-Links",
     },
     dashboard: {
       title: "Admin",
