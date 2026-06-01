@@ -34,7 +34,7 @@ export function TeacherProfileEditForm({
   const [offersInPerson, setOffersInPerson] = useState(teacher.offers_in_person);
 
   const currentLangs = teacher.languages ?? [];
-  const fixedLangsSet = new Set(FIXED_LANGUAGES);
+  const fixedLangsSet = new Set<string>(FIXED_LANGUAGES);
   const currentOtherLangs = currentLangs.filter((l) => !fixedLangsSet.has(l));
 
   return (
