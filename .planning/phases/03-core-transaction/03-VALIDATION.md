@@ -1,10 +1,10 @@
 ---
 phase: 3
 slug: core-transaction
-status: draft
-nyquist_compliant: false
+status: approved
+nyquist_compliant: true
 wave_0_complete: false
-created: 2026-05-31
+created: 2026-06-01
 ---
 
 # Phase 3 — Validation Strategy
@@ -38,24 +38,15 @@ created: 2026-05-31
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 3-01-01 | 01 | 0 | AVAIL-03 | unit | `npm test -- --testPathPattern="utils/slots"` | ❌ W0 | ⬜ pending |
-| 3-01-02 | 01 | 0 | AVAIL-01/02 | unit | `npm test -- --testPathPattern="actions/availability"` | ❌ W0 | ⬜ pending |
-| 3-01-03 | 01 | 0 | BOOK-01/02 | unit | `npm test -- --testPathPattern="actions/bookings"` | ❌ W0 | ⬜ pending |
-| 3-01-04 | 01 | 0 | PAY-02/03 | unit | `npm test -- --testPathPattern="actions/payments"` | ❌ W0 | ⬜ pending |
-| 3-01-05 | 01 | 0 | PAY-03 | unit | `npm test -- --testPathPattern="api/webhooks"` | ❌ W0 | ⬜ pending |
-| 3-01-06 | 01 | 0 | REV-01 | unit | `npm test -- --testPathPattern="actions/reviews"` | ❌ W0 | ⬜ pending |
-| 3-01-07 | 01 | 0 | EARN-03 | unit | `npm test -- --testPathPattern="actions/earnings"` | ❌ W0 | ⬜ pending |
-| 3-02-01 | 02 | 1 | AVAIL-01/02 | unit | `npm test -- --testPathPattern="actions/availability"` | ❌ W0 | ⬜ pending |
-| 3-02-02 | 02 | 1 | AVAIL-03 | unit | `npm test -- --testPathPattern="utils/slots"` | ❌ W0 | ⬜ pending |
-| 3-03-01 | 03 | 2 | BOOK-01/02 | unit | `npm test -- --testPathPattern="actions/bookings"` | ❌ W0 | ⬜ pending |
-| 3-03-02 | 03 | 2 | BOOK-04/05 | unit | `npm test -- --testPathPattern="actions/bookings"` | ❌ W0 | ⬜ pending |
-| 3-03-03 | 03 | 2 | BOOK-07/08/09 | unit | `npm test -- --testPathPattern="actions/bookings"` | ❌ W0 | ⬜ pending |
-| 3-04-01 | 04 | 2 | PAY-02 | unit | `npm test -- --testPathPattern="actions/payments"` | ❌ W0 | ⬜ pending |
-| 3-04-02 | 04 | 2 | PAY-03 | unit | `npm test -- --testPathPattern="api/webhooks"` | ❌ W0 | ⬜ pending |
-| 3-05-01 | 05 | 3 | REV-01 | unit | `npm test -- --testPathPattern="actions/reviews"` | ❌ W0 | ⬜ pending |
-| 3-05-02 | 05 | 3 | REV-02/03/04 | manual | Browser: teacher profile shows reviews + rating | — | ⬜ pending |
-| 3-06-01 | 06 | 3 | EARN-02/03 | unit | `npm test -- --testPathPattern="actions/earnings"` | ❌ W0 | ⬜ pending |
-| 3-06-02 | 06 | 3 | EARN-04/05 | manual | Browser: admin payout page (Phase 2, already built) | ✅ | ⬜ pending |
+| W0-slots | 02 | 0 | AVAIL-03 | unit | `npm test -- --testPathPattern="utils/slots"` | ❌ W0 | ⬜ pending |
+| W0-availability | 02 | 0 | AVAIL-01/02 | unit | `npm test -- --testPathPattern="actions/availability"` | ❌ W0 | ⬜ pending |
+| W0-bookings | 02 | 0 | BOOK-01..09 | unit | `npm test -- --testPathPattern="actions/bookings"` | ❌ W0 | ⬜ pending |
+| W0-payments | 02 | 0 | PAY-02/03 | unit | `npm test -- --testPathPattern="actions/payments"` | ❌ W0 | ⬜ pending |
+| W0-webhooks | 02 | 0 | PAY-03 | unit | `npm test -- --testPathPattern="api/webhooks"` | ❌ W0 | ⬜ pending |
+| W0-reviews | 02 | 0 | REV-01 | unit | `npm test -- --testPathPattern="actions/reviews"` | ❌ W0 | ⬜ pending |
+| W0-earnings | 02 | 0 | EARN-03 | unit | `npm test -- --testPathPattern="actions/earnings"` | ❌ W0 | ⬜ pending |
+| W0-emails | 02 | 0 | BOOK-04/05/06 | unit | `npm test -- --testPathPattern="lib/email"` | ❌ W0 | ⬜ pending |
+| W0-cron | 02 | 0 | BOOK-06 | unit | `npm test -- --testPathPattern="api/cron"` | ❌ W0 | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -63,15 +54,29 @@ created: 2026-05-31
 
 ## Wave 0 Requirements
 
-- [ ] `__tests__/lib/utils/slots.test.ts` — stubs for AVAIL-03 slot generation
+- [ ] `__tests__/lib/utils/slots.test.ts` — stubs for AVAIL-03
 - [ ] `__tests__/lib/actions/availability.test.ts` — stubs for AVAIL-01/02
-- [ ] `__tests__/lib/actions/bookings.test.ts` — stubs for BOOK-01/02/04/07/08/09
+- [ ] `__tests__/lib/actions/bookings.test.ts` — stubs for BOOK-01/02/03/04/07/08/09 (incl. getTeacherBookings query stub)
 - [ ] `__tests__/lib/actions/payments.test.ts` — stubs for PAY-02
 - [ ] `__tests__/api/webhooks/stripe.test.ts` — stubs for PAY-03 idempotency + signature rejection
 - [ ] `__tests__/lib/actions/reviews.test.ts` — stubs for REV-01
-- [ ] `__tests__/lib/actions/earnings.test.ts` — stubs for EARN-03
+- [ ] `__tests__/lib/actions/earnings.test.ts` — stubs for EARN-03/04/05 (incl. getPayoutRequests query smoke)
+- [ ] `__tests__/lib/email/templates.test.ts` — stubs for email rendering (booking confirm, meet link added, reminders)
+- [ ] `__tests__/api/cron/reminders.test.ts` — stubs for cron idempotency (24h/1h sent_at guards)
 
-All use the established `mocks` object pattern + `makeChainable()` factory from existing Phase 1/2 tests (`__tests__/lib/actions/admin.test.ts`).
+All use the established `mocks` object pattern + `makeChainable()` factory from existing Phase 1/2 tests.
+
+---
+
+## Nyquist Compliance Note
+
+`checkpoint:human-verify` tasks (plan 03-13, Task 2) are **explicitly exempt** from the automated `<verify>` requirement. These tasks exist precisely because the behavior they verify (browser rendering, interactive flows, Stripe redirect, email delivery) cannot be machine-verified in under 60 seconds. The `<automated>` element in those tasks is marked `MISSING` with an exemption note per the Nyquist rule — this is correct behavior, not a gap.
+
+All other tasks (type="auto") in Phase 3 have `<automated>` verify commands pointing to:
+- `npm test -- --testPathPattern=...` for unit-tested functions (Wave 0 stubs + implementation tasks)
+- `npx tsc --noEmit` for UI/wiring tasks that cannot be unit-tested independently
+
+No 3 consecutive auto tasks exist without an automated verify command.
 
 ---
 
@@ -79,21 +84,25 @@ All use the established `mocks` object pattern + `makeChainable()` factory from 
 
 | Behavior | Requirement | Why Manual | Test Instructions |
 |----------|-------------|------------|-------------------|
-| Teacher profile shows reviews, avg rating, review count | REV-02/03 | Requires seeded data + browser render | Visit `/[locale]/teachers/[id]` after submitting a review; verify stars, count, comments |
-| Student sees confirmed meeting link | BOOK-06 | Requires confirmed booking state + browser | Confirm a booking as teacher; verify student bookings page shows meeting link |
-| ICS export downloads correct calendar file | BOOK (calendar export) | File download verification | Click export on confirmed booking; verify `.ics` file opens in calendar app |
-| Stripe Checkout redirect works end-to-end | PAY-02 | Requires live Stripe test keys | Click "Buy" on Essentials Single; verify redirect to Stripe, successful payment, credits granted |
-| Admin payout mark-as-processed | EARN-04/05 | Already verified in Phase 2 | Admin payouts page — mark one as processed; verify status updates |
+| Teacher profile shows reviews, avg rating, review count | REV-02/03 | Requires seeded data + browser render | Visit `/[locale]/teachers/[id]` after submitting a review |
+| Teacher directory cards show avg rating + review count | REV-04 | Requires seeded data + browser render | Visit `/student/teachers` after submitting a review |
+| Student sees "Join Lesson" button with correct Meet URL | BOOK-06 | Requires confirmed booking with meet link + browser | Confirm booking with default_meet_link set; verify student sees active Join button |
+| Student sees "Waiting for teacher" when no meet link | BOOK-06 | Requires confirmed booking without meet link | Confirm booking without default_meet_link; verify student sees greyed state |
+| ICS export downloads correct calendar file | BOOK (calendar export) | File download + calendar app | Click export on confirmed booking; open .ics |
+| Stripe Checkout redirect works end-to-end | PAY-02 | Requires live Stripe test keys | Buy Essentials Single; verify redirect, payment, credit grant |
+| Resend email received in inbox | BOOK-04/06 | Email delivery requires live API key | Confirm booking; verify email arrives at student address |
+| Cron reminder dispatched and idempotent | BOOK-06 | Requires cron execution + DB inspection | Trigger `/api/cron/reminders` manually; verify reminder_24h_sent_at updated; re-trigger verifies no duplicate send |
+| Admin missing meet links page renders correctly | BOOK-06 / EARN-04 area | Requires DB state + browser | Create upcoming booking without meet_link; verify admin page shows it |
 
 ---
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 30s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or are `checkpoint:human-verify` (exempt from automated coverage)
+- [x] Sampling continuity: no 3 consecutive auto tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 30s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved (revised 2026-06-01)
