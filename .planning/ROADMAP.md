@@ -65,24 +65,29 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. A teacher can set and update recurring weekly availability slots; a student visiting that teacher's profile sees the available slots.
   2. A student can select a slot, initiate a booking (credits are reserved atomically), and the teacher sees the request in their dashboard to confirm or decline.
-  3. On confirmation, the teacher provides a Zoom/Meet link; the student can view the confirmed meeting link for their upcoming session.
+  3. On confirmation, the teacher provides a Google Meet link (auto-populated from their default_meet_link); the student sees "Join Lesson" when the link is set, or "Waiting for teacher" when not yet set.
   4. On session completion, reserved credits are consumed and the teacher's earnings are recorded atomically; on cancellation, reserved credits are returned to the student atomically.
   5. A student can purchase a credit package via Stripe Checkout and credits are granted automatically on successful payment (webhook is idempotent on `stripe_session_id`).
   6. A student can submit a star rating and comment after a completed session; the teacher's profile shows all reviews, average rating, and review count.
   7. A teacher can view their earnings history and submit a payout request; admin can view and mark payout requests as processed.
-**Plans**: 10 plans
+  8. Teachers receive 24h and 1h reminder emails before lessons (with urgent "add Meet link" prompt when meeting_link is missing).
+  9. Admin can see upcoming lessons missing a Meet link in a dedicated monitoring view.
+**Plans**: 13 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Phase 3 schema migration (availability tables, bookings columns, reviews constraint, credit RPCs) + type regen
-- [ ] 03-02-PLAN.md — Wave 0 RED test stubs (slots, availability, bookings, payments, webhook, reviews, earnings)
-- [ ] 03-03-PLAN.md — Availability: generateSlots utility, queries, Server Actions, teacher availability page
-- [ ] 03-04-PLAN.md — Stripe: install + createCheckoutSession action + webhook handler + student packages page buy buttons
-- [ ] 03-05-PLAN.md — Booking library: requestBooking/confirmBooking/declineBooking/markComplete/cancelBooking actions + queries + ICS utility
-- [ ] 03-06-PLAN.md — Teacher bookings page (confirm/decline/mark-complete UI with inline forms)
-- [ ] 03-07-PLAN.md — Student teacher profile: monthly calendar + slot picker + booking request form
-- [ ] 03-08-PLAN.md — Student bookings page + inline review forms + review data on teacher profile/cards
-- [ ] 03-09-PLAN.md — Teacher earnings page + requestPayout action + teacher nav update
-- [ ] 03-10-PLAN.md — Human verification checkpoint for all Phase 3 deliverables
+- [ ] 03-01-PLAN.md — Phase 3 schema migration: availability tables, default_meet_link, bookings columns, review constraint, credit RPCs + type regen
+- [ ] 03-02-PLAN.md — Wave 1 RED test stubs: slots, availability, bookings, payments, webhook, reviews, earnings, email service, cron
+- [ ] 03-03-PLAN.md — Availability: generateSlots utility, queries, Server Actions, teacher availability page + default_meet_link in onboarding/settings
+- [ ] 03-04-PLAN.md — Stripe: install + createCheckoutSession + webhook handler (idempotent) + student packages page buy buttons
+- [ ] 03-05-PLAN.md — Email service: Resend install + React Email templates + sendBookingConfirmation/sendMeetLinkAdded/sendTeacherReminder
+- [ ] 03-06-PLAN.md — Booking library: all 6 booking actions + queries + reviews + earnings + ICS route + i18n strings
+- [ ] 03-07-PLAN.md — Teacher bookings page: confirm/decline/mark-complete UI with Meet Link Status indicators + inline add/update
+- [ ] 03-08-PLAN.md — Student teacher profile: monthly calendar + slot picker + booking request form + review display
+- [ ] 03-09-PLAN.md — Student bookings page: Join Lesson/Waiting UX + inline review forms + credit balance display
+- [ ] 03-10-PLAN.md — Vercel Cron: hourly reminder Route Handler + vercel.json (idempotent via reminder_Xh_sent_at columns)
+- [ ] 03-11-PLAN.md — Teacher earnings page + requestPayout action + teacher nav update
+- [ ] 03-12-PLAN.md — Admin Missing Meet Links page + getMissingMeetLinks query + admin nav update
+- [ ] 03-13-PLAN.md — Human verification checkpoint for all Phase 3 deliverables
 
 ### Phase 4: Teacher Progression
 **Goal**: Teachers have visible tier badges, can apply for level promotion, and verified teachers rank higher in the directory.
@@ -103,7 +108,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Foundation | 4/5 | In Progress|  |
 | 2. Admin Portal | 7/7 | Complete   | 2026-05-30 |
-| 3. Core Transaction | 0/10 | Planned | - |
+| 3. Core Transaction | 0/13 | Planned | - |
 | 4. Teacher Progression | 0/? | Not started | - |
 
 ---
@@ -177,3 +182,4 @@ Plans:
 *Updated: 2026-05-28 — Phase 1 planned (5 plans across 3 waves)*
 *Updated: 2026-05-30 — Phase 2 planned (7 plans across 5 waves)*
 *Updated: 2026-05-31 — Phase 3 planned (10 plans across 5 waves)*
+*Updated: 2026-06-01 — Phase 3 replanned (13 plans across 5 waves) — added Google Meet link management, Resend email service, Vercel Cron reminders, admin missing-links view*
