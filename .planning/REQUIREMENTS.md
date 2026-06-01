@@ -53,11 +53,11 @@
 
 ### Payments (Stripe)
 
-- [ ] **PAY-01**: Student can view available credit packages with CHF prices
+- [x] **PAY-01**: Student can view available credit packages with CHF prices
 - [x] **PAY-02**: Student can purchase a credit package via Stripe Checkout (redirect flow)
 - [x] **PAY-03**: Credits are automatically granted to the student on successful Stripe payment (webhook, idempotent on `stripe_session_id`)
-- [ ] **PAY-04**: Student's current credit balance is displayed on their dashboard and packages page
-- [ ] **PAY-05**: Session credit cost matches the teacher's tier rate; deducted on completion
+- [x] **PAY-04**: Student's current credit balance is displayed on their dashboard and packages page
+- [x] **PAY-05**: Session credit cost matches the teacher's tier rate; deducted on completion
 
 ### Reviews
 
@@ -142,11 +142,11 @@
 | BOOK-07 | Phase 3 | Complete |
 | BOOK-08 | Phase 3 | Complete |
 | BOOK-09 | Phase 3 | Complete |
-| PAY-01 | Phase 3 | Pending |
+| PAY-01 | Phase 3 | Complete |
 | PAY-02 | Phase 3 | Complete |
 | PAY-03 | Phase 3 | Complete |
-| PAY-04 | Phase 3 | Pending |
-| PAY-05 | Phase 3 | Pending |
+| PAY-04 | Phase 3 | Complete |
+| PAY-05 | Phase 3 | Complete |
 | REV-01 | Phase 3 | Complete |
 | REV-02 | Phase 3 | Pending |
 | REV-03 | Phase 3 | Pending |

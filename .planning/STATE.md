@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-04-PLAN.md
-last_updated: "2026-06-01T14:00:12.559Z"
+stopped_at: Completed 03-03-PLAN.md
+last_updated: "2026-06-01T14:02:17.892Z"
 last_activity: 2026-05-29 — Plans 01-01, 01-02, 01-03 complete
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 25
-  completed_plans: 16
+  completed_plans: 17
   percent: 80
 ---
 
@@ -65,6 +65,7 @@ Progress: [████████░░] 80%
 | Phase 03-core-transaction P02 | 18 | 2 tasks | 11 files |
 | Phase 03-core-transaction P05 | 15 | 1 tasks | 6 files |
 | Phase 03-core-transaction P04 | 8 | 2 tasks | 1 files |
+| Phase 03-core-transaction P03 | 30 | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -102,6 +103,7 @@ Recent decisions affecting current work:
 - [Phase 03-core-transaction]: Stripe webhook test stubs mock constructEvent on Stripe SDK instance — auth guard 401 tests for CRON_SECRET are correctness requirements
 - [Phase 03-core-transaction]: Plan 03-05: Email function signatures use to/meetingLink/startTime-string to match 03-01 test stubs; hoursUntil optional in sendTeacherReminder
 - [Phase 03-core-transaction]: Plan 03-04: payments.test.ts needs mocks for @/lib/actions/locale and @/lib/i18n/server to prevent cookies() outside request scope in Jest — implementation is correct, tests must mock request-scope APIs
+- [Phase 03-core-transaction]: Plan 03-03: lib/storage/avatars.ts centralizes avatar upload helper (isValidAvatarFile + uploadAvatar) for reuse across onboarding and profile edit actions
 
 ### Pending Todos
 
@@ -115,6 +117,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-01T14:00:12.557Z
-Stopped at: Completed 03-04-PLAN.md
+Last session: 2026-06-01T14:02:17.889Z
+Stopped at: Completed 03-03-PLAN.md
 Resume file: None
