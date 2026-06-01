@@ -5,7 +5,7 @@ import { requireRole } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { sendBookingConfirmation, sendMeetLinkAdded } from "@/lib/services/email";
 
-export type BookingActionState = { error?: string };
+export type BookingActionState = { error?: string; success?: boolean };
 
 export async function requestBooking(
   _prev: BookingActionState,
@@ -54,7 +54,7 @@ export async function requestBooking(
   }
 
   revalidatePath("/", "layout");
-  return {};
+  return { success: true };
 }
 
 export async function confirmBooking(
@@ -187,6 +187,35 @@ export async function cancelBooking(
 
   const bookingId = String(formData.get("bookingId") ?? "").trim();
   if (!bookingId) return { error: "Missing booking ID." };
+
+  const { error } = await supabase.rpc("cancel_booking", {
+    p_booking_id: bookingId,
+  });
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/", "layout");
+  return {};
+}
+
+export async function cancelBookingAsTeacher(
+  _prev: BookingActionState,
+  formData: FormData,
+): Promise<BookingActionState> {
+  const profile = await requireRole("teacher");
+  const supabase = await createClient();
+
+  const bookingId = String(formData.get("bookingId") ?? "").trim();
+  if (!bookingId) return { error: "Missing booking ID." };
+
+  // Verify teacher owns this booking
+  const { data: teacher } = await supabase
+    .from("teachers")
+    .select("id")
+    .eq("profile_id", profile.id)
+    .maybeSingle();
+
+  if (!teacher) return { error: "Teacher record not found." };
 
   const { error } = await supabase.rpc("cancel_booking", {
     p_booking_id: bookingId,
