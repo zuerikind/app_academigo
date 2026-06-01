@@ -56,6 +56,7 @@ export async function getAdminTeachers() {
       `
       id,
       is_approved,
+      is_active,
       is_verified,
       teacher_level,
       created_at,
@@ -163,6 +164,29 @@ export async function getAdminPayouts() {
 
   if (error || !data) return [];
   return data;
+}
+
+// EARN-04/05 confirmed: this query reads rows inserted by requestPayout (lib/actions/earnings.ts).
+// requestPayout inserts: { teacher_id, amount_chf, status: 'pending' }
+// Column alignment verified in Phase 3 plan 03-11.
+export async function getPayoutRequests() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("payout_requests")
+    .select(
+      `
+      id,
+      teacher_id,
+      amount_chf,
+      status,
+      created_at,
+      teachers ( profiles ( full_name ) )
+    `,
+    )
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data ?? [];
 }
 
 export async function getAdminPromotions() {

@@ -71,6 +71,11 @@ export function getTeacherNav(dict: Dictionary, locale: Locale): NavItem[] {
       icon: "book",
     },
     {
+      label: dict.nav.teacher.earnings,
+      href: localizedPath(locale, "/teacher/earnings"),
+      icon: "coins",
+    },
+    {
       label: dict.nav.teacher.settings,
       href: localizedPath(locale, "/teacher/settings"),
       icon: "settings",
