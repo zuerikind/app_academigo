@@ -1,6 +1,6 @@
 # Phase 3: Core Transaction - Context
 
-**Gathered:** 2026-05-31
+**Gathered:** 2026-05-31 (updated 2026-06-01 — Google Meet link + email notifications added)
 **Status:** Ready for planning
 
 <domain>
@@ -43,9 +43,36 @@ Requirements: AVAIL-01, AVAIL-02, AVAIL-03, BOOK-01 through BOOK-09, PAY-01 thro
 
 ### Booking Flow — Teacher Side
 - Teacher sees pending requests on their **bookings page** (`/teacher/bookings`)
-- When teacher clicks **Confirm**, an inline form/field asks for the Zoom/Meet meeting link before submitting
+- When teacher clicks **Confirm**, the confirm form **auto-populates** the meeting link from the teacher's `default_meet_link` if set; teacher can override for that specific booking
+- If no `default_meet_link` is set: teacher sees a warning and must manually enter a link before confirming
 - Teacher can also **Decline** + optionally offer an alternative slot from their own current availability
 - After the session: teacher clicks **Mark complete** on the booking — this triggers the atomic RPC (credit deduction + earning record)
+
+### Meeting Link Management (Google Meet — MVP Approach)
+- Every teacher profile has a **`default_meet_link`** field (TEXT, nullable) — their personal Google Meet room URL
+- Teachers set `default_meet_link` during onboarding (new field on the onboarding form) or update it from their profile/settings page at any time
+- On booking confirmation: `meeting_link` on the booking is **auto-populated** from `default_meet_link`; teacher can **override** for that specific booking
+- On the teacher bookings page, each confirmed/upcoming booking shows a **Meet Link Status** indicator:
+  - "Meet Link Added" — green indicator
+  - "Meet Link Missing" — warning indicator with option to add link inline
+- Teachers can add/update the meeting link for an existing confirmed booking directly from their bookings page
+
+### Student Booking UX — Meet Link
+- On the **student bookings page** (`/student/bookings`), each confirmed/upcoming session shows either:
+  - **"Join Lesson"** button (active, links to meet URL) — when meeting_link is set
+  - **"Waiting for teacher"** (greyed out / disabled) — when meeting_link is not yet set
+
+### Email Notifications (now IN SCOPE — removed from deferred)
+- **Booking confirmation email** to student: sent when teacher confirms; includes the meet link if already set
+- **Meet link added email** to student: sent when teacher adds/updates the meeting link on a confirmed booking the student doesn't yet have a link for
+- **24-hour reminder email** to teacher: sent 24h before the lesson — if meet link is missing, the reminder is stronger ("Please add your Google Meet link before the lesson")
+- **1-hour reminder email** to teacher: if meet link is still missing 1h before the lesson, send a final reminder
+- Email service: **Resend** (transactional, developer-friendly, integrates with React Email templates)
+- Reminder emails are triggered by a **Vercel Cron** job that runs every hour and checks upcoming lessons
+
+### Admin View — Lesson Monitoring
+- Admin can see a **"Missing Meet Links"** section on the admin dashboard or a dedicated page
+- Shows: upcoming lessons where `meeting_link IS NULL`, sorted by date, with teacher name and student name
 
 ### Credit Packages (Stripe)
 - **Three tiers** are offered:
@@ -127,13 +154,15 @@ Requirements: AVAIL-01, AVAIL-02, AVAIL-03, BOOK-01 through BOOK-09, PAY-01 thro
 
 - Double slots (100-min sessions) — noted for later in phase or v2
 - Real-time slot refresh if another student books while browsing — not required for v1
-- Email notifications on booking request/confirmation — v2 (NOTIF-01/02)
 - Stripe Billing Portal for subscription cancellation/management — noted; Claude handles minimal implementation for v1
 - Structured IBAN/bank fields for teacher payout info — v2 (PAYOUT-01); payout_info_placeholder freetext used for now
+- **Phase 2 upgrade path**: Google Calendar API integration to auto-create events with Meet links
+- **Phase 3 upgrade path**: Automatic Meet link creation via Google Meet API (the `default_meet_link` column intentionally stores a plain URL to be replaced by a generated URL later without schema changes)
+- Student booking request confirmation email (NOTIF-01) — kept deferred; confirmation email triggers on *teacher confirm*, not on request
 
 </deferred>
 
 ---
 
 *Phase: 03-core-transaction*
-*Context gathered: 2026-05-31*
+*Context gathered: 2026-05-31, updated 2026-06-01 with Google Meet link MVP + Resend email notifications*
