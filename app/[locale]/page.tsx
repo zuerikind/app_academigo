@@ -16,7 +16,7 @@ import {
   buildSubjectCatalog,
   formatSubjectList,
 } from "@/lib/i18n/subject-catalog";
-import { getSubjects } from "@/lib/queries/subjects";
+import { getSubjects, getSubjectSlugsWithApprovedTeachers } from "@/lib/queries/subjects";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -27,8 +27,11 @@ export default async function HomePage({ params }: Props) {
   const dict = getDictionary(raw);
   const p = dict.home.portal;
   const c = dict.common;
-  const subjects = await getSubjects();
-  const subjectItems = buildSubjectCatalog(dict, subjects);
+  const [subjects, teacherSlugs] = await Promise.all([
+    getSubjects(),
+    getSubjectSlugsWithApprovedTeachers(),
+  ]);
+  const subjectItems = buildSubjectCatalog(dict, subjects, teacherSlugs);
   const subjectLabels = subjectItems.map((s) => s.label);
   const footerTagline = formatMessage(p.footerTagline, {
     subjects: formatSubjectList(subjectLabels, locale),

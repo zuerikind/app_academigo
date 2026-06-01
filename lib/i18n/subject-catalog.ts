@@ -1,8 +1,4 @@
-import {
-  ACTIVE_SUBJECT_SLUGS,
-  SUBJECT_SLUGS,
-  type SubjectSlug,
-} from "@/config/subjects";
+import { SUBJECT_SLUGS, type SubjectSlug } from "@/config/subjects";
 import { translateSubjectName } from "@/lib/i18n/subjects";
 import type { Subject } from "@/lib/types";
 import type { Dictionary } from "@/messages/types";
@@ -10,27 +6,21 @@ import type { Dictionary } from "@/messages/types";
 export type SubjectDisplayItem = {
   slug: SubjectSlug;
   label: string;
-  comingSoon: boolean;
+  hasTeachers: boolean;
 };
 
 export function buildSubjectCatalog(
   dict: Dictionary,
   dbSubjects: Subject[] = [],
+  teacherSlugs: Set<string> = new Set(),
 ): SubjectDisplayItem[] {
   const bySlug = new Map(dbSubjects.map((s) => [s.slug, s]));
 
-  return SUBJECT_SLUGS.map((slug) => {
-    const row = bySlug.get(slug);
-    const comingSoon =
-      row?.is_coming_soon ??
-      !ACTIVE_SUBJECT_SLUGS.includes(slug as SubjectSlug);
-
-    return {
-      slug,
-      label: translateSubjectName(dict, slug, row?.name ?? slug),
-      comingSoon,
-    };
-  });
+  return SUBJECT_SLUGS.map((slug) => ({
+    slug,
+    label: translateSubjectName(dict, slug, bySlug.get(slug)?.name ?? slug),
+    hasTeachers: teacherSlugs.has(slug),
+  }));
 }
 
 export function formatSubjectList(

@@ -163,8 +163,8 @@ export const de = {
         title: "Das Wichtigste",
         subjects: {
           title: "Fächer",
-          desc: "Wir decken das gesamte Spektrum der Schweizer Schulfächer ab — MINT, Sprachen, Geisteswissenschaften, Kunst und Sport.",
-          availableNow: "Jetzt verfügbar",
+          desc: "Grüne Badges zeigen Fächer mit freigegebenen Lehrpersonen, die du heute buchen kannst. Graue Badges sind in Vorbereitung.",
+          availableNow: "Lehrpersonen verfügbar",
           comingSoon: "Demnächst",
         },
         locations: {
@@ -256,8 +256,8 @@ export const de = {
       eyebrow: "Fächer",
       title: "Alle Fächer, die wir anbieten",
       description:
-        "Von Mathematik und Physik über Sprachen und Geisteswissenschaften bis zu Kunst und Sport — Nachhilfe für den gesamten Schweizer Schulstoff.",
-      active: "Jetzt verfügbar",
+        "Grüne Badges bedeuten, dass eine freigegebene Lehrperson für dieses Fach bereitsteht. Wir decken den gesamten Schweizer Schulstoff ab.",
+      active: "Lehrpersonen verfügbar",
       soon: "Demnächst",
     },
   },

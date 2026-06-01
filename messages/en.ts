@@ -165,8 +165,8 @@ export const en: Dictionary = {
         title: "What you need to know",
         subjects: {
           title: "Subjects",
-          desc: "We cover the full range of Swiss school subjects — STEM, languages, humanities, arts, and sports.",
-          availableNow: "Available now",
+          desc: "Green badges show subjects with approved teachers you can book today. Gray badges are on our roadmap.",
+          availableNow: "Teachers available",
           comingSoon: "Coming soon",
         },
         locations: {
@@ -258,8 +258,8 @@ export const en: Dictionary = {
       eyebrow: "Subjects",
       title: "All subjects we offer",
       description:
-        "From Mathematics and Physics to Languages, Humanities, Arts, and Sports — tutoring across the full Swiss school curriculum.",
-      active: "Available now",
+        "Green badges mean an approved teacher is ready to teach that subject. We cover the full Swiss school curriculum.",
+      active: "Teachers available",
       soon: "Coming soon",
     },
   },

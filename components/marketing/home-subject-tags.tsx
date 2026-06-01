@@ -15,15 +15,15 @@ export function HomeSubjectTags({
   comingSoonLabel,
   compact = false,
 }: Props) {
-  const available = items.filter((s) => !s.comingSoon);
-  const comingSoon = items.filter((s) => s.comingSoon);
+  const available = items.filter((s) => s.hasTeachers);
+  const comingSoon = items.filter((s) => !s.hasTeachers);
 
   if (compact) {
     return (
       <ul className="flex flex-wrap justify-center gap-2">
-        {items.map(({ slug, label, comingSoon: soon }) => (
+        {items.map(({ slug, label, hasTeachers }) => (
           <li key={slug}>
-            <Badge variant={soon ? "muted" : "verified"} size="sm">
+            <Badge variant={hasTeachers ? "verified" : "muted"} size="sm">
               {label}
             </Badge>
           </li>

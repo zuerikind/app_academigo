@@ -25,10 +25,3 @@ export const SUBJECT_SLUGS = [
 ] as const;
 
 export type SubjectSlug = (typeof SUBJECT_SLUGS)[number];
-
-/** Slugs that are live on the platform (others are coming soon). */
-export const ACTIVE_SUBJECT_SLUGS: readonly SubjectSlug[] = [
-  "mathematics",
-  "physics",
-  "chemistry",
-];
