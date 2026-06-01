@@ -49,10 +49,14 @@ export async function completeStudentOnboarding(
   const supabase = await createClient();
   const data = parsed.data;
 
-  await supabase
+  const { error: profileError } = await supabase
     .from("profiles")
     .update({ full_name: data.fullName, onboarding_completed: true })
     .eq("id", profile.id);
+  if (profileError) {
+    console.error("student profile update failed:", profileError.message);
+    return { error: dict.student.onboarding.errors.saveFailed };
+  }
 
   const { data: existing } = await supabase
     .from("students")
@@ -60,28 +64,33 @@ export async function completeStudentOnboarding(
     .eq("profile_id", profile.id)
     .maybeSingle();
 
+  const studentPayload = {
+    school_level: data.schoolLevel,
+    learning_goal: data.learningGoal,
+    preferred_language: data.preferredLanguage,
+    preferred_modality: data.preferredModality,
+    preferred_subject_id: data.preferredSubjectId,
+    notes: data.notes ?? null,
+  };
+
   if (existing) {
-    await supabase
+    const { error: studentError } = await supabase
       .from("students")
-      .update({
-        school_level: data.schoolLevel,
-        learning_goal: data.learningGoal,
-        preferred_language: data.preferredLanguage,
-        preferred_modality: data.preferredModality,
-        preferred_subject_id: data.preferredSubjectId,
-        notes: data.notes ?? null,
-      })
+      .update(studentPayload)
       .eq("id", existing.id);
+    if (studentError) {
+      console.error("student onboarding update failed:", studentError.message);
+      return { error: dict.student.onboarding.errors.saveFailed };
+    }
   } else {
-    await supabase.from("students").insert({
+    const { error: studentError } = await supabase.from("students").insert({
       profile_id: profile.id,
-      school_level: data.schoolLevel,
-      learning_goal: data.learningGoal,
-      preferred_language: data.preferredLanguage,
-      preferred_modality: data.preferredModality,
-      preferred_subject_id: data.preferredSubjectId,
-      notes: data.notes ?? null,
+      ...studentPayload,
     });
+    if (studentError) {
+      console.error("student onboarding insert failed:", studentError.message);
+      return { error: dict.student.onboarding.errors.saveFailed };
+    }
   }
 
   revalidatePath("/", "layout");
@@ -176,20 +185,23 @@ export async function completeTeacherOnboarding(
       .from("avatars")
       .upload(path, avatarFile, { upsert: true });
 
-    if (!uploadError) {
-      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
-      avatarUrl = urlData.publicUrl;
+    if (uploadError) {
+      console.error("teacher avatar upload failed:", uploadError.message);
+      return { error: dict.teacher.onboarding.errors.avatarUploadFailed };
     }
+
+    const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+    avatarUrl = urlData.publicUrl;
   }
 
-  await supabase
+  const { error: nameError } = await supabase
     .from("profiles")
-    .update({
-      full_name: data.fullName,
-      avatar_url: avatarUrl,
-      onboarding_completed: true,
-    })
+    .update({ full_name: data.fullName, avatar_url: avatarUrl })
     .eq("id", profile.id);
+  if (nameError) {
+    console.error("teacher profile name update failed:", nameError.message);
+    return { error: dict.teacher.onboarding.errors.saveFailed };
+  }
 
   const { data: existing } = await supabase
     .from("teachers")
@@ -209,27 +221,66 @@ export async function completeTeacherOnboarding(
     location: data.offersInPerson ? data.location ?? null : null,
     languages,
     payout_info_placeholder: payoutInfo ?? null,
-    default_meet_link: data.defaultMeetLink || null,
     is_approved: false,
   };
 
   if (existing) {
-    await supabase.from("teachers").update(teacherPayload).eq("id", existing.id);
+    const { error: updateError } = await supabase
+      .from("teachers")
+      .update(teacherPayload)
+      .eq("id", existing.id);
+    if (updateError) {
+      console.error("teacher onboarding update failed:", updateError.message);
+      return { error: dict.teacher.onboarding.errors.saveFailed };
+    }
     teacherId = existing.id;
   } else {
-    const { data: created } = await supabase
+    const { data: created, error: insertError } = await supabase
       .from("teachers")
       .insert({ profile_id: profile.id, ...teacherPayload })
       .select("id")
       .single();
-    teacherId = created?.id;
+    if (insertError || !created) {
+      console.error("teacher onboarding insert failed:", insertError?.message);
+      return { error: dict.teacher.onboarding.errors.saveFailed };
+    }
+    teacherId = created.id;
   }
 
-  if (teacherId) {
-    await supabase.from("teacher_subjects").delete().eq("teacher_id", teacherId);
-    await supabase.from("teacher_subjects").insert(
-      data.subjectIds.map((subject_id) => ({ teacher_id: teacherId!, subject_id })),
-    );
+  if (data.defaultMeetLink) {
+    const { error: meetLinkError } = await supabase
+      .from("teachers")
+      .update({ default_meet_link: data.defaultMeetLink })
+      .eq("id", teacherId);
+    if (meetLinkError) {
+      console.error("teacher default_meet_link update failed:", meetLinkError.message);
+    }
+  }
+
+  const { error: subjectsDeleteError } = await supabase
+    .from("teacher_subjects")
+    .delete()
+    .eq("teacher_id", teacherId);
+  if (subjectsDeleteError) {
+    console.error("teacher subjects delete failed:", subjectsDeleteError.message);
+    return { error: dict.teacher.onboarding.errors.saveFailed };
+  }
+
+  const { error: subjectsInsertError } = await supabase
+    .from("teacher_subjects")
+    .insert(data.subjectIds.map((subject_id) => ({ teacher_id: teacherId!, subject_id })));
+  if (subjectsInsertError) {
+    console.error("teacher subjects insert failed:", subjectsInsertError.message);
+    return { error: dict.teacher.onboarding.errors.saveFailed };
+  }
+
+  const { error: profileError } = await supabase
+    .from("profiles")
+    .update({ onboarding_completed: true, avatar_url: avatarUrl })
+    .eq("id", profile.id);
+  if (profileError) {
+    console.error("teacher profile completion failed:", profileError.message);
+    return { error: dict.teacher.onboarding.errors.saveFailed };
   }
 
   revalidatePath("/", "layout");

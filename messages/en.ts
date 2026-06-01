@@ -403,6 +403,8 @@ export const en: Dictionary = {
       ],
       errors: {
         required: "Please fill in all required fields.",
+        saveFailed:
+          "Your information could not be saved. Please try again or contact support.",
       },
     },
     dashboard: {
@@ -495,6 +497,10 @@ export const en: Dictionary = {
       errors: {
         required:
           "Please complete all required fields and select at least one subject.",
+        saveFailed:
+          "Your profile could not be saved. Please try again or contact support.",
+        avatarUploadFailed:
+          "Your profile photo could not be uploaded. Try a smaller image or continue without a photo.",
       },
     },
     dashboard: {

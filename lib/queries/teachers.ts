@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import type { TeacherListItem } from "@/lib/types";
 
 type TeacherRow = {
@@ -34,7 +34,7 @@ function mapTeacher(row: TeacherRow): TeacherListItem {
 }
 
 export async function getApprovedTeachers(): Promise<TeacherListItem[]> {
-  const supabase = await createClient();
+  const supabase = createServiceClient();
 
   const { data, error } = await supabase
     .from("teachers")
@@ -61,7 +61,7 @@ export async function getApprovedTeachers(): Promise<TeacherListItem[]> {
 export async function getTeacherById(
   teacherId: string,
 ): Promise<TeacherListItem | null> {
-  const supabase = await createClient();
+  const supabase = createServiceClient();
 
   const { data, error } = await supabase
     .from("teachers")
@@ -96,7 +96,7 @@ export type TeacherProfileDetail = TeacherListItem & {
 export async function getTeacherProfileDetail(
   teacherId: string,
 ): Promise<TeacherProfileDetail | null> {
-  const supabase = await createClient();
+  const supabase = createServiceClient();
 
   const { data, error } = await supabase
     .from("teachers")

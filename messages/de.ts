@@ -403,6 +403,8 @@ export const de = {
       ],
       errors: {
         required: "Bitte fülle alle Pflichtfelder aus.",
+        saveFailed:
+          "Deine Angaben konnten nicht gespeichert werden. Bitte versuche es erneut oder kontaktiere uns.",
       },
     },
     dashboard: {
@@ -496,6 +498,10 @@ export const de = {
       errors: {
         required:
           "Bitte fülle alle Pflichtfelder aus und wähle mindestens ein Fach.",
+        saveFailed:
+          "Dein Profil konnte nicht gespeichert werden. Bitte versuche es erneut oder kontaktiere den Support.",
+        avatarUploadFailed:
+          "Dein Profilfoto konnte nicht hochgeladen werden. Versuche ein kleineres Bild oder fahre ohne Foto fort.",
       },
     },
     dashboard: {

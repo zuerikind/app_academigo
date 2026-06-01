@@ -189,6 +189,7 @@ export function TeacherOnboardingForm({
             <input
               type="checkbox"
               name="offersOnline"
+              value="on"
               defaultChecked
               className="h-3.5 w-3.5 rounded border-academy-line accent-academy-navy"
             />
@@ -198,6 +199,7 @@ export function TeacherOnboardingForm({
             <input
               type="checkbox"
               name="offersInPerson"
+              value="on"
               className="h-3.5 w-3.5 rounded border-academy-line accent-academy-navy"
             />
             {t.offersInPerson}
