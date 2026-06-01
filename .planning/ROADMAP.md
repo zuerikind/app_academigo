@@ -108,7 +108,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Foundation | 4/5 | In Progress|  |
 | 2. Admin Portal | 7/7 | Complete   | 2026-05-30 |
-| 3. Core Transaction | 7/13 | In Progress|  |
+| 3. Core Transaction | 8/13 | In Progress|  |
 | 4. Teacher Progression | 0/? | Not started | - |
 
 ---
