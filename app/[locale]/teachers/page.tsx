@@ -4,6 +4,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { Section } from "@/components/ui/section";
 import { TeacherCard } from "@/components/teachers/teacher-card";
+import { TeacherOpeningsSection } from "@/components/teachers/teacher-openings-section";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { localizedPath } from "@/lib/i18n/path";
@@ -28,7 +29,9 @@ export default async function TeachersPage({ params }: Props) {
           size="lg"
         />
 
-        <div className="mt-12">
+        <TeacherOpeningsSection dict={dict} locale={raw} />
+
+        <div className="mt-14 lg:mt-16">
           {teachers.length === 0 ? (
             <EmptyState
               icon="users"
