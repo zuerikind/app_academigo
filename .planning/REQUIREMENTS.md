@@ -62,14 +62,14 @@
 ### Reviews
 
 - [x] **REV-01**: Student can submit a star rating (1–5) and optional comment after a completed session
-- [ ] **REV-02**: Teacher profile displays all reviews with individual ratings and comments
-- [ ] **REV-03**: Teacher profile displays average rating and total review count
-- [ ] **REV-04**: Teacher cards in the directory display average star rating and review count
+- [x] **REV-02**: Teacher profile displays all reviews with individual ratings and comments
+- [x] **REV-03**: Teacher profile displays average rating and total review count
+- [x] **REV-04**: Teacher cards in the directory display average star rating and review count
 
 ### Earnings and Payouts
 
 - [x] **EARN-01**: Teacher earnings (CHF amount) are automatically recorded per completed session
-- [ ] **EARN-02**: Teacher can view their earnings history on a dedicated page
+- [x] **EARN-02**: Teacher can view their earnings history on a dedicated page
 - [x] **EARN-03**: Teacher can submit a payout request from their dashboard
 - [x] **EARN-04**: Admin can view all pending payout requests with teacher and amount details
 - [x] **EARN-05**: Admin can mark a payout request as processed (with optional reference note)
@@ -148,11 +148,11 @@
 | PAY-04 | Phase 3 | Complete |
 | PAY-05 | Phase 3 | Complete |
 | REV-01 | Phase 3 | Complete |
-| REV-02 | Phase 3 | Pending |
-| REV-03 | Phase 3 | Pending |
-| REV-04 | Phase 3 | Pending |
+| REV-02 | Phase 3 | Complete |
+| REV-03 | Phase 3 | Complete |
+| REV-04 | Phase 3 | Complete |
 | EARN-01 | Phase 3 | Complete |
-| EARN-02 | Phase 3 | Pending |
+| EARN-02 | Phase 3 | Complete |
 | EARN-03 | Phase 3 | Complete |
 | EARN-04 | Phase 3 | Complete |
 | EARN-05 | Phase 3 | Complete |

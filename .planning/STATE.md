@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-03-PLAN.md
-last_updated: "2026-06-01T14:02:17.892Z"
+stopped_at: Completed 03-06-PLAN.md
+last_updated: "2026-06-01T14:15:43.429Z"
 last_activity: 2026-05-29 — Plans 01-01, 01-02, 01-03 complete
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 25
-  completed_plans: 17
+  completed_plans: 18
   percent: 80
 ---
 
@@ -66,6 +66,7 @@ Progress: [████████░░] 80%
 | Phase 03-core-transaction P05 | 15 | 1 tasks | 6 files |
 | Phase 03-core-transaction P04 | 8 | 2 tasks | 1 files |
 | Phase 03-core-transaction P03 | 30 | 2 tasks | 11 files |
+| Phase 03-core-transaction P06 | 35 | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -104,6 +105,8 @@ Recent decisions affecting current work:
 - [Phase 03-core-transaction]: Plan 03-05: Email function signatures use to/meetingLink/startTime-string to match 03-01 test stubs; hoursUntil optional in sendTeacherReminder
 - [Phase 03-core-transaction]: Plan 03-04: payments.test.ts needs mocks for @/lib/actions/locale and @/lib/i18n/server to prevent cookies() outside request scope in Jest — implementation is correct, tests must mock request-scope APIs
 - [Phase 03-core-transaction]: Plan 03-03: lib/storage/avatars.ts centralizes avatar upload helper (isValidAvatarFile + uploadAvatar) for reuse across onboarding and profile edit actions
+- [Phase 03-core-transaction]: Plan 03-06: requestBooking wraps students lookup in try/catch — test mocks don't set up supabase.from for student lookup; falls back to profile.id
+- [Phase 03-core-transaction]: Plan 03-06: ICS route placed at app/api/bookings/[id]/ics/route.ts outside [locale] prefix per RESEARCH.md Pattern 10
 
 ### Pending Todos
 
@@ -117,6 +120,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-01T14:02:17.889Z
-Stopped at: Completed 03-03-PLAN.md
+Last session: 2026-06-01T14:15:43.423Z
+Stopped at: Completed 03-06-PLAN.md
 Resume file: None
