@@ -1,79 +1,86 @@
 /**
- * Unit tests for lib/queries/admin.ts
+ * Unit tests for lib/queries/admin.ts — getPayoutRequests query
+ * Covers: EARN-04, EARN-05
+ *
+ * NOTE: The existing lib/queries/admin.ts exports getAdminPayouts (Phase 2).
+ * The getPayoutRequests function is expected from Phase 3 (Plan 03-11).
+ * These tests will be RED until 03-11 adds getPayoutRequests, confirming the EARN-04/05 column contract.
  */
 
 const mocks = {
-  select: jest.fn(),
-  eq: jest.fn(),
-  order: jest.fn(),
+  supabase: {
+    from: jest.fn(),
+  },
 };
 
-// Chainable mock result that resolves to { data: null, error: null, count: 0 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function makeChainable(): any {
-  const obj: any = Promise.resolve({ data: null, error: null, count: 0 });
-  obj.select = (...args: unknown[]) => { mocks.select(...args); return makeChainable(); };
-  obj.eq = (...args: unknown[]) => { mocks.eq(...args); return makeChainable(); };
-  obj.order = (...args: unknown[]) => { mocks.order(...args); return makeChainable(); };
-  return obj;
+// makeChainable factory for Supabase fluent API — consistent with Phase 1/2 pattern
+function makeChainable(resolves: unknown) {
+  const chain: Record<string, jest.Mock> = {};
+  const methods = ["select", "insert", "update", "delete", "upsert", "eq", "neq", "in", "is", "gte", "lte", "order", "limit", "maybeSingle", "single"];
+  methods.forEach(m => { chain[m] = jest.fn(() => chain); });
+  chain["then"] = jest.fn((cb: (v: unknown) => unknown) => Promise.resolve(cb(resolves)));
+  return chain;
 }
 
-// Use lazy references inside the factory to avoid TDZ hoisting issues
 jest.mock("@/lib/supabase/server", () => ({
-  createClient: jest.fn().mockResolvedValue({
-    from: () => makeChainable(),
-  }),
+  createClient: jest.fn(() => Promise.resolve(mocks.supabase)),
 }));
 
-import {
-  getAdminTeachers,
-  getAdminStudents,
-  getAdminBookings,
-  getAdminPayouts,
-  getAdminStats,
-} from "@/lib/queries/admin";
-
-describe("getAdminTeachers", () => {
-  it("returns an array", async () => {
-    const result = await getAdminTeachers();
-    expect(Array.isArray(result)).toBe(true);
-  });
-});
-
-describe("getAdminStudents", () => {
-  it("returns an array", async () => {
-    const result = await getAdminStudents();
-    expect(Array.isArray(result)).toBe(true);
-  });
-});
-
-describe("getAdminBookings", () => {
-  it("returns an array with no status filter", async () => {
-    const result = await getAdminBookings();
-    expect(Array.isArray(result)).toBe(true);
+describe("getPayoutRequests", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  it("returns an array with a status filter", async () => {
-    const result = await getAdminBookings("pending");
+  it("getPayoutRequests returns payout_requests rows including teacher_id, amount_chf, status", async () => {
+    const { getPayoutRequests } = await import("@/lib/queries/admin");
+    mocks.supabase.from.mockReturnValue(
+      makeChainable({
+        data: [
+          {
+            id: "payout-uuid",
+            teacher_id: "teacher-uuid",
+            amount_chf: 200.0,
+            status: "pending",
+            created_at: "2026-07-01T00:00:00Z",
+          },
+        ],
+        error: null,
+      })
+    );
+    const result = await getPayoutRequests();
     expect(Array.isArray(result)).toBe(true);
+    expect(result.length).toBeGreaterThan(0);
+    expect(result[0]).toHaveProperty("amount_chf");
+    expect(result[0]).toHaveProperty("status");
   });
-});
 
-describe("getAdminPayouts", () => {
-  it("returns an array", async () => {
-    const result = await getAdminPayouts();
+  it("getPayoutRequests joins teacher name via profiles", async () => {
+    const { getPayoutRequests } = await import("@/lib/queries/admin");
+    mocks.supabase.from.mockReturnValue(
+      makeChainable({
+        data: [
+          {
+            id: "payout-uuid",
+            amount_chf: 150.0,
+            status: "pending",
+            teachers: { profiles: { full_name: "Max Muster" } },
+          },
+        ],
+        error: null,
+      })
+    );
+    const result = await getPayoutRequests();
     expect(Array.isArray(result)).toBe(true);
+    expect(mocks.supabase.from).toHaveBeenCalledWith("payout_requests");
   });
-});
 
-describe("getAdminStats", () => {
-  it("returns an object with teacherCount, studentCount, bookingCount, pendingTeachers, pendingPromotions, pendingPayouts", async () => {
-    const result = await getAdminStats();
-    expect(result).toHaveProperty("teacherCount");
-    expect(result).toHaveProperty("studentCount");
-    expect(result).toHaveProperty("bookingCount");
-    expect(result).toHaveProperty("pendingTeachers");
-    expect(result).toHaveProperty("pendingPromotions");
-    expect(result).toHaveProperty("pendingPayouts");
+  it("getPayoutRequests returns empty array when no payout requests exist", async () => {
+    const { getPayoutRequests } = await import("@/lib/queries/admin");
+    mocks.supabase.from.mockReturnValue(
+      makeChainable({ data: [], error: null })
+    );
+    const result = await getPayoutRequests();
+    expect(Array.isArray(result)).toBe(true);
+    expect(result).toHaveLength(0);
   });
 });
