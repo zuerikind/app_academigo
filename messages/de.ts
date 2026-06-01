@@ -3,7 +3,7 @@ export const de = {
     title: "Academigo — Premium-Nachhilfe online",
     titleTemplate: "%s | Academigo",
     description:
-      "Finde geprüfte Tutoren, buche Lektionen und erreiche deine Lernziele mit Academigo.",
+      "Finde geprüfte Tutoren in 22 Schulfächern, buche Lektionen und erreiche deine Lernziele mit Academigo.",
   },
   common: {
     brand: "Academigo",
@@ -143,14 +143,15 @@ export const de = {
       title: "Persönliche Förderung trifft",
       titleHighlight: "digitale Lernbegleitung.",
       subtitle:
-        "22 Schulfächer — von Mathematik und Physik über Sprachen und Geisteswissenschaften bis zu Kunst und Sport. Finde die passende Lehrperson, buche Lektionen und lerne mit einer Plattform, die dich zwischen den Stunden unterstützt.",
+        "Finde die passende Lehrperson in allen Fächern, die wir anbieten, buche Lektionen und lerne mit einer Plattform, die dich zwischen den Stunden unterstützt.",
       learnMore: "Mehr auf academigo.xyz",
       browseTeachers: "Lehrpersonen ansehen",
+      footerTagline: "{subjects}. Online und in Zürich.",
       stepsSection: {
         eyebrow: "Erste Schritte",
         title: "So funktioniert die Registrierung",
         description:
-          "Folge den Schritten für deine Rolle — als Schüler:in oder als Lehrperson.",
+          "Folge den Schritten für deine Rolle — als Schüler:in oder Lehrperson in allen {count} Fächern, die wir anbieten.",
       },
       authAside: {
         eyebrow: "Academigo Plattform",
@@ -240,7 +241,8 @@ export const de = {
       },
       cta: {
         title: "Bereit loszulegen?",
-        subtitle: "Melde dich an oder erstelle ein neues Konto.",
+        subtitle:
+          "Melde dich an oder erstelle ein Konto, um eine Lehrperson für eines unserer {count} Fächer zu finden — {subjects}.",
       },
     },
     trust: {
@@ -248,13 +250,15 @@ export const de = {
       locations: "Online und in Zürich",
       support: "Individuelle Betreuung",
       platform: "Eigene Lernplattform",
-      subjects: "Aktuell: Mathematik, Physik, Chemie",
+      subjects: "22 Schulfächer",
     },
     subjects: {
       eyebrow: "Fächer",
-      title: "Verfügbare Fächer",
-      active: "Jetzt buchbar",
-      soon: "In Vorbereitung",
+      title: "Alle Fächer, die wir anbieten",
+      description:
+        "Von Mathematik und Physik über Sprachen und Geisteswissenschaften bis zu Kunst und Sport — Nachhilfe für den gesamten Schweizer Schulstoff.",
+      active: "Jetzt verfügbar",
+      soon: "Demnächst",
     },
   },
   teachers: {

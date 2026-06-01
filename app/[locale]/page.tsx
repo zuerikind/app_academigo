@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { HomeHero } from "@/components/marketing/home-hero";
 import { HomeKeyFacts } from "@/components/marketing/home-key-facts";
 import { HomeRegistrationSteps } from "@/components/marketing/home-registration-steps";
+import { HomeSubjectsShowcase } from "@/components/marketing/home-subjects-showcase";
 import { PublicLayout } from "@/components/layout/public-layout";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
@@ -9,8 +10,12 @@ import { SectionHeader } from "@/components/ui/page-header";
 import { siteConfig } from "@/config/site";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { formatMessage } from "@/lib/i18n/format";
 import { localizedPath } from "@/lib/i18n/path";
-import { translateSubjectName } from "@/lib/i18n/subjects";
+import {
+  buildSubjectCatalog,
+  formatSubjectList,
+} from "@/lib/i18n/subject-catalog";
 import { getSubjects } from "@/lib/queries/subjects";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -23,14 +28,20 @@ export default async function HomePage({ params }: Props) {
   const p = dict.home.portal;
   const c = dict.common;
   const subjects = await getSubjects();
-  const subjectItems = subjects.map((s) => ({
-    label: translateSubjectName(dict, s.slug, s.name),
-    comingSoon: s.is_coming_soon,
-  }));
+  const subjectItems = buildSubjectCatalog(dict, subjects);
+  const subjectLabels = subjectItems.map((s) => s.label);
+  const footerTagline = formatMessage(p.footerTagline, {
+    subjects: formatSubjectList(subjectLabels, locale),
+    count: String(subjectItems.length),
+  });
 
   return (
-    <PublicLayout locale={raw}>
-      <HomeHero />
+    <PublicLayout locale={raw} footerTagline={footerTagline}>
+      <HomeHero subjectItems={subjectItems} />
+
+      <Section width="wide" pad="default">
+        <HomeSubjectsShowcase dict={dict} subjectItems={subjectItems} />
+      </Section>
 
       <Section width="wide" pad="default">
         <HomeKeyFacts dict={dict} subjectItems={subjectItems} />
@@ -40,7 +51,9 @@ export default async function HomePage({ params }: Props) {
         <SectionHeader
           eyebrow={p.stepsSection.eyebrow}
           title={p.stepsSection.title}
-          description={p.stepsSection.description}
+          description={formatMessage(p.stepsSection.description, {
+            count: String(subjectItems.length),
+          })}
           className="mb-10 max-w-none sm:mb-12"
         />
         <HomeRegistrationSteps dict={dict} locale={locale} />
@@ -56,7 +69,10 @@ export default async function HomePage({ params }: Props) {
             <div className="lg:col-span-7">
               <h2 className="text-display text-white">{p.cta.title}</h2>
               <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-white/70">
-                {p.cta.subtitle}
+                {formatMessage(p.cta.subtitle, {
+                  subjects: formatSubjectList(subjectLabels, locale),
+                  count: String(subjectItems.length),
+                })}
               </p>
             </div>
             <div className="flex flex-col gap-3 lg:col-span-5">

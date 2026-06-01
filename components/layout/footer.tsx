@@ -10,9 +10,11 @@ import type { Dictionary } from "@/messages/types";
 export function Footer({
   locale,
   dict,
+  tagline,
 }: {
   locale: Locale;
   dict: Dictionary;
+  tagline?: string;
 }) {
   const c = dict.common;
 
@@ -55,8 +57,8 @@ export function Footer({
               label={c.brand}
               layout="stacked"
             />
-            <p className="mt-5 max-w-xs text-[13.5px] leading-relaxed text-white/65">
-              {c.footerTagline}
+            <p className="mt-5 max-w-md text-[13.5px] leading-relaxed text-white/65">
+              {tagline ?? c.footerTagline}
             </p>
             <p className="mt-3 text-[12.5px] text-white/45">{c.footerLocation}</p>
           </div>

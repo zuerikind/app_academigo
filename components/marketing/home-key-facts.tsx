@@ -1,23 +1,20 @@
 import { AppIcon } from "@/components/icons/app-icon";
-import { Badge } from "@/components/ui/badge";
+import { HomeSubjectTags } from "@/components/marketing/home-subject-tags";
 import { SectionHeader } from "@/components/ui/page-header";
+import type { SubjectDisplayItem } from "@/lib/i18n/subject-catalog";
 import type { Dictionary } from "@/messages/types";
 import type { IconName } from "@/lib/icons";
 
 const factIcons: IconName[] = ["mapPin", "coins", "award"];
-
-type SubjectItem = { label: string; comingSoon: boolean };
 
 export function HomeKeyFacts({
   dict,
   subjectItems,
 }: {
   dict: Dictionary;
-  subjectItems: SubjectItem[];
+  subjectItems: SubjectDisplayItem[];
 }) {
   const k = dict.home.portal.keyFacts;
-  const available = subjectItems.filter((s) => !s.comingSoon);
-  const comingSoon = subjectItems.filter((s) => s.comingSoon);
   const otherFacts = [k.locations, k.pricing, k.teachers];
 
   return (
@@ -38,36 +35,13 @@ export function HomeKeyFacts({
         <p className="mt-2 max-w-3xl text-[13.5px] leading-relaxed text-academy-slate">
           {k.subjects.desc}
         </p>
-
-        {available.length > 0 ? (
-          <div className="mt-6">
-            <p className="text-meta mb-3">{k.subjects.availableNow}</p>
-            <ul className="flex flex-wrap gap-2">
-              {available.map(({ label }) => (
-                <li key={label}>
-                  <Badge variant="verified" size="sm">
-                    {label}
-                  </Badge>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
-
-        {comingSoon.length > 0 ? (
-          <div className="mt-6">
-            <p className="text-meta mb-3">{k.subjects.comingSoon}</p>
-            <ul className="flex flex-wrap gap-2">
-              {comingSoon.map(({ label }) => (
-                <li key={label}>
-                  <Badge variant="muted" size="sm">
-                    {label}
-                  </Badge>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
+        <div className="mt-6">
+          <HomeSubjectTags
+            items={subjectItems}
+            availableLabel={k.subjects.availableNow}
+            comingSoonLabel={k.subjects.comingSoon}
+          />
+        </div>
       </div>
 
       <div className="mt-px grid gap-px overflow-hidden rounded-[18px] border border-academy-line bg-academy-line sm:grid-cols-2 lg:grid-cols-3">

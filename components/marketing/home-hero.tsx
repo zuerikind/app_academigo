@@ -2,11 +2,17 @@
 
 import { ArrowUpRight } from "lucide-react";
 import { useI18n } from "@/components/i18n/locale-provider";
+import { HomeSubjectTags } from "@/components/marketing/home-subject-tags";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
+import type { SubjectDisplayItem } from "@/lib/i18n/subject-catalog";
 import { localizedPath } from "@/lib/i18n/path";
 
-export function HomeHero() {
+export function HomeHero({
+  subjectItems,
+}: {
+  subjectItems: SubjectDisplayItem[];
+}) {
   const { locale, dict } = useI18n();
   const p = dict.home.portal;
   const c = dict.common;
@@ -35,6 +41,15 @@ export function HomeHero() {
           </h1>
 
           <p className="text-lead mx-auto mt-6 max-w-xl">{p.subtitle}</p>
+
+          <div className="mx-auto mt-8 max-w-4xl">
+            <HomeSubjectTags
+              items={subjectItems}
+              availableLabel={dict.home.subjects.active}
+              comingSoonLabel={dict.home.subjects.soon}
+              compact
+            />
+          </div>
 
           <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
             <Button

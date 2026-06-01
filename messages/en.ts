@@ -6,7 +6,7 @@ export const en: Dictionary = {
     title: "Academigo — Premium Online Tutoring",
     titleTemplate: "%s | Academigo",
     description:
-      "Find expert tutors, book lessons, and achieve your learning goals with Academigo.",
+      "Find expert tutors across 22 school subjects, book lessons, and achieve your learning goals with Academigo.",
   },
   common: {
     brand: "Academigo",
@@ -145,14 +145,15 @@ export const en: Dictionary = {
       title: "Personal support meets",
       titleHighlight: "digital learning guidance.",
       subtitle:
-        "22 school subjects — from Mathematics and Physics to languages, humanities, and arts. Find the right teacher, book lessons, and learn with a platform that supports you between sessions.",
+        "Find the right teacher among every subject we offer, book lessons, and learn with a platform that supports you between sessions.",
       learnMore: "Learn more on academigo.xyz",
       browseTeachers: "Browse teachers",
+      footerTagline: "{subjects}. Online and in Zurich.",
       stepsSection: {
         eyebrow: "Getting started",
         title: "How registration works",
         description:
-          "Follow the steps for your role — whether you want to learn or teach.",
+          "Follow the steps for your role — whether you want to learn or teach across all {count} subjects we offer.",
       },
       authAside: {
         eyebrow: "Academigo platform",
@@ -242,7 +243,8 @@ export const en: Dictionary = {
       },
       cta: {
         title: "Ready to begin?",
-        subtitle: "Log in to your account or create a new one.",
+        subtitle:
+          "Log in or create an account to find a teacher for any of our {count} subjects — {subjects}.",
       },
     },
     trust: {
@@ -250,13 +252,15 @@ export const en: Dictionary = {
       locations: "Online and in Zurich",
       support: "Individual support",
       platform: "Own learning platform",
-      subjects: "Now: Mathematics, Physics, Chemistry",
+      subjects: "22 school subjects",
     },
     subjects: {
       eyebrow: "Subjects",
-      title: "Available subjects",
+      title: "All subjects we offer",
+      description:
+        "From Mathematics and Physics to Languages, Humanities, Arts, and Sports — tutoring across the full Swiss school curriculum.",
       active: "Available now",
-      soon: "In preparation",
+      soon: "Coming soon",
     },
   },
   teachers: {
