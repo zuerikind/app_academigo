@@ -23,4 +23,6 @@ export type TeacherListItem = {
   offersOnline: boolean;
   offersInPerson: boolean;
   subjects: { id: string; name: string; slug: string }[];
+  avg_rating: number | null;
+  review_count: number;
 };

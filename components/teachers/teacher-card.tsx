@@ -69,9 +69,18 @@ export function TeacherCard({
                 {t.verified}
               </Badge>
             )}
-            <span className="text-[11px] text-academy-slate-muted">
-              {t.placeholderRating}
-            </span>
+            {teacher.avg_rating !== null ? (
+              <span className="text-[11px] text-academy-slate">
+                ★ {teacher.avg_rating.toFixed(1)}{" "}
+                <span className="text-academy-slate-muted">
+                  ({teacher.review_count} {teacher.review_count === 1 ? "review" : "reviews"})
+                </span>
+              </span>
+            ) : (
+              <span className="text-[11px] text-academy-slate-muted">
+                {t.placeholderRating}
+              </span>
+            )}
           </div>
         </div>
       </div>

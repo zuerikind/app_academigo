@@ -17,7 +17,11 @@ type TeacherRow = {
   }[];
 };
 
-function mapTeacher(row: TeacherRow): TeacherListItem {
+function mapTeacher(
+  row: TeacherRow,
+  avg_rating: number | null = null,
+  review_count: number = 0,
+): TeacherListItem {
   return {
     id: row.id,
     fullName: row.profiles?.full_name ?? "Teacher",
@@ -30,6 +34,8 @@ function mapTeacher(row: TeacherRow): TeacherListItem {
     subjects: row.teacher_subjects
       .map((ts) => ts.subjects)
       .filter((s): s is { id: string; name: string; slug: string } => s != null),
+    avg_rating,
+    review_count,
   };
 }
 
@@ -55,7 +61,33 @@ export async function getApprovedTeachers(): Promise<TeacherListItem[]> {
     .order("created_at", { ascending: false });
 
   if (error || !data) return [];
-  return (data as unknown as TeacherRow[]).map(mapTeacher);
+
+  const teachers = data as unknown as TeacherRow[];
+
+  // Fetch review aggregates for all approved teachers
+  const teacherIds = teachers.map((t) => t.id);
+  let ratingMap = new Map<string, { sum: number; count: number }>();
+
+  if (teacherIds.length > 0) {
+    const { data: reviewsRaw } = await supabase
+      .from("reviews")
+      .select("teacher_id, rating")
+      .in("teacher_id", teacherIds);
+
+    for (const r of reviewsRaw ?? []) {
+      const entry = ratingMap.get(r.teacher_id as string) ?? { sum: 0, count: 0 };
+      entry.sum += r.rating as number;
+      entry.count++;
+      ratingMap.set(r.teacher_id as string, entry);
+    }
+  }
+
+  return teachers.map((row) => {
+    const agg = ratingMap.get(row.id);
+    const avg_rating = agg ? Math.round((agg.sum / agg.count) * 10) / 10 : null;
+    const review_count = agg?.count ?? 0;
+    return mapTeacher(row, avg_rating, review_count);
+  });
 }
 
 export async function getTeacherById(
