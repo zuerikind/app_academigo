@@ -6,9 +6,9 @@ type Surface = "paper" | "muted" | "ink";
 type Width = "default" | "wide" | "narrow" | "prose";
 
 const padding: Record<Pad, string> = {
-  default: "py-16 sm:py-24",
-  tight: "py-10 sm:py-14",
-  loose: "py-20 sm:py-28 lg:py-32",
+  default: "py-12 sm:py-24",
+  tight: "py-8 sm:py-14",
+  loose: "py-16 sm:py-28 lg:py-32",
   flush: "py-0",
 };
 

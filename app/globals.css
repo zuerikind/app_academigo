@@ -140,6 +140,7 @@ html {
   scroll-behavior: smooth;
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
+  overflow-x: clip;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -155,6 +156,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  overflow-x: clip;
 }
 
 ::selection {
@@ -174,10 +176,10 @@ body {
 .text-hero {
   font-family: var(--font-manrope), -apple-system, BlinkMacSystemFont,
     "SF Pro Display", system-ui, sans-serif;
-  font-size: clamp(2.25rem, 4vw, 3.25rem);
+  font-size: clamp(1.875rem, 5.5vw, 3.25rem);
   font-weight: 600;
   letter-spacing: -0.03em;
-  line-height: 1.04;
+  line-height: 1.08;
 }
 
 .text-display {
@@ -207,7 +209,7 @@ body {
 }
 
 .text-lead {
-  font-size: 1.0625rem;
+  font-size: clamp(0.9375rem, 2.5vw, 1.0625rem);
   line-height: 1.55;
   color: var(--academy-slate);
   letter-spacing: -0.008em;
@@ -340,4 +342,9 @@ body {
 .enter-soft {
   opacity: 0;
   transform: translateY(12px);
+}
+
+/* iOS safe areas for fixed mobile chrome */
+.safe-bottom {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }

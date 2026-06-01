@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -8,6 +9,7 @@ import { approveTeacher } from "@/lib/actions/admin";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { getAdminTeachers } from "@/lib/queries/admin";
+import { localizedPath } from "@/lib/i18n/path";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -25,16 +27,23 @@ export default async function AdminTeachersPage({ params }: Props) {
       key: "name",
       header: t.colName,
       render: (row: (typeof teachers)[number]) => {
-        const p = row.profiles as { full_name: string | null; email: string | null }[] | null;
-        return p?.[0]?.full_name ?? "—";
+        const p = row.profiles as unknown as { full_name: string | null; email: string | null } | null;
+        return (
+          <Link
+            href={localizedPath(raw, `/admin/teachers/${row.id}`)}
+            className="font-medium text-academy-navy hover:underline"
+          >
+            {p?.full_name ?? "—"}
+          </Link>
+        );
       },
     },
     {
       key: "email",
       header: t.colEmail,
       render: (row: (typeof teachers)[number]) => {
-        const p = row.profiles as { full_name: string | null; email: string | null }[] | null;
-        return p?.[0]?.email ?? "—";
+        const p = row.profiles as unknown as { full_name: string | null; email: string | null } | null;
+        return p?.email ?? "—";
       },
     },
     {

@@ -1,16 +1,10 @@
 import { notFound } from "next/navigation";
 import { PublicLayout } from "@/components/layout/public-layout";
+import { PricingGrid } from "@/components/pricing/pricing-grid";
 import { PageHeader } from "@/components/ui/page-header";
-import { PricingCard } from "@/components/pricing/pricing-card";
 import { Section } from "@/components/ui/section";
-import { Button } from "@/components/ui/button";
-import { lessonPackages, platformSubscription } from "@/config/pricing";
-import { siteConfig } from "@/config/site";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
-import { formatMessage } from "@/lib/i18n/format";
-import { localizedPath } from "@/lib/i18n/path";
-import { formatChf } from "@/lib/utils";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -19,11 +13,10 @@ export default async function PricingPage({ params }: Props) {
   if (!isLocale(raw)) notFound();
   const dict = getDictionary(raw);
   const t = dict.pricing;
-  const c = dict.common;
 
   return (
     <PublicLayout locale={raw}>
-      <Section pad="tight" width="wide" className="pt-12">
+      <Section pad="tight" width="wide" className="pt-8 sm:pt-12">
         <PageHeader
           eyebrow={dict.nav.pricing}
           title={t.title}
@@ -31,35 +24,13 @@ export default async function PricingPage({ params }: Props) {
           size="lg"
         />
 
-        <div className="mt-12 grid gap-4 lg:grid-cols-3">
-          {lessonPackages.map((pkg) => (
-            <PricingCard
-              key={pkg.id}
-              packageId={pkg.id}
-              priceChf={pkg.priceChf}
-              credits={pkg.credits}
-              highlight={pkg.highlight}
-              ctaHref={localizedPath(raw, "/signup?role=student")}
-            />
-          ))}
+        <div className="mt-8 rounded-2xl border border-academy-line/80 bg-gradient-to-b from-academy-paper-soft to-white p-3 sm:mt-12 sm:rounded-[20px] sm:p-5 lg:mt-16 lg:p-8">
+          <PricingGrid />
         </div>
 
-        <div className="mt-14 grid gap-6 rounded-lg border border-academy-line bg-academy-mist p-7 sm:grid-cols-[1fr_auto] sm:items-center sm:p-9">
-          <div>
-            <p className="text-meta">{t.platformTitle}</p>
-            <h2 className="mt-2 font-display text-[18px] font-semibold tracking-tight text-academy-navy">
-              {formatMessage(t.platformDesc, {
-                price: formatChf(platformSubscription.priceChf),
-              })}
-            </h2>
-            <p className="mt-2 max-w-md text-[13px] leading-relaxed text-academy-slate-muted">
-              {t.platformNote}
-            </p>
-          </div>
-          <Button href={siteConfig.links.consultation} variant="primary" external>
-            {c.ctaConsultation}
-          </Button>
-        </div>
+        <p className="mx-auto mt-6 max-w-xl rounded-xl border border-academy-line bg-white px-4 py-3.5 text-center text-[13px] leading-relaxed text-academy-slate-muted shadow-soft sm:mt-8 sm:px-5 sm:py-4">
+          {t.checkoutNote}
+        </p>
       </Section>
     </PublicLayout>
   );

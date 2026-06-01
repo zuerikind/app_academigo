@@ -14,12 +14,12 @@ export function TrustStrip({
 }) {
   return (
     <div className="hairline-t hairline-b bg-white">
-      <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
-        <ul className="grid grid-cols-2 gap-x-8 gap-y-4 py-5 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-8 lg:px-10">
+        <ul className="grid grid-cols-1 gap-3 py-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-4 sm:py-5 lg:grid-cols-5">
           {items.map(({ icon, label }) => (
             <li
               key={label}
-              className="flex items-center gap-2.5 text-[13px] leading-tight text-academy-navy"
+              className="flex min-w-0 items-center gap-2.5 text-[12.5px] leading-snug text-academy-navy sm:text-[13px]"
             >
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] bg-[color:var(--brand-tint)]">
                 <AppIcon
@@ -28,7 +28,7 @@ export function TrustStrip({
                   strokeWidth={1.7}
                 />
               </span>
-              <span className="font-medium">{label}</span>
+              <span className="min-w-0 font-medium">{label}</span>
             </li>
           ))}
         </ul>

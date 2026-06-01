@@ -97,9 +97,20 @@ const teacherSchema = z.object({
   offersOnline: z.coerce.boolean(),
   offersInPerson: z.coerce.boolean(),
   location: z.string().optional(),
-  languages: z.string().min(1),
-  payoutInfo: z.string().optional(),
+  languageChecked: z.array(z.string()).default([]),
+  languageOther: z.string().optional(),
+  payoutName: z.string().optional(),
+  payoutIban: z.string().optional(),
+  payoutStreet: z.string().optional(),
+  payoutZip: z.string().optional(),
+  payoutCity: z.string().optional(),
+  payoutTwint: z.string().optional(),
   subjectIds: z.array(z.string().uuid()).min(1),
+  defaultMeetLink: z
+    .string()
+    .url("Meet link must be a valid HTTPS URL")
+    .optional()
+    .or(z.literal("")),
 });
 
 export async function completeTeacherOnboarding(
@@ -114,6 +125,7 @@ export async function completeTeacherOnboarding(
   }
 
   const subjectIds = formData.getAll("subjectIds") as string[];
+  const languageChecked = formData.getAll("languageChecked") as string[];
 
   const parsed = teacherSchema.safeParse({
     fullName: formData.get("fullName"),
@@ -124,9 +136,16 @@ export async function completeTeacherOnboarding(
     offersOnline: formData.get("offersOnline") === "on",
     offersInPerson: formData.get("offersInPerson") === "on",
     location: formData.get("location") || undefined,
-    languages: formData.get("languages"),
-    payoutInfo: formData.get("payoutInfo") || undefined,
+    languageChecked,
+    languageOther: formData.get("languageOther") as string || undefined,
+    payoutName: formData.get("payoutName") as string || undefined,
+    payoutIban: formData.get("payoutIban") as string || undefined,
+    payoutStreet: formData.get("payoutStreet") as string || undefined,
+    payoutZip: formData.get("payoutZip") as string || undefined,
+    payoutCity: formData.get("payoutCity") as string || undefined,
+    payoutTwint: formData.get("payoutTwint") as string || undefined,
     subjectIds,
+    defaultMeetLink: (formData.get("defaultMeetLink") as string) || undefined,
   });
 
   if (!parsed.success) {
@@ -135,7 +154,17 @@ export async function completeTeacherOnboarding(
 
   const supabase = await createClient();
   const data = parsed.data;
-  const languages = data.languages.split(",").map((l) => l.trim()).filter(Boolean);
+  const otherLangs = data.languageOther
+    ? data.languageOther.split(",").map((l) => l.trim()).filter(Boolean)
+    : [];
+  const languages = [...data.languageChecked, ...otherLangs];
+  const addressParts = [data.payoutStreet, [data.payoutZip, data.payoutCity].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+  const payoutInfo = [
+    data.payoutName ? `Name: ${data.payoutName}` : null,
+    data.payoutIban ? `IBAN: ${data.payoutIban}` : null,
+    addressParts ? `Adresse: ${addressParts}` : null,
+    data.payoutTwint ? `Twint: ${data.payoutTwint}` : null,
+  ].filter(Boolean).join("\n") || null;
 
   let avatarUrl = profile.avatar_url;
 
@@ -179,7 +208,8 @@ export async function completeTeacherOnboarding(
     offers_in_person: data.offersInPerson,
     location: data.offersInPerson ? data.location ?? null : null,
     languages,
-    payout_info_placeholder: data.payoutInfo ?? null,
+    payout_info_placeholder: payoutInfo ?? null,
+    default_meet_link: data.defaultMeetLink || null,
     is_approved: false,
   };
 

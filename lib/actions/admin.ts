@@ -21,7 +21,7 @@ export async function approveTeacher(
     .eq("id", teacherId);
 
   if (error) return { error: error.message };
-  revalidatePath("/[locale]/admin/teachers", "page");
+  revalidatePath("/[locale]/admin/teachers", "layout");
   return {};
 }
 

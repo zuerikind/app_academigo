@@ -88,7 +88,7 @@ export async function signIn(
 
   if (!profile) redirect(localizedPath(locale, "/student/dashboard"));
 
-  if (!profile.onboarding_completed) {
+  if (!profile.onboarding_completed && profile.role !== "admin") {
     redirect(
       localizedPath(
         locale,

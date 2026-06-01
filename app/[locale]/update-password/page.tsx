@@ -39,9 +39,9 @@ export default async function UpdatePasswordPage({ params }: Props) {
       switchHref={localizedPath(locale, "/login")}
       switchPrompt=""
       switchCta={dict.auth.forgotPassword.backToLogin}
-      asideEyebrow={dict.home.approach.eyebrow}
-      asideTitle={dict.home.approach.title}
-      asideBody={dict.home.approach.body}
+      asideEyebrow={dict.home.portal.authAside.eyebrow}
+      asideTitle={dict.home.portal.authAside.title}
+      asideBody={dict.home.portal.authAside.body}
     >
       <UpdatePasswordForm action={updatePassword} />
     </AuthShell>

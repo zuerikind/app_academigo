@@ -7,7 +7,6 @@ import { useI18n } from "@/components/i18n/locale-provider";
 import { BrandMark } from "@/components/layout/brand-mark";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { Button } from "@/components/ui/button";
-import { siteConfig } from "@/config/site";
 import { getPublicNav } from "@/config/navigation";
 import { localizedPath } from "@/lib/i18n/path";
 import { cn } from "@/lib/utils";
@@ -35,9 +34,9 @@ export function Navbar({ isAuthenticated }: { isAuthenticated?: boolean }) {
           : "border-b border-transparent bg-white/70 backdrop-blur",
       )}
     >
-      <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
-        <div className="flex h-16 items-center justify-between gap-6">
-          <div className="flex items-center gap-10">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-8 lg:px-10">
+        <div className="flex h-14 items-center justify-between gap-3 sm:h-16">
+          <div className="flex min-w-0 flex-1 items-center gap-8 lg:gap-10">
             <BrandMark
               href={localizedPath(locale, "/")}
               label={c.brand}
@@ -81,13 +80,12 @@ export function Navbar({ isAuthenticated }: { isAuthenticated?: boolean }) {
                   {c.logIn}
                 </Button>
                 <Button
-                  href={siteConfig.links.consultation}
+                  href={localizedPath(locale, "/signup?role=student")}
                   variant="primary"
                   size="sm"
                   shape="pill"
-                  external
                 >
-                  {c.ctaConsultation}
+                  {c.signUp}
                 </Button>
               </>
             )}
@@ -95,7 +93,7 @@ export function Navbar({ isAuthenticated }: { isAuthenticated?: boolean }) {
 
           <button
             type="button"
-            className="rounded-md p-2 text-academy-navy lg:hidden"
+            className="-mr-1 rounded-md p-2 text-academy-navy lg:hidden"
             onClick={() => setOpen(!open)}
             aria-label="Menu"
             aria-expanded={open}
@@ -129,13 +127,12 @@ export function Navbar({ isAuthenticated }: { isAuthenticated?: boolean }) {
             </div>
             <div className="mt-4 flex flex-col gap-2">
               <Button
-                href={siteConfig.links.consultation}
+                href={localizedPath(locale, "/signup?role=student")}
                 variant="primary"
                 shape="pill"
-                external
                 fullWidth
               >
-                {c.ctaConsultation}
+                {c.signUp}
               </Button>
               <Button
                 href={localizedPath(locale, "/login")}

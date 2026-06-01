@@ -30,9 +30,13 @@ export const de = {
     footer:
       "© {year} Academigo — Nachhilfe mit Struktur, online und in Zürich.",
     footerTagline:
-      "Mathematik, Physik und Chemie. Persönliche Betreuung und eigene Lernplattform.",
+      "Nachhilfe in 22 Schulfächern — online und in Zürich.",
     footerPlatform: "Plattform",
     footerContact: "Kontakt",
+    footerLanguage: "Sprache",
+    footerEmail: "E-Mail",
+    footerLearnMore: "Mehr auf academigo.xyz",
+    footerLocation: "Zürich · Online & vor Ort",
   },
   nav: {
     teachers: "Lehrpersonen",
@@ -58,14 +62,27 @@ export const de = {
   },
   subjectNames: {
     mathematics: "Mathematik",
+    "applied-mathematics": "Anwendungen der Mathematik",
     physics: "Physik",
     chemistry: "Chemie",
+    biology: "Biologie",
+    "computer-science": "Informatik",
     german: "Deutsch",
     french: "Französisch",
+    italian: "Italienisch",
     english: "Englisch",
-    biology: "Biologie",
-    economics: "Wirtschaft",
+    spanish: "Spanisch",
+    latin: "Latein",
+    greek: "Griechisch",
     history: "Geschichte",
+    geography: "Geografie",
+    economics: "Wirtschaft und Recht",
+    philosophy: "Philosophie",
+    "pedagogy-psychology": "Pädagogik und Psychologie",
+    "religious-studies": "Religionslehre",
+    "visual-arts": "Bildnerisches Gestalten",
+    music: "Musik",
+    sports: "Sport",
   },
   status: {
     pending: "Ausstehend",
@@ -121,14 +138,111 @@ export const de = {
     },
   },
   home: {
-    badge: "Nachhilfe · Schweiz",
-    title: "Persönliche Nachhilfe,",
-    titleHighlight: "die wirklich weiterbringt.",
-    subtitle:
-      "Strukturiert lernen mit erfahrenen Tutorinnen und Tutoren — online oder in Zürich. Aktuell in Mathematik, Physik und Chemie. Weitere Fächer folgen.",
-    startStudent: "Lehrpersonen ansehen",
-    becomeTeacher: "Als Lehrperson bewerben",
-    secondaryCta: "Preise ansehen",
+    portal: {
+      badge: "Academigo Plattform",
+      title: "Persönliche Förderung trifft",
+      titleHighlight: "digitale Lernbegleitung.",
+      subtitle:
+        "22 Schulfächer — von Mathematik und Physik über Sprachen und Geisteswissenschaften bis zu Kunst und Sport. Finde die passende Lehrperson, buche Lektionen und lerne mit einer Plattform, die dich zwischen den Stunden unterstützt.",
+      learnMore: "Mehr auf academigo.xyz",
+      browseTeachers: "Lehrpersonen ansehen",
+      stepsSection: {
+        eyebrow: "Erste Schritte",
+        title: "So funktioniert die Registrierung",
+        description:
+          "Folge den Schritten für deine Rolle — als Schüler:in oder als Lehrperson.",
+      },
+      authAside: {
+        eyebrow: "Academigo Plattform",
+        title: "Strukturierte Nachhilfe, für dich gebaut.",
+        body: "Lektionen buchen, Credits verwalten und geprüfte Tutorinnen und Tutoren finden — alles an einem Ort.",
+      },
+      keyFacts: {
+        eyebrow: "Auf einen Blick",
+        title: "Das Wichtigste",
+        subjects: {
+          title: "Fächer",
+          desc: "Wir decken das gesamte Spektrum der Schweizer Schulfächer ab — MINT, Sprachen, Geisteswissenschaften, Kunst und Sport.",
+          availableNow: "Jetzt verfügbar",
+          comingSoon: "Demnächst",
+        },
+        locations: {
+          title: "Online & in Zürich",
+          desc: "Video-Lektionen oder Treffen vor Ort — je nachdem, was passt.",
+        },
+        pricing: {
+          title: "Klare CHF-Pakete",
+          desc: "Einzellektionen oder Pakete mit transparenten Preisen.",
+        },
+        teachers: {
+          title: "Geprüfte Lehrpersonen",
+          desc: "Jedes Profil wird von unserem Team geprüft, bevor es live geht.",
+        },
+      },
+      student: {
+        eyebrow: "Für Schüler:innen",
+        title: "So startest du",
+        cta: "Als Schüler:in registrieren",
+        steps: [
+          {
+            title: "Konto erstellen",
+            description:
+              "Registriere dich mit E-Mail, wähle die Rolle Schüler:in und setze ein Passwort.",
+          },
+          {
+            title: "E-Mail bestätigen",
+            description:
+              "Klicke auf den Bestätigungslink in deinem Posteingang, um dein Konto zu aktivieren.",
+          },
+          {
+            title: "Profil vervollständigen",
+            description:
+              "Gib Schulstufe, Fach, Lernziele und deine Präferenzen für Lektionen an.",
+          },
+          {
+            title: "Lehrperson finden & buchen",
+            description:
+              "Durchsuche freigegebene Tutorinnen und Tutoren, kaufe Credits und buche Lektionen im Dashboard.",
+          },
+        ],
+      },
+      teacher: {
+        eyebrow: "Für Lehrpersonen",
+        title: "So wirst du Teil von Academigo",
+        cta: "Als Lehrperson bewerben",
+        steps: [
+          {
+            title: "Konto erstellen",
+            description:
+              "Registriere dich mit E-Mail, wähle die Rolle Lehrperson und setze ein Passwort.",
+          },
+          {
+            title: "E-Mail bestätigen",
+            description:
+              "Bestätige deine Adresse über den Link, den wir dir senden.",
+          },
+          {
+            title: "Profil aufbauen",
+            description:
+              "Füge Bio, Ausbildung, Erfahrung, Fächer, Foto und Unterrichtsformate hinzu.",
+          },
+          {
+            title: "Auf Freigabe warten",
+            description:
+              "Unser Team prüft dein Profil. Du bist erst nach der Freigabe für Schüler:innen sichtbar.",
+          },
+          {
+            title: "Live gehen",
+            description:
+              "Nach der Freigabe Verfügbarkeit setzen und Buchungsanfragen erhalten.",
+          },
+        ],
+      },
+      cta: {
+        title: "Bereit loszulegen?",
+        subtitle: "Melde dich an oder erstelle ein neues Konto.",
+      },
+    },
     trust: {
       experience: "Über 10 Jahre Erfahrung",
       locations: "Online und in Zürich",
@@ -136,38 +250,12 @@ export const de = {
       platform: "Eigene Lernplattform",
       subjects: "Aktuell: Mathematik, Physik, Chemie",
     },
-    approach: {
-      eyebrow: "So arbeiten wir",
-      title: "Kein anonymes Massenangebot.",
-      body: "Du lernst mit festen Lehrpersonen, klaren Zielen und Lektionen à 50 Minuten. Credits und Termine laufen über eine Plattform, die wir selbst nutzen und weiterentwickeln.",
-    },
     subjects: {
       eyebrow: "Fächer",
-      title: "Drei Fächer, fokussiert unterrichtet.",
+      title: "Verfügbare Fächer",
       active: "Jetzt buchbar",
       soon: "In Vorbereitung",
     },
-    features: {
-      teachers: {
-        title: "Geprüfte Lehrpersonen",
-        desc: "Profile mit Ausbildung, Erfahrung und Fach — vor der Freigabe durch unser Team.",
-      },
-      flexible: {
-        title: "Online oder vor Ort",
-        desc: "Video-Lektion oder Treffen in Zürich — je nachdem, was für dich passt.",
-      },
-      trusted: {
-        title: "Klare Pakete in CHF",
-        desc: "Einzelne Lektionen oder Pakete. Transparent, ohne versteckte Gebühren.",
-      },
-    },
-    featuredTeachers: "Freigegebene Lehrpersonen",
-    featuredTeachersDesc: "Alle Profile werden vor der Veröffentlichung geprüft.",
-    ctaTitle: "Unsicher, wo du anfangen sollst?",
-    ctaSubtitle:
-      "Schreib uns für eine kostenlose Beratung — wir helfen dir, Lehrperson und Paket zu finden.",
-    createFreeAccount: "Kostenlose Beratung anfragen",
-    ctaAccount: "Direkt Konto erstellen",
   },
   teachers: {
     title: "Unsere Lehrpersonen",
@@ -204,25 +292,71 @@ export const de = {
       "Wir nehmen Expertinnen und Experten für dieses Fach auf.",
   },
   pricing: {
-    title: "Einfache, transparente Preise",
+    title: "Academigo Programme",
     subtitle:
-      "Alle Preise in CHF. Kaufe Lektions-Credits und buche bei jeder freigegebenen Lehrperson.",
+      "Alle Preise in CHF. Wähle flexible Einzelpakete oder monatliche Begleitung — online oder vor Ort.",
     mostPopular: "Beliebteste Wahl",
-    lessonCredits: "{count} Lektions-Credits",
-    features: {
-      duration: "50-Minuten-Lektionen",
-      verified: "Verifizierte Lehrpersonen",
-      scheduling: "Flexible Terminplanung",
+    perMonth: "/ Monat",
+    included: "Enthalten:",
+    checkoutNote:
+      "Online-Checkout folgt in Kürze. Für Beratung oder Early Access kontaktiere uns jederzeit.",
+    tiers: {
+      essentials: {
+        kindLabel: "Flexibel",
+        name: "Academigo Essentials",
+        tagline:
+          "Flexible Unterstützung für gezielte Fragen und kurzfristige Lernziele",
+        description:
+          "Ideal für Schülerinnen und Schüler, die punktuelle Unterstützung benötigen oder einzelne Themen gezielt vertiefen möchten.",
+        priceLabel: "Preisoptionen",
+        featuresLabel: "",
+        options: {
+          single: "Einzelstunde (50 Minuten)",
+          pack5: "5er-Paket",
+          pack10: "10er-Paket",
+        },
+        features: [
+          "Individuelle Betreuung",
+          "Online oder vor Ort",
+        ],
+      },
+      plus: {
+        kindLabel: "Monatsabo",
+        name: "Academigo Plus",
+        tagline: "Regelmässige Begleitung für nachhaltige Fortschritte",
+        description:
+          "Für Schülerinnen und Schüler, die kontinuierlich an ihren Leistungen arbeiten und Lernlücken systematisch schliessen möchten.",
+        features: [
+          "4 Lektionen pro Monat",
+          "Persönlicher Lernplan",
+          "Zugang zur Academigo Lernplattform",
+          "Individuelle Übungen und Empfehlungen",
+          "Strukturierte Lernbegleitung",
+          "Laufende Anpassung der Lernziele",
+        ],
+      },
+      excellence: {
+        kindLabel: "Premium",
+        name: "Academigo Excellence",
+        tagline: "Umfassende Förderung für ambitionierte Ziele",
+        description:
+          "Unser Premium-Programm für Schülerinnen und Schüler, die ihr volles Potenzial ausschöpfen und langfristig hervorragende Leistungen erzielen möchten.",
+        features: [
+          "8 Lektionen pro Monat",
+          "Persönlicher Lernplan",
+          "Individuelle Förderung und Lernstrategie",
+          "Regelmässige Fortschrittsanalysen",
+          "Zugang zur Academigo Lernplattform",
+          "Priorisierte Terminvergabe",
+          "Individuelle Übungen und Lernmaterialien",
+          "Langfristige Zielplanung und akademische Begleitung",
+        ],
+      },
     },
-    platformTitle: "Plattform-Zugang",
-    platformDesc:
-      "{price}/Monat — optionaler Zugang zu Lernressourcen und Plattform-Tools.",
-    platformNote: "Abo-Checkout folgt in einem späteren Update.",
     packages: {
-      single: "Einzelne Lektion",
+      single: "Einzelstunde (50 Minuten)",
       pack5: "5er-Paket",
       pack10: "10er-Paket",
-      platform: "Plattform-Zugang",
     },
   },
   about: {
@@ -312,6 +446,11 @@ export const de = {
       name: "Name",
       email: "E-Mail",
       role: "Rolle",
+      preferredSubject: "Bevorzugtes Fach",
+      noSubject: "Kein Fach ausgewählt",
+      save: "Speichern",
+      saving: "Wird gespeichert…",
+      saved: "Gespeichert",
     },
   },
   teacher: {
@@ -323,14 +462,33 @@ export const de = {
       submitting: "Wird eingereicht…",
       profilePicture: "Profilbild",
       subjectsTeach: "Unterrichtete Fächer",
-      payoutPlaceholder: "Auszahlungsinformationen (Platzhalter)",
-      payoutHint: "IBAN oder Zahlungsdetails — zur Admin-Prüfung",
       offersOnline: "Online-Unterricht anbieten",
       offersInPerson: "Präsenzunterricht anbieten",
       location: "Ort (bei Präsenz)",
       locationPlaceholder: "Zürich usw.",
-      languages: "Sprachen (kommagetrennt)",
-      languagesPlaceholder: "Deutsch, Englisch",
+      languages: "Unterrichtssprachen",
+      languageOther: "Andere Sprachen",
+      languageOtherPlaceholder: "z.B. Portugiesisch, Arabisch (kommagetrennt)",
+      experienceOptions: {
+        less1: "Weniger als 1 Jahr",
+        one2: "1–2 Jahre",
+        three5: "3–5 Jahre",
+        six10: "6–10 Jahre",
+        ten_plus: "Mehr als 10 Jahre",
+      },
+      payoutTitle: "Auszahlungsinformationen",
+      payoutOptionalNote: "Optional — du kannst dies später beim Anfordern einer Auszahlung ausfüllen.",
+      payoutName: "Vollständiger Name (wie auf Bankkonto)",
+      payoutIban: "IBAN",
+      payoutIbanPlaceholder: "CH56 0483 5012 3456 7800 9",
+      payoutStreet: "Strasse und Nummer",
+      payoutStreetPlaceholder: "Musterstrasse 1",
+      payoutZip: "PLZ",
+      payoutZipPlaceholder: "8001",
+      payoutCity: "Ort",
+      payoutCityPlaceholder: "Zürich",
+      payoutTwint: "Twint-Telefonnummer",
+      payoutTwintPlaceholder: "+41 79 123 45 67",
       errors: {
         required:
           "Bitte fülle alle Pflichtfelder aus und wähle mindestens ein Fach.",
@@ -354,6 +512,9 @@ export const de = {
       title: "Mein Profil",
       subtitle: "Dein öffentliches Lehrprofil",
       completeOnboarding: "Schliesse zuerst das Onboarding ab.",
+      save: "Speichern",
+      saving: "Wird gespeichert…",
+      saved: "Gespeichert",
       subjects: "Fächer",
       modality: "Format",
     },
@@ -374,6 +535,24 @@ export const de = {
     settings: {
       title: "Einstellungen",
       subtitle: "Kontodaten",
+      name: "Name",
+      email: "E-Mail",
+      payoutTitle: "Auszahlungsinformationen",
+      payoutOptionalNote: "Optional — du kannst dies später beim Anfordern einer Auszahlung ausfüllen.",
+      payoutName: "Vollständiger Name (wie auf Bankkonto)",
+      payoutIban: "IBAN",
+      payoutIbanPlaceholder: "CH56 0483 5012 3456 7800 9",
+      payoutStreet: "Strasse und Nummer",
+      payoutStreetPlaceholder: "Musterstrasse 1",
+      payoutZip: "PLZ",
+      payoutZipPlaceholder: "8001",
+      payoutCity: "Ort",
+      payoutCityPlaceholder: "Zürich",
+      payoutTwint: "Twint-Telefonnummer",
+      payoutTwintPlaceholder: "+41 79 123 45 67",
+      save: "Speichern",
+      saving: "Wird gespeichert…",
+      saved: "Gespeichert",
     },
   },
   errors: {
@@ -419,6 +598,25 @@ export const de = {
       statusApproved: "Freigegeben",
       statusPending: "Ausstehend",
       empty: "Keine Lehrpersonen vorhanden.",
+      detail: {
+        back: "Zurück zu Lehrpersonen",
+        joined: "Beigetreten",
+        bio: "Biografie",
+        education: "Ausbildung",
+        experience: "Erfahrung",
+        teachingStyle: "Unterrichtsstil",
+        subjects: "Fächer",
+        languages: "Sprachen",
+        format: "Format",
+        online: "Online",
+        inPerson: "Vor Ort",
+        location: "Standort",
+        payoutInfo: "Auszahlungsinfo",
+        noPayoutInfo: "Nicht angegeben",
+        notProvided: "—",
+        approveAction: "Lehrperson freigeben",
+        alreadyApproved: "Diese Lehrperson wurde bereits freigegeben.",
+      },
     },
     students: {
       title: "Lernende",

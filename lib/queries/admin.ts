@@ -68,6 +68,38 @@ export async function getAdminTeachers() {
   return data;
 }
 
+export async function getAdminTeacherDetail(teacherId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("teachers")
+    .select(
+      `
+      id,
+      is_approved,
+      is_verified,
+      is_active,
+      teacher_level,
+      bio,
+      education,
+      experience,
+      teaching_style,
+      location,
+      languages,
+      offers_online,
+      offers_in_person,
+      payout_info_placeholder,
+      created_at,
+      profiles ( full_name, email, avatar_url ),
+      teacher_subjects ( subjects ( id, name, slug ) )
+    `,
+    )
+    .eq("id", teacherId)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return data;
+}
+
 export async function getAdminStudents() {
   const supabase = await createClient();
   const { data, error } = await supabase

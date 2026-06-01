@@ -44,9 +44,7 @@ export function AuthShell({
           <BrandMark
             href={localizedPath(locale, "/")}
             label={c.brand}
-            variant="light"
-            layout="full"
-            showWordmark={false}
+            layout="stacked"
           />
         </div>
 
@@ -93,7 +91,7 @@ export function AuthShell({
 
       {/* Right — form */}
       <div className="flex min-h-screen flex-col bg-white">
-        <div className="flex items-center justify-between border-b border-academy-line px-6 py-5 lg:hidden">
+        <div className="flex items-center justify-between border-b border-academy-line px-4 py-4 sm:px-6 lg:hidden">
           <BrandMark
             href={localizedPath(locale, "/")}
             label={c.brand}
@@ -113,9 +111,9 @@ export function AuthShell({
           />
         </div>
 
-        <div className="flex flex-1 items-center justify-center px-6 py-10 sm:px-10">
+        <div className="flex flex-1 items-center justify-center px-4 py-8 sm:px-10 sm:py-10">
           <div className="w-full max-w-sm">
-            <h1 className="font-display text-[28px] font-semibold leading-tight tracking-[-0.022em] text-academy-navy">
+            <h1 className="font-display text-[24px] font-semibold leading-tight tracking-[-0.022em] text-academy-navy sm:text-[28px]">
               {title}
             </h1>
             <p className="mt-2 text-[14px] leading-relaxed text-academy-slate">

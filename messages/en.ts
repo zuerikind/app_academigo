@@ -32,9 +32,13 @@ export const en: Dictionary = {
     ctaApplyTeacher: "Apply as a teacher",
     footer: "© {year} Academigo — Structured tutoring, online and in Zurich.",
     footerTagline:
-      "Mathematics, Physics, and Chemistry. Personal support and our own learning platform.",
+      "Tutoring across 22 school subjects — online and in Zurich.",
     footerPlatform: "Platform",
     footerContact: "Contact",
+    footerLanguage: "Language",
+    footerEmail: "Email",
+    footerLearnMore: "Learn more on academigo.xyz",
+    footerLocation: "Zürich · Online & in-person",
   },
   nav: {
     teachers: "Teachers",
@@ -60,14 +64,27 @@ export const en: Dictionary = {
   },
   subjectNames: {
     mathematics: "Mathematics",
+    "applied-mathematics": "Applied Mathematics",
     physics: "Physics",
     chemistry: "Chemistry",
+    biology: "Biology",
+    "computer-science": "Computer Science",
     german: "German",
     french: "French",
+    italian: "Italian",
     english: "English",
-    biology: "Biology",
-    economics: "Economics",
+    spanish: "Spanish",
+    latin: "Latin",
+    greek: "Greek",
     history: "History",
+    geography: "Geography",
+    economics: "Economics & Law",
+    philosophy: "Philosophy",
+    "pedagogy-psychology": "Pedagogy & Psychology",
+    "religious-studies": "Religious Studies",
+    "visual-arts": "Visual Arts",
+    music: "Music",
+    sports: "Sports",
   },
   status: {
     pending: "Pending",
@@ -123,14 +140,111 @@ export const en: Dictionary = {
     },
   },
   home: {
-    badge: "Tutoring · Switzerland",
-    title: "Personal tutoring",
-    titleHighlight: "that moves you forward.",
-    subtitle:
-      "Structured learning with experienced tutors — online or in Zurich. Currently Mathematics, Physics, and Chemistry. More subjects coming soon.",
-    startStudent: "View teachers",
-    becomeTeacher: "Apply as a teacher",
-    secondaryCta: "View pricing",
+    portal: {
+      badge: "Academigo platform",
+      title: "Personal support meets",
+      titleHighlight: "digital learning guidance.",
+      subtitle:
+        "22 school subjects — from Mathematics and Physics to languages, humanities, and arts. Find the right teacher, book lessons, and learn with a platform that supports you between sessions.",
+      learnMore: "Learn more on academigo.xyz",
+      browseTeachers: "Browse teachers",
+      stepsSection: {
+        eyebrow: "Getting started",
+        title: "How registration works",
+        description:
+          "Follow the steps for your role — whether you want to learn or teach.",
+      },
+      authAside: {
+        eyebrow: "Academigo platform",
+        title: "Structured tutoring, built for you.",
+        body: "Book lessons, manage credits, and connect with reviewed tutors — all in one place.",
+      },
+      keyFacts: {
+        eyebrow: "At a glance",
+        title: "What you need to know",
+        subjects: {
+          title: "Subjects",
+          desc: "We cover the full range of Swiss school subjects — STEM, languages, humanities, arts, and sports.",
+          availableNow: "Available now",
+          comingSoon: "Coming soon",
+        },
+        locations: {
+          title: "Online & in Zurich",
+          desc: "Video lessons or in-person meetings, whichever fits your schedule.",
+        },
+        pricing: {
+          title: "Clear CHF packages",
+          desc: "Single lessons or bundles with transparent pricing.",
+        },
+        teachers: {
+          title: "Reviewed teachers",
+          desc: "Every profile is checked by our team before going live.",
+        },
+      },
+      student: {
+        eyebrow: "For students",
+        title: "How to get started",
+        cta: "Sign up as a student",
+        steps: [
+          {
+            title: "Create your account",
+            description:
+              "Sign up with your email, choose the student role, and set a password.",
+          },
+          {
+            title: "Verify your email",
+            description:
+              "Click the confirmation link in your inbox to activate your account.",
+          },
+          {
+            title: "Complete your profile",
+            description:
+              "Tell us your school level, subject, learning goals, and lesson preferences.",
+          },
+          {
+            title: "Find teachers & book",
+            description:
+              "Browse approved tutors, buy lesson credits, and book sessions from your dashboard.",
+          },
+        ],
+      },
+      teacher: {
+        eyebrow: "For teachers",
+        title: "How to join Academigo",
+        cta: "Apply as a teacher",
+        steps: [
+          {
+            title: "Create your account",
+            description:
+              "Sign up with your email, choose the teacher role, and set a password.",
+          },
+          {
+            title: "Verify your email",
+            description:
+              "Confirm your address via the link we send you before continuing.",
+          },
+          {
+            title: "Build your profile",
+            description:
+              "Add your bio, education, experience, subjects, photo, and lesson formats.",
+          },
+          {
+            title: "Wait for approval",
+            description:
+              "Our team reviews your profile. You are not visible to students until approved.",
+          },
+          {
+            title: "Go live",
+            description:
+              "Once approved, set your availability and start receiving booking requests.",
+          },
+        ],
+      },
+      cta: {
+        title: "Ready to begin?",
+        subtitle: "Log in to your account or create a new one.",
+      },
+    },
     trust: {
       experience: "10+ years of experience",
       locations: "Online and in Zurich",
@@ -138,38 +252,12 @@ export const en: Dictionary = {
       platform: "Own learning platform",
       subjects: "Now: Mathematics, Physics, Chemistry",
     },
-    approach: {
-      eyebrow: "How we work",
-      title: "Not a faceless marketplace.",
-      body: "You learn with dedicated tutors, clear goals, and 50-minute lessons. Credits and scheduling run on a platform we build and use ourselves.",
-    },
     subjects: {
       eyebrow: "Subjects",
-      title: "Three subjects, taught with focus.",
+      title: "Available subjects",
       active: "Available now",
       soon: "In preparation",
     },
-    features: {
-      teachers: {
-        title: "Reviewed teachers",
-        desc: "Profiles with education, experience, and subjects — approved by our team before going live.",
-      },
-      flexible: {
-        title: "Online or in person",
-        desc: "Video lessons or meetings in Zurich — whatever fits your schedule.",
-      },
-      trusted: {
-        title: "Clear CHF packages",
-        desc: "Single lessons or bundles. Transparent pricing, no hidden fees.",
-      },
-    },
-    featuredTeachers: "Approved teachers",
-    featuredTeachersDesc: "Every profile is reviewed before publication.",
-    ctaTitle: "Not sure where to start?",
-    ctaSubtitle:
-      "Message us for a free consultation — we help you choose a teacher and package.",
-    createFreeAccount: "Request free consultation",
-    ctaAccount: "Create account directly",
   },
   teachers: {
     title: "Our teachers",
@@ -204,25 +292,71 @@ export const en: Dictionary = {
     comingSoonDesc: "We are onboarding expert teachers for this subject.",
   },
   pricing: {
-    title: "Simple, transparent pricing",
+    title: "Academigo programmes",
     subtitle:
-      "All prices in CHF. Purchase lesson credits and book with any approved teacher.",
+      "All prices in CHF. Choose flexible lesson packs or monthly coaching — online or in person.",
     mostPopular: "Most popular",
-    lessonCredits: "{count} lesson credits",
-    features: {
-      duration: "50-minute sessions",
-      verified: "Verified teachers",
-      scheduling: "Flexible scheduling",
+    perMonth: "/ month",
+    included: "Includes:",
+    checkoutNote:
+      "Online checkout coming soon. Contact us anytime for a consultation or early access.",
+    tiers: {
+      essentials: {
+        kindLabel: "Flexible",
+        name: "Academigo Essentials",
+        tagline:
+          "Flexible support for targeted questions and short-term learning goals",
+        description:
+          "Ideal for students who need occasional support or want to deepen specific topics in a focused way.",
+        priceLabel: "Pricing options",
+        featuresLabel: "",
+        options: {
+          single: "Single lesson (50 minutes)",
+          pack5: "5-lesson pack",
+          pack10: "10-lesson pack",
+        },
+        features: [
+          "Individual tutoring",
+          "Online or in person",
+        ],
+      },
+      plus: {
+        kindLabel: "Monthly plan",
+        name: "Academigo Plus",
+        tagline: "Regular coaching for sustainable progress",
+        description:
+          "For students who work continuously on their performance and want to systematically close learning gaps.",
+        features: [
+          "4 lessons per month",
+          "Personal learning plan",
+          "Access to the Academigo learning platform",
+          "Individual exercises and recommendations",
+          "Structured learning support",
+          "Ongoing adjustment of learning goals",
+        ],
+      },
+      excellence: {
+        kindLabel: "Premium",
+        name: "Academigo Excellence",
+        tagline: "Comprehensive support for ambitious goals",
+        description:
+          "Our premium programme for students who want to reach their full potential and achieve outstanding results long term.",
+        features: [
+          "8 lessons per month",
+          "Personal learning plan",
+          "Individual coaching and learning strategy",
+          "Regular progress reviews",
+          "Access to the Academigo learning platform",
+          "Priority scheduling",
+          "Individual exercises and learning materials",
+          "Long-term goal planning and academic mentoring",
+        ],
+      },
     },
-    platformTitle: "Platform Access",
-    platformDesc:
-      "{price}/month — optional access to learning resources and platform tools.",
-    platformNote: "Subscription checkout will be available in a future update.",
     packages: {
-      single: "Single Lesson",
-      pack5: "5 Lesson Package",
-      pack10: "10 Lesson Package",
-      platform: "Platform Access",
+      single: "Single lesson (50 minutes)",
+      pack5: "5-lesson pack",
+      pack10: "10-lesson pack",
     },
   },
   about: {
@@ -311,6 +445,11 @@ export const en: Dictionary = {
       name: "Name",
       email: "Email",
       role: "Role",
+      preferredSubject: "Preferred subject",
+      noSubject: "No subject selected",
+      save: "Save",
+      saving: "Saving…",
+      saved: "Saved",
     },
   },
   teacher: {
@@ -322,14 +461,33 @@ export const en: Dictionary = {
       submitting: "Submitting…",
       profilePicture: "Profile picture",
       subjectsTeach: "Subjects you teach",
-      payoutPlaceholder: "Payout information (placeholder)",
-      payoutHint: "IBAN or payment details — stored for admin review",
       offersOnline: "Offer online lessons",
       offersInPerson: "Offer in-person lessons",
       location: "Location (if in-person)",
       locationPlaceholder: "Zurich, etc.",
-      languages: "Languages (comma-separated)",
-      languagesPlaceholder: "German, English",
+      languages: "Languages you teach in",
+      languageOther: "Other languages",
+      languageOtherPlaceholder: "e.g. Portuguese, Arabic (comma-separated)",
+      experienceOptions: {
+        less1: "Less than 1 year",
+        one2: "1–2 years",
+        three5: "3–5 years",
+        six10: "6–10 years",
+        ten_plus: "More than 10 years",
+      },
+      payoutTitle: "Payout information",
+      payoutOptionalNote: "Optional — you can fill this in later when requesting a payout.",
+      payoutName: "Full name (as on bank account)",
+      payoutIban: "IBAN",
+      payoutIbanPlaceholder: "CH56 0483 5012 3456 7800 9",
+      payoutStreet: "Street and number",
+      payoutStreetPlaceholder: "Musterstrasse 1",
+      payoutZip: "Postcode",
+      payoutZipPlaceholder: "8001",
+      payoutCity: "City",
+      payoutCityPlaceholder: "Zurich",
+      payoutTwint: "Twint phone number",
+      payoutTwintPlaceholder: "+41 79 123 45 67",
       errors: {
         required:
           "Please complete all required fields and select at least one subject.",
@@ -355,6 +513,9 @@ export const en: Dictionary = {
       completeOnboarding: "Complete onboarding first.",
       subjects: "Subjects",
       modality: "Format",
+      save: "Save",
+      saving: "Saving…",
+      saved: "Saved",
     },
     availability: {
       title: "Availability",
@@ -373,6 +534,24 @@ export const en: Dictionary = {
     settings: {
       title: "Settings",
       subtitle: "Account details",
+      name: "Name",
+      email: "Email",
+      payoutTitle: "Payout information",
+      payoutOptionalNote: "Optional — you can fill this in later when requesting a payout.",
+      payoutName: "Full name (as on bank account)",
+      payoutIban: "IBAN",
+      payoutIbanPlaceholder: "CH56 0483 5012 3456 7800 9",
+      payoutStreet: "Street and number",
+      payoutStreetPlaceholder: "Musterstrasse 1",
+      payoutZip: "Postcode",
+      payoutZipPlaceholder: "8001",
+      payoutCity: "City",
+      payoutCityPlaceholder: "Zurich",
+      payoutTwint: "Twint phone number",
+      payoutTwintPlaceholder: "+41 79 123 45 67",
+      save: "Save",
+      saving: "Saving…",
+      saved: "Saved",
     },
   },
   errors: {
@@ -418,6 +597,25 @@ export const en: Dictionary = {
       statusApproved: "Approved",
       statusPending: "Pending",
       empty: "No teachers found.",
+      detail: {
+        back: "Back to teachers",
+        joined: "Joined",
+        bio: "Bio",
+        education: "Education",
+        experience: "Experience",
+        teachingStyle: "Teaching style",
+        subjects: "Subjects",
+        languages: "Languages",
+        format: "Format",
+        online: "Online",
+        inPerson: "In-person",
+        location: "Location",
+        payoutInfo: "Payout info",
+        noPayoutInfo: "Not provided",
+        notProvided: "—",
+        approveAction: "Approve teacher",
+        alreadyApproved: "This teacher is already approved.",
+      },
     },
     students: {
       title: "Students",

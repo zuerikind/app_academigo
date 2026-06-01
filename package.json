@@ -13,6 +13,7 @@
   "dependencies": {
     "@react-email/components": "^1.0.12",
     "@supabase/ssr": "^0.10.3",
+    "stripe": "^17.0.0",
     "@supabase/supabase-js": "^2.106.2",
     "clsx": "^2.1.1",
     "framer-motion": "^12.40.0",

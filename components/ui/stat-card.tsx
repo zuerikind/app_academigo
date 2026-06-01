@@ -79,7 +79,7 @@ export function StatCard({
 
       <p
         className={cn(
-          "mt-6 font-display text-[34px] font-semibold leading-none tracking-tight text-numeric",
+          "mt-5 font-display text-[28px] font-semibold leading-none tracking-tight text-numeric sm:mt-6 sm:text-[34px]",
           valueColorBrand,
         )}
       >

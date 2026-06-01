@@ -18,7 +18,7 @@ export async function PublicLayout({
   const dict = getDictionary(locale);
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col overflow-x-clip bg-white">
       <Navbar isAuthenticated={!!user} />
       <main className="flex-1">{children}</main>
       <Footer locale={locale} dict={dict} />

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/layout/brand-mark";
+import { FooterLanguageSwitcher } from "@/components/layout/footer-language-switcher";
 import { siteConfig } from "@/config/site";
 import { formatMessage } from "@/lib/i18n/format";
 import type { Locale } from "@/lib/i18n/config";
@@ -20,6 +21,10 @@ export function Footer({
     { label: c.ctaViewPricing, href: localizedPath(locale, "/pricing") },
     { label: dict.nav.subjects, href: localizedPath(locale, "/subjects") },
     { label: dict.nav.about, href: localizedPath(locale, "/about") },
+    {
+      label: c.ctaApplyTeacher,
+      href: localizedPath(locale, "/signup?role=teacher"),
+    },
   ];
 
   const contact = [
@@ -29,38 +34,42 @@ export function Footer({
       external: true,
     },
     {
-      label: c.ctaApplyTeacher,
-      href: localizedPath(locale, "/signup?role=teacher"),
+      label: c.footerEmail,
+      href: siteConfig.links.email,
+      external: true,
+    },
+    {
+      label: c.footerLearnMore,
+      href: siteConfig.domain,
+      external: true,
     },
   ];
 
   return (
     <footer className="border-t border-[color:var(--brand-deep)] bg-[color:var(--brand-deep)] text-white">
-      <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
-        <div className="grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
-          <div>
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-8 lg:px-10">
+        <div className="grid gap-10 py-12 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-10 sm:py-16 lg:grid-cols-4 lg:gap-10">
+          <div className="sm:col-span-2 lg:col-span-1">
             <BrandMark
               href={localizedPath(locale, "/")}
               label={c.brand}
-              variant="light"
-              layout="full"
-              showWordmark={false}
+              layout="stacked"
             />
             <p className="mt-5 max-w-xs text-[13.5px] leading-relaxed text-white/65">
               {c.footerTagline}
             </p>
+            <p className="mt-3 text-[12.5px] text-white/45">{c.footerLocation}</p>
           </div>
 
           <FooterColumn title={c.footerPlatform} items={platform} />
           <FooterColumn title={c.footerContact} items={contact} />
 
-          <div>
-            <p className="text-meta text-white/55">{dict.nav.languageSwitcher}</p>
-            <ul className="mt-5 space-y-1.5 text-[13.5px] text-white/70">
-              <li>Zürich, Switzerland</li>
-              <li>Online &amp; in-person</li>
-            </ul>
-          </div>
+          <FooterSection title={c.footerLanguage}>
+            <FooterLanguageSwitcher
+              locale={locale}
+              ariaLabel={dict.nav.languageSwitcher}
+            />
+          </FooterSection>
         </div>
 
         <div className="flex flex-col gap-2 border-t border-white/10 py-6 text-[12px] text-white/45 sm:flex-row sm:items-center sm:justify-between">
@@ -72,6 +81,21 @@ export function Footer({
   );
 }
 
+function FooterSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <p className="text-meta text-white/55">{title}</p>
+      <div className="mt-5">{children}</div>
+    </div>
+  );
+}
+
 function FooterColumn({
   title,
   items,
@@ -80,12 +104,11 @@ function FooterColumn({
   items: { label: string; href: string; external?: boolean }[];
 }) {
   return (
-    <div>
-      <p className="text-meta text-white/55">{title}</p>
-      <ul className="mt-5 space-y-2.5 text-[13.5px]">
-        {items.map((item) =>
-          item.external ? (
-            <li key={item.href}>
+    <FooterSection title={title}>
+      <ul className="space-y-2.5 text-[13.5px]">
+        {items.map((item) => (
+          <li key={item.href + item.label}>
+            {item.external ? (
               <a
                 href={item.href}
                 target="_blank"
@@ -94,19 +117,17 @@ function FooterColumn({
               >
                 {item.label}
               </a>
-            </li>
-          ) : (
-            <li key={item.href}>
+            ) : (
               <Link
                 href={item.href}
                 className="text-white/75 transition-colors hover:text-white"
               >
                 {item.label}
               </Link>
-            </li>
-          ),
-        )}
+            )}
+          </li>
+        ))}
       </ul>
-    </div>
+    </FooterSection>
   );
 }

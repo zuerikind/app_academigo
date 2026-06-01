@@ -41,7 +41,7 @@ export async function setAvailabilityRange(
   });
 
   if (!parsed.success) {
-    return { error: parsed.error.errors[0]?.message ?? "Invalid input" };
+    return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
   }
 
   const { dayOfWeek, startTime, endTime } = parsed.data;
@@ -113,7 +113,7 @@ export async function setAvailabilityBlocker(
   });
 
   if (!parsed.success) {
-    return { error: parsed.error.errors[0]?.message ?? "Invalid date" };
+    return { error: parsed.error.issues[0]?.message ?? "Invalid date" };
   }
 
   const supabase = await createClient();

@@ -36,7 +36,8 @@ function LogoTile({
 
 /**
  * Academigo brand mark — logo assets in /public/brand/.
- * `layout="full"` — stacked icon + wordmark image (auth panel, footer, nav).
+ * `layout="full"` — stacked icon + wordmark image (nav on white backgrounds).
+ * `layout="stacked"` — centered icon + wordmark in a white tile (dark panels).
  * `layout="compact"` — circle-A icon only (sidebar, mobile).
  */
 export function BrandMark({
@@ -51,14 +52,15 @@ export function BrandMark({
   label?: string;
   className?: string;
   variant?: "dark" | "light";
-  layout?: "compact" | "full";
+  layout?: "compact" | "full" | "stacked";
   /** @deprecated Use layout="full" instead */
   showMonogram?: boolean;
-  /** Ignored when layout="full" (wordmark is in the image). */
+  /** Ignored when layout="full" or layout="stacked". */
   showWordmark?: boolean;
 }) {
   const onDark = variant === "light";
   const useFull = layout === "full";
+  const useStacked = layout === "stacked";
 
   const icon = (
     <Image
@@ -66,8 +68,8 @@ export function BrandMark({
       alt=""
       width={40}
       height={40}
-      priority={useFull}
-      className="h-8 w-8 object-contain sm:h-9 sm:w-9"
+      priority={useFull || useStacked}
+      className="h-8 w-8 object-contain object-center sm:h-9 sm:w-9"
       aria-hidden
     />
   );
@@ -79,24 +81,43 @@ export function BrandMark({
       width={220}
       height={132}
       priority
-      className="h-[3.25rem] w-auto max-w-[min(220px,70vw)] object-contain object-left sm:h-[3.75rem]"
+      className="h-[3.25rem] w-auto max-w-[min(220px,70vw)] object-contain object-center sm:h-[3.75rem]"
       aria-hidden
     />
+  );
+
+  const stackedLogo = (
+    <span className="inline-flex size-[7.5rem] flex-col items-center justify-center rounded-2xl bg-white px-4 py-4 shadow-sm ring-1 ring-white/90">
+      <Image
+        src={brandAssetPaths.icon}
+        alt=""
+        width={48}
+        height={48}
+        priority
+        className="h-10 w-10 shrink-0 object-contain object-center"
+        aria-hidden
+      />
+      <span className="mt-2 font-display text-[14px] font-bold leading-none tracking-[-0.018em] text-academy-navy">
+        {label}
+      </span>
+    </span>
   );
 
   return (
     <Link
       href={href}
       className={cn(
-        "group inline-flex items-center rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand)]/40 focus-visible:ring-offset-2",
-        useFull ? "gap-0" : "gap-2.5",
-        !useFull && showWordmark && onDark && "text-white",
-        !useFull && showWordmark && !onDark && "text-academy-navy",
+        "group inline-flex rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand)]/40 focus-visible:ring-offset-2",
+        useFull ? "items-center gap-0" : useStacked ? "items-center" : "items-center gap-2.5",
+        !useFull && !useStacked && showWordmark && onDark && "text-white",
+        !useFull && !useStacked && showWordmark && !onDark && "text-academy-navy",
         className,
       )}
       aria-label={label}
     >
-      {useFull ? (
+      {useStacked ? (
+        stackedLogo
+      ) : useFull ? (
         fullLogo
       ) : (
         <>

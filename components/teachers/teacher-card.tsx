@@ -93,8 +93,8 @@ export function TeacherCard({
         </p>
       )}
 
-      <div className="mt-auto pt-5">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-academy-line pt-4 text-[12px] text-academy-slate">
+      <div className="mt-auto pt-4 sm:pt-5">
+        <div className="flex flex-col gap-2 border-t border-academy-line pt-4 text-[12px] text-academy-slate sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-1">
           {teacher.offersOnline && (
             <span className="inline-flex items-center gap-1.5">
               <Monitor className="h-3.5 w-3.5" strokeWidth={1.6} /> {t.online}
@@ -105,7 +105,7 @@ export function TeacherCard({
               <MapPin className="h-3.5 w-3.5" strokeWidth={1.6} /> {t.inPerson}
             </span>
           )}
-          <span className="ml-auto font-medium text-[color:var(--brand-deep)]">
+          <span className="font-medium text-[color:var(--brand-deep)] sm:ml-auto">
             {t.viewProfile}
           </span>
         </div>

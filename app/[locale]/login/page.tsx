@@ -28,9 +28,9 @@ export default async function LoginPage({ params, searchParams }: Props) {
       switchHref={localizedPath(locale, "/signup")}
       switchPrompt={t.noAccount}
       switchCta={dict.common.signUp}
-      asideEyebrow={dict.home.approach.eyebrow}
-      asideTitle={dict.home.approach.title}
-      asideBody={dict.home.approach.body}
+      asideEyebrow={dict.home.portal.authAside.eyebrow}
+      asideTitle={dict.home.portal.authAside.title}
+      asideBody={dict.home.portal.authAside.body}
     >
       <LoginForm action={signIn} redirect={redirect} />
     </AuthShell>

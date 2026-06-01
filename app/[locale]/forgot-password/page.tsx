@@ -26,9 +26,9 @@ export default async function ForgotPasswordPage({ params }: Props) {
       switchHref={localizedPath(locale, "/login")}
       switchPrompt=""
       switchCta={t.backToLogin}
-      asideEyebrow={dict.home.approach.eyebrow}
-      asideTitle={dict.home.approach.title}
-      asideBody={dict.home.approach.body}
+      asideEyebrow={dict.home.portal.authAside.eyebrow}
+      asideTitle={dict.home.portal.authAside.title}
+      asideBody={dict.home.portal.authAside.body}
     >
       <ForgotPasswordForm action={requestPasswordReset} />
     </AuthShell>

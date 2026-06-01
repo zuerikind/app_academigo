@@ -5,7 +5,7 @@ import { completeStudentOnboarding } from "@/lib/actions/onboarding";
 import { getProfile } from "@/lib/auth/session";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
-import { getActiveSubjects } from "@/lib/queries/subjects";
+import { getSubjects } from "@/lib/queries/subjects";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -16,7 +16,7 @@ export default async function StudentOnboardingPage({ params }: Props) {
   const dict = getDictionary(raw);
   const t = dict.student.onboarding;
   const profile = await getProfile();
-  const subjects = await getActiveSubjects();
+  const subjects = await getSubjects();
 
   return (
     <OnboardingShell

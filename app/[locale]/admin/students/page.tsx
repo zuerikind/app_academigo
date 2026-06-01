@@ -25,16 +25,16 @@ export default async function AdminStudentsPage({ params }: Props) {
       key: "name",
       header: t.colName,
       render: (row: StudentRow) => {
-        const p = row.profiles as { full_name: string | null; email: string | null }[] | null;
-        return p?.[0]?.full_name ?? "—";
+        const p = row.profiles as unknown as { full_name: string | null; email: string | null } | null;
+        return p?.full_name ?? "—";
       },
     },
     {
       key: "email",
       header: t.colEmail,
       render: (row: StudentRow) => {
-        const p = row.profiles as { full_name: string | null; email: string | null }[] | null;
-        return p?.[0]?.email ?? "—";
+        const p = row.profiles as unknown as { full_name: string | null; email: string | null } | null;
+        return p?.email ?? "—";
       },
     },
     {
@@ -61,7 +61,7 @@ export default async function AdminStudentsPage({ params }: Props) {
 
   return (
     <div className="space-y-6">
-      <PageHeader title={t.title} />
+<PageHeader title={t.title} />
       <Table
         columns={columns}
         rows={students}

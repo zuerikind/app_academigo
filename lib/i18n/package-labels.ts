@@ -1,17 +1,13 @@
 import type { Dictionary } from "@/messages/types";
 
-const packageKeys = {
-  single: "single",
-  pack5: "pack5",
-  pack10: "pack10",
-  platform: "platform",
-} as const;
-
 export function getPackageName(dict: Dictionary, id: string): string {
-  const key = id as keyof typeof packageKeys;
   const packages = dict.pricing.packages;
-  if (key in packages) {
-    return packages[key as keyof typeof packages];
+  if (id in packages) {
+    return packages[id as keyof typeof packages];
+  }
+  const tier = dict.pricing.tiers[id as keyof typeof dict.pricing.tiers];
+  if (tier && "name" in tier) {
+    return tier.name;
   }
   return id;
 }

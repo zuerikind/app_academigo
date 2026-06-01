@@ -67,7 +67,7 @@ export function MobileNav({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 flex border-t border-academy-line bg-white/95 backdrop-blur-md lg:hidden">
+    <nav className="safe-bottom fixed bottom-0 left-0 right-0 z-40 flex border-t border-academy-line bg-white/95 backdrop-blur-md lg:hidden">
       {items.slice(0, 5).map((item) => {
         const active =
           pathname === item.href || pathname.startsWith(`${item.href}/`);

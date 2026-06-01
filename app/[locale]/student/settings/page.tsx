@@ -1,9 +1,13 @@
 import { notFound } from "next/navigation";
+import { SubjectSettingsForm } from "@/components/student/subject-settings-form";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { getStudentNav } from "@/config/navigation";
+import { updateStudentSubject } from "@/lib/actions/student";
 import { requireRoleFromParams } from "@/lib/auth/session";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { getStudentRecord } from "@/lib/queries/student";
+import { getSubjects } from "@/lib/queries/subjects";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -13,6 +17,10 @@ export default async function StudentSettingsPage({ params }: Props) {
   const dict = getDictionary(raw);
   const t = dict.student.settings;
   const profile = await requireRoleFromParams("student", raw);
+  const [student, subjects] = await Promise.all([
+    getStudentRecord(profile.id),
+    getSubjects(),
+  ]);
 
   const rows = [
     { label: t.name, value: profile.full_name ?? "—" },
@@ -48,6 +56,11 @@ export default async function StudentSettingsPage({ params }: Props) {
             </div>
           ))}
         </dl>
+        <SubjectSettingsForm
+          action={updateStudentSubject}
+          subjects={subjects}
+          currentSubjectId={student?.preferred_subject_id ?? null}
+        />
       </div>
     </DashboardLayout>
   );

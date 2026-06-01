@@ -1,4 +1,15 @@
 import { createClient } from "@/lib/supabase/server";
+import type { Student } from "@/lib/types/index";
+
+export async function getStudentRecord(profileId: string): Promise<Student | null> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("students")
+    .select("*")
+    .eq("profile_id", profileId)
+    .maybeSingle();
+  return data as Student | null;
+}
 
 export async function getStudentDashboardData(profileId: string) {
   const supabase = await createClient();
