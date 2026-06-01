@@ -4,6 +4,10 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireRole } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
+import {
+  getAvailableDaysForMonth,
+  getAvailableSlotsForDay,
+} from "@/lib/queries/availability";
 
 export type AvailabilityActionState = { error?: string };
 
@@ -164,4 +168,27 @@ export async function removeAvailabilityBlocker(
 
   revalidatePath("/", "layout");
   return {};
+}
+
+/**
+ * Server Action wrapper: returns available day-of-month numbers for a given month.
+ * Called client-side when student navigates calendar months.
+ */
+export async function getAvailableDaysAction(
+  teacherId: string,
+  year: number,
+  month: number,
+): Promise<number[]> {
+  return getAvailableDaysForMonth(teacherId, year, month);
+}
+
+/**
+ * Server Action wrapper: returns available slot ISO datetime strings for a given date.
+ * Called client-side when student selects a calendar day.
+ */
+export async function getAvailableSlotsAction(
+  teacherId: string,
+  dateISO: string,
+): Promise<string[]> {
+  return getAvailableSlotsForDay(teacherId, new Date(dateISO));
 }
