@@ -43,7 +43,7 @@
 
 - [x] **BOOK-01**: Student can select an available slot and initiate a booking request
 - [x] **BOOK-02**: Student's credits are reserved (held, not deducted) atomically when a booking is initiated
-- [ ] **BOOK-03**: Teacher sees pending booking requests in their dashboard
+- [x] **BOOK-03**: Teacher sees pending booking requests in their dashboard
 - [x] **BOOK-04**: Teacher can confirm or decline a booking request
 - [x] **BOOK-05**: On confirmation, teacher provides a Zoom/Meet meeting link
 - [x] **BOOK-06**: Student can view the confirmed meeting link for their upcoming session
@@ -54,7 +54,7 @@
 ### Payments (Stripe)
 
 - [ ] **PAY-01**: Student can view available credit packages with CHF prices
-- [ ] **PAY-02**: Student can purchase a credit package via Stripe Checkout (redirect flow)
+- [x] **PAY-02**: Student can purchase a credit package via Stripe Checkout (redirect flow)
 - [x] **PAY-03**: Credits are automatically granted to the student on successful Stripe payment (webhook, idempotent on `stripe_session_id`)
 - [ ] **PAY-04**: Student's current credit balance is displayed on their dashboard and packages page
 - [ ] **PAY-05**: Session credit cost matches the teacher's tier rate; deducted on completion
@@ -70,9 +70,9 @@
 
 - [x] **EARN-01**: Teacher earnings (CHF amount) are automatically recorded per completed session
 - [ ] **EARN-02**: Teacher can view their earnings history on a dedicated page
-- [ ] **EARN-03**: Teacher can submit a payout request from their dashboard
-- [ ] **EARN-04**: Admin can view all pending payout requests with teacher and amount details
-- [ ] **EARN-05**: Admin can mark a payout request as processed (with optional reference note)
+- [x] **EARN-03**: Teacher can submit a payout request from their dashboard
+- [x] **EARN-04**: Admin can view all pending payout requests with teacher and amount details
+- [x] **EARN-05**: Admin can mark a payout request as processed (with optional reference note)
 
 ## v2 Requirements
 
@@ -135,7 +135,7 @@
 | AVAIL-03 | Phase 3 | Complete |
 | BOOK-01 | Phase 3 | Complete |
 | BOOK-02 | Phase 3 | Complete |
-| BOOK-03 | Phase 3 | Pending |
+| BOOK-03 | Phase 3 | Complete |
 | BOOK-04 | Phase 3 | Complete |
 | BOOK-05 | Phase 3 | Complete |
 | BOOK-06 | Phase 3 | Complete |
@@ -143,7 +143,7 @@
 | BOOK-08 | Phase 3 | Complete |
 | BOOK-09 | Phase 3 | Complete |
 | PAY-01 | Phase 3 | Pending |
-| PAY-02 | Phase 3 | Pending |
+| PAY-02 | Phase 3 | Complete |
 | PAY-03 | Phase 3 | Complete |
 | PAY-04 | Phase 3 | Pending |
 | PAY-05 | Phase 3 | Pending |
@@ -153,9 +153,9 @@
 | REV-04 | Phase 3 | Pending |
 | EARN-01 | Phase 3 | Complete |
 | EARN-02 | Phase 3 | Pending |
-| EARN-03 | Phase 3 | Pending |
-| EARN-04 | Phase 3 | Pending |
-| EARN-05 | Phase 3 | Pending |
+| EARN-03 | Phase 3 | Complete |
+| EARN-04 | Phase 3 | Complete |
+| EARN-05 | Phase 3 | Complete |
 | TIER-02 | Phase 4 | Pending |
 | TIER-03 | Phase 4 | Pending |
 | TIER-04 | Phase 4 | Pending |

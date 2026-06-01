@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-01-PLAN.md — Phase 3 schema migration and TypeScript types
-last_updated: "2026-06-01T03:52:02.898Z"
+stopped_at: Completed 03-02-PLAN.md
+last_updated: "2026-06-01T03:54:17.286Z"
 last_activity: 2026-05-29 — Plans 01-01, 01-02, 01-03 complete
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 25
-  completed_plans: 13
+  completed_plans: 14
   percent: 80
 ---
 
@@ -62,6 +62,7 @@ Progress: [████████░░] 80%
 | Phase 02-admin-portal P06 | 8 | 1 tasks | 3 files |
 | Phase 02-admin-portal P07 | 3 | 1 tasks | 0 files |
 | Phase 03-core-transaction P01 | 2 | 2 tasks | 2 files |
+| Phase 03-core-transaction P02 | 18 | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -94,6 +95,9 @@ Recent decisions affecting current work:
 - [Phase 02-admin-portal]: All 8 ADMIN requirements require live browser verification — automated tests verify function contracts, not rendered UI
 - [Phase 03-core-transaction]: grant_subscription_credits resets used_credits and reserved_credits to 0 on renewal — credits do not roll over
 - [Phase 03-core-transaction]: create_booking RPC updated with backward-compatible p_topic_note TEXT DEFAULT NULL parameter via CREATE OR REPLACE
+- [Phase 03-core-transaction]: Phase 3 test stubs use dynamic import inside test body to ensure tests remain RED until implementation modules exist
+- [Phase 03-core-transaction]: lib/queries/admin.ts getPayoutRequests test stub is RED because Phase 2 only exported getAdminPayouts — getPayoutRequests will be added in 03-11
+- [Phase 03-core-transaction]: Stripe webhook test stubs mock constructEvent on Stripe SDK instance — auth guard 401 tests for CRON_SECRET are correctness requirements
 
 ### Pending Todos
 
@@ -107,6 +111,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-01T03:52:02.896Z
-Stopped at: Completed 03-01-PLAN.md — Phase 3 schema migration and TypeScript types
+Last session: 2026-06-01T03:54:17.283Z
+Stopped at: Completed 03-02-PLAN.md
 Resume file: None
