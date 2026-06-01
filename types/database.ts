@@ -78,6 +78,7 @@ export type Database = {
           offers_online: boolean;
           offers_in_person: boolean;
           payout_info_placeholder: string | null;
+          default_meet_link: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -98,6 +99,7 @@ export type Database = {
           offers_online?: boolean;
           offers_in_person?: boolean;
           payout_info_placeholder?: string | null;
+          default_meet_link?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["teachers"]["Insert"]>;
       };
@@ -152,6 +154,10 @@ export type Database = {
           end_time: string;
           status: BookingStatus;
           credits_reserved: number;
+          meeting_link: string | null;
+          topic_note: string | null;
+          reminder_24h_sent_at: string | null;
+          reminder_1h_sent_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -164,8 +170,74 @@ export type Database = {
           end_time: string;
           status?: BookingStatus;
           credits_reserved?: number;
+          meeting_link?: string | null;
+          topic_note?: string | null;
+          reminder_24h_sent_at?: string | null;
+          reminder_1h_sent_at?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["bookings"]["Insert"]>;
+      };
+      teacher_availability_ranges: {
+        Row: {
+          id: string;
+          teacher_id: string;
+          day_of_week: number;
+          start_time: string;
+          end_time: string;
+          created_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          teacher_id: string;
+          day_of_week: number;
+          start_time: string;
+          end_time: string;
+          created_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          teacher_id?: string;
+          day_of_week?: number;
+          start_time?: string;
+          end_time?: string;
+          created_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "teacher_availability_ranges_teacher_id_fkey";
+            columns: ["teacher_id"];
+            referencedRelation: "teachers";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      teacher_availability_blockers: {
+        Row: {
+          id: string;
+          teacher_id: string;
+          blocked_date: string;
+          created_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          teacher_id: string;
+          blocked_date: string;
+          created_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          teacher_id?: string;
+          blocked_date?: string;
+          created_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "teacher_availability_blockers_teacher_id_fkey";
+            columns: ["teacher_id"];
+            referencedRelation: "teachers";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       credit_packages: {
         Row: {
@@ -238,6 +310,34 @@ export type Database = {
       student_available_credits: {
         Args: { p_student_id: string };
         Returns: number;
+      };
+      create_booking: {
+        Args: {
+          p_student_id: string;
+          p_teacher_id: string;
+          p_subject_id: string;
+          p_start_time: string;
+          p_end_time: string;
+          p_credits_to_reserve: number;
+          p_topic_note?: string;
+        };
+        Returns: string;
+      };
+      complete_booking: {
+        Args: { p_booking_id: string };
+        Returns: undefined;
+      };
+      cancel_booking: {
+        Args: { p_booking_id: string };
+        Returns: undefined;
+      };
+      grant_credits: {
+        Args: { p_student_id: string; p_credits: number };
+        Returns: undefined;
+      };
+      grant_subscription_credits: {
+        Args: { p_student_id: string; p_credits: number };
+        Returns: undefined;
       };
     };
     Enums: Record<string, never>;
