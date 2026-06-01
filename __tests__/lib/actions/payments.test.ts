@@ -30,6 +30,13 @@ jest.mock("@/lib/auth/session", () => ({ requireRole: (...args: unknown[]) => mo
 jest.mock("@/lib/supabase/server", () => ({
   createClient: jest.fn(() => Promise.resolve(mocks.supabase)),
 }));
+// Mock locale utilities to avoid calling cookies() outside request scope in tests
+jest.mock("@/lib/actions/locale", () => ({
+  getActionLocale: jest.fn().mockResolvedValue("en"),
+}));
+jest.mock("@/lib/i18n/server", () => ({
+  getLocaleFromCookie: jest.fn().mockResolvedValue("en"),
+}));
 jest.mock("stripe", () => {
   return jest.fn().mockImplementation(() => ({
     checkout: {
