@@ -23,12 +23,18 @@ export async function getTeacherAvailabilityBlockers(teacherId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("teacher_availability_blockers")
-    .select("id, blocked_date")
+    .select("id, blocked_date, start_time, end_time")
     .eq("teacher_id", teacherId)
-    .order("blocked_date");
+    .order("blocked_date")
+    .order("start_time");
 
   if (error) throw error;
-  return (data ?? []) as Array<{ id: string; blocked_date: string }>;
+  return (data ?? []) as Array<{
+    id: string;
+    blocked_date: string;
+    start_time: string | null;
+    end_time: string | null;
+  }>;
 }
 
 /**
@@ -56,15 +62,17 @@ export async function getAvailableSlotsForDay(
 
   if (ranges.length === 0) return [];
 
-  // Fetch blockers
+  // Fetch blockers (with optional time ranges)
   const { data: blockersRaw } = await supabase
     .from("teacher_availability_blockers")
-    .select("blocked_date")
+    .select("blocked_date, start_time, end_time")
     .eq("teacher_id", teacherId);
 
-  const blockedDates = (blockersRaw ?? []).map(
-    (b) => b.blocked_date as string,
-  );
+  const blockers = (blockersRaw ?? []).map((b) => ({
+    date: b.blocked_date as string,
+    start_time: b.start_time as string | null,
+    end_time: b.end_time as string | null,
+  }));
 
   // Build date string for the target date
   const year = targetDate.getFullYear();
@@ -100,7 +108,7 @@ export async function getAvailableSlotsForDay(
   return generateSlots({
     date: dateStr,
     ranges,
-    blockedDates,
+    blockers,
     bookedSlots,
     durationMinutes: LESSON_DURATION_MINUTES,
   });

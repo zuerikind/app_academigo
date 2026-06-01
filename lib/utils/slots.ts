@@ -6,7 +6,7 @@ export const SLOT_INCREMENT_MINUTES = 15;
  *
  * @param date - Date string in "YYYY-MM-DD" format
  * @param ranges - Array of availability ranges with start/end in "HH:MM" format
- * @param blockedDates - Array of "YYYY-MM-DD" strings to exclude entirely
+ * @param blockers - Array of blockers: null start_time/end_time = whole day; otherwise a time window
  * @param bookedSlots - Array of already-booked slots with start/end in "HH:MM" format
  * @param durationMinutes - Lesson duration in minutes (default: LESSON_DURATION_MINUTES)
  * @returns Array of available start times in "HH:MM" format
@@ -14,18 +14,20 @@ export const SLOT_INCREMENT_MINUTES = 15;
 export function generateSlots({
   date,
   ranges,
-  blockedDates,
+  blockers = [],
   bookedSlots,
   durationMinutes = LESSON_DURATION_MINUTES,
 }: {
   date: string;
   ranges: Array<{ start: string; end: string }>;
-  blockedDates: string[];
+  blockers?: Array<{ date: string; start_time: string | null; end_time: string | null }>;
   bookedSlots: Array<{ start: string; end: string }>;
   durationMinutes?: number;
 }): string[] {
-  // If the date is blocked, return no slots
-  if (blockedDates.includes(date)) return [];
+  const dateBlockers = blockers.filter((b) => b.date === date);
+
+  // If any blocker covers the whole day (null times), return no slots
+  if (dateBlockers.some((b) => b.start_time === null || b.end_time === null)) return [];
 
   // If no ranges defined, no slots available
   if (ranges.length === 0) return [];
@@ -41,11 +43,19 @@ export function generateSlots({
     return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
   };
 
-  // Convert booked slots to minutes for overlap checking
-  const bookedRanges = bookedSlots.map((s) => ({
-    start: timeToMinutes(s.start),
-    end: timeToMinutes(s.end),
-  }));
+  // Convert booked slots + time-ranged blockers to minutes for overlap checking
+  const bookedRanges = [
+    ...bookedSlots.map((s) => ({
+      start: timeToMinutes(s.start),
+      end: timeToMinutes(s.end),
+    })),
+    ...dateBlockers
+      .filter((b) => b.start_time !== null && b.end_time !== null)
+      .map((b) => ({
+        start: timeToMinutes(b.start_time!),
+        end: timeToMinutes(b.end_time!),
+      })),
+  ];
 
   const slots: string[] = [];
 

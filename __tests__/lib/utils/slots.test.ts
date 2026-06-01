@@ -11,7 +11,7 @@ describe("generateSlots", () => {
     const result = generateSlots({
       date: "2026-07-15",
       ranges: [{ start: "10:00", end: "12:00" }],
-      blockedDates: ["2026-07-15"],
+      blockers: [{ date: "2026-07-15", start_time: null, end_time: null }],
       bookedSlots: [],
       durationMinutes: 50,
     });
@@ -23,7 +23,7 @@ describe("generateSlots", () => {
     const result = generateSlots({
       date: "2026-07-16",
       ranges: [{ start: "14:00", end: "15:00" }],
-      blockedDates: [],
+      blockers: [],
       bookedSlots: [],
       durationMinutes: 50,
     });
@@ -38,7 +38,7 @@ describe("generateSlots", () => {
     const result = generateSlots({
       date: "2026-07-16",
       ranges: [{ start: "10:00", end: "12:00" }],
-      blockedDates: [],
+      blockers: [],
       bookedSlots: [{ start: "10:00", end: "10:50" }],
       durationMinutes: 50,
     });
@@ -52,7 +52,7 @@ describe("generateSlots", () => {
     const result = generateSlots({
       date: "2026-07-16",
       ranges: [],
-      blockedDates: [],
+      blockers: [],
       bookedSlots: [],
       durationMinutes: 50,
     });

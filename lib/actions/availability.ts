@@ -23,9 +23,20 @@ const rangeSchema = z.object({
     .regex(timePattern, "endTime must be HH:MM (00:00–23:59)"),
 });
 
-const blockerSchema = z.object({
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "date must be YYYY-MM-DD"),
-});
+const blockerSchema = z
+  .object({
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "date must be YYYY-MM-DD"),
+    startTime: z.string().regex(timePattern).optional().or(z.literal("")),
+    endTime: z.string().regex(timePattern).optional().or(z.literal("")),
+  })
+  .refine(
+    (v) => {
+      const hasStart = v.startTime && v.startTime !== "";
+      const hasEnd = v.endTime && v.endTime !== "";
+      return hasStart === hasEnd; // both set or both absent
+    },
+    { message: "Both start time and end time must be set together" },
+  );
 
 export async function setAvailabilityRange(
   _prev: AvailabilityActionState,
@@ -114,10 +125,12 @@ export async function setAvailabilityBlocker(
 
   const parsed = blockerSchema.safeParse({
     date: formData.get("date"),
+    startTime: formData.get("startTime") ?? "",
+    endTime: formData.get("endTime") ?? "",
   });
 
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid date" };
+    return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
   }
 
   const supabase = await createClient();
@@ -130,11 +143,15 @@ export async function setAvailabilityBlocker(
 
   if (!teacher) return { error: "Teacher record not found." };
 
+  const hasTimeRange = parsed.data.startTime && parsed.data.startTime !== "";
+
   const { error } = await supabase
     .from("teacher_availability_blockers")
     .insert({
       teacher_id: teacher.id,
       blocked_date: parsed.data.date,
+      start_time: hasTimeRange ? (parsed.data.startTime ?? null) : null,
+      end_time: hasTimeRange ? (parsed.data.endTime ?? null) : null,
     });
 
   if (error) return { error: error.message };

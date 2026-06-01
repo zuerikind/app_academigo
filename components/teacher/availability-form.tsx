@@ -72,18 +72,37 @@ export function AddBlockerForm({
   const [state, formAction, pending] = useActionState(action, {});
 
   return (
-    <form action={formAction} className="flex items-end gap-3">
+    <form action={formAction} className="space-y-4">
       {state.error && (
         <p className="rounded-md border border-[color:var(--academy-danger)]/25 bg-[color:var(--academy-danger-soft)] px-3.5 py-2.5 text-[13px] text-[color:var(--academy-danger)]">
           {state.error}
         </p>
       )}
-      <Field className="flex-1">
-        <Label htmlFor="blockerDate">Date to block</Label>
-        <Input id="blockerDate" name="date" type="date" required />
-      </Field>
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Field>
+          <Label htmlFor="blockerDate">Date</Label>
+          <Input id="blockerDate" name="date" type="date" required />
+        </Field>
+        <Field>
+          <Label htmlFor="blockerStartTime">
+            From{" "}
+            <span className="font-normal text-academy-slate">(optional)</span>
+          </Label>
+          <Input id="blockerStartTime" name="startTime" type="time" />
+        </Field>
+        <Field>
+          <Label htmlFor="blockerEndTime">
+            To{" "}
+            <span className="font-normal text-academy-slate">(optional)</span>
+          </Label>
+          <Input id="blockerEndTime" name="endTime" type="time" />
+        </Field>
+      </div>
+      <p className="text-[12px] text-academy-slate">
+        Leave start/end blank to block the entire day.
+      </p>
       <Button type="submit" variant="secondary" disabled={pending}>
-        {pending ? "Blocking…" : "Block date"}
+        {pending ? "Blocking…" : "Block"}
       </Button>
     </form>
   );

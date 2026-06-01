@@ -134,7 +134,18 @@ export default async function TeacherAvailabilityPage({ params }: Props) {
                   className="flex items-center justify-between rounded-md border border-academy-line px-4 py-2.5"
                 >
                   <span className="text-[13.5px] text-academy-navy">
-                    {b.blocked_date}
+                    <span className="font-medium">{b.blocked_date}</span>
+                    {b.start_time && b.end_time && (
+                      <>
+                        <span className="mx-2 text-academy-slate">·</span>
+                        {b.start_time.slice(0, 5)} – {b.end_time.slice(0, 5)}
+                      </>
+                    )}
+                    {!b.start_time && (
+                      <span className="ml-2 text-[12px] text-academy-slate">
+                        all day
+                      </span>
+                    )}
                   </span>
                   <form action={removeBlockerAction}>
                     <input type="hidden" name="blockerId" value={b.id} />

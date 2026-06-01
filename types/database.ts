@@ -216,18 +216,24 @@ export type Database = {
           id: string;
           teacher_id: string;
           blocked_date: string;
+          start_time: string | null;
+          end_time: string | null;
           created_at: string | null;
         };
         Insert: {
           id?: string;
           teacher_id: string;
           blocked_date: string;
+          start_time?: string | null;
+          end_time?: string | null;
           created_at?: string | null;
         };
         Update: {
           id?: string;
           teacher_id?: string;
           blocked_date?: string;
+          start_time?: string | null;
+          end_time?: string | null;
           created_at?: string | null;
         };
         Relationships: [
