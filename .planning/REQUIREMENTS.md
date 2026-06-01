@@ -35,40 +35,40 @@
 
 ### Availability
 
-- [ ] **AVAIL-01**: Teacher can set recurring weekly availability slots (day of week + start/end time)
-- [ ] **AVAIL-02**: Teacher can remove or update existing availability slots
-- [ ] **AVAIL-03**: Student sees a teacher's available slots when viewing their profile or booking page
+- [x] **AVAIL-01**: Teacher can set recurring weekly availability slots (day of week + start/end time)
+- [x] **AVAIL-02**: Teacher can remove or update existing availability slots
+- [x] **AVAIL-03**: Student sees a teacher's available slots when viewing their profile or booking page
 
 ### Booking
 
-- [ ] **BOOK-01**: Student can select an available slot and initiate a booking request
-- [ ] **BOOK-02**: Student's credits are reserved (held, not deducted) atomically when a booking is initiated
+- [x] **BOOK-01**: Student can select an available slot and initiate a booking request
+- [x] **BOOK-02**: Student's credits are reserved (held, not deducted) atomically when a booking is initiated
 - [ ] **BOOK-03**: Teacher sees pending booking requests in their dashboard
-- [ ] **BOOK-04**: Teacher can confirm or decline a booking request
-- [ ] **BOOK-05**: On confirmation, teacher provides a Zoom/Meet meeting link
-- [ ] **BOOK-06**: Student can view the confirmed meeting link for their upcoming session
-- [ ] **BOOK-07**: On session completion, reserved credits are consumed and teacher earnings are recorded (atomic RPC)
-- [ ] **BOOK-08**: Student or teacher can cancel a booking before it takes place
-- [ ] **BOOK-09**: On cancellation, reserved credits are returned to the student atomically
+- [x] **BOOK-04**: Teacher can confirm or decline a booking request
+- [x] **BOOK-05**: On confirmation, teacher provides a Zoom/Meet meeting link
+- [x] **BOOK-06**: Student can view the confirmed meeting link for their upcoming session
+- [x] **BOOK-07**: On session completion, reserved credits are consumed and teacher earnings are recorded (atomic RPC)
+- [x] **BOOK-08**: Student or teacher can cancel a booking before it takes place
+- [x] **BOOK-09**: On cancellation, reserved credits are returned to the student atomically
 
 ### Payments (Stripe)
 
 - [ ] **PAY-01**: Student can view available credit packages with CHF prices
 - [ ] **PAY-02**: Student can purchase a credit package via Stripe Checkout (redirect flow)
-- [ ] **PAY-03**: Credits are automatically granted to the student on successful Stripe payment (webhook, idempotent on `stripe_session_id`)
+- [x] **PAY-03**: Credits are automatically granted to the student on successful Stripe payment (webhook, idempotent on `stripe_session_id`)
 - [ ] **PAY-04**: Student's current credit balance is displayed on their dashboard and packages page
 - [ ] **PAY-05**: Session credit cost matches the teacher's tier rate; deducted on completion
 
 ### Reviews
 
-- [ ] **REV-01**: Student can submit a star rating (1–5) and optional comment after a completed session
+- [x] **REV-01**: Student can submit a star rating (1–5) and optional comment after a completed session
 - [ ] **REV-02**: Teacher profile displays all reviews with individual ratings and comments
 - [ ] **REV-03**: Teacher profile displays average rating and total review count
 - [ ] **REV-04**: Teacher cards in the directory display average star rating and review count
 
 ### Earnings and Payouts
 
-- [ ] **EARN-01**: Teacher earnings (CHF amount) are automatically recorded per completed session
+- [x] **EARN-01**: Teacher earnings (CHF amount) are automatically recorded per completed session
 - [ ] **EARN-02**: Teacher can view their earnings history on a dedicated page
 - [ ] **EARN-03**: Teacher can submit a payout request from their dashboard
 - [ ] **EARN-04**: Admin can view all pending payout requests with teacher and amount details
@@ -130,28 +130,28 @@
 | ADMIN-06 | Phase 2 | Complete |
 | ADMIN-07 | Phase 2 | Complete |
 | ADMIN-08 | Phase 2 | Complete |
-| AVAIL-01 | Phase 3 | Pending |
-| AVAIL-02 | Phase 3 | Pending |
-| AVAIL-03 | Phase 3 | Pending |
-| BOOK-01 | Phase 3 | Pending |
-| BOOK-02 | Phase 3 | Pending |
+| AVAIL-01 | Phase 3 | Complete |
+| AVAIL-02 | Phase 3 | Complete |
+| AVAIL-03 | Phase 3 | Complete |
+| BOOK-01 | Phase 3 | Complete |
+| BOOK-02 | Phase 3 | Complete |
 | BOOK-03 | Phase 3 | Pending |
-| BOOK-04 | Phase 3 | Pending |
-| BOOK-05 | Phase 3 | Pending |
-| BOOK-06 | Phase 3 | Pending |
-| BOOK-07 | Phase 3 | Pending |
-| BOOK-08 | Phase 3 | Pending |
-| BOOK-09 | Phase 3 | Pending |
+| BOOK-04 | Phase 3 | Complete |
+| BOOK-05 | Phase 3 | Complete |
+| BOOK-06 | Phase 3 | Complete |
+| BOOK-07 | Phase 3 | Complete |
+| BOOK-08 | Phase 3 | Complete |
+| BOOK-09 | Phase 3 | Complete |
 | PAY-01 | Phase 3 | Pending |
 | PAY-02 | Phase 3 | Pending |
-| PAY-03 | Phase 3 | Pending |
+| PAY-03 | Phase 3 | Complete |
 | PAY-04 | Phase 3 | Pending |
 | PAY-05 | Phase 3 | Pending |
-| REV-01 | Phase 3 | Pending |
+| REV-01 | Phase 3 | Complete |
 | REV-02 | Phase 3 | Pending |
 | REV-03 | Phase 3 | Pending |
 | REV-04 | Phase 3 | Pending |
-| EARN-01 | Phase 3 | Pending |
+| EARN-01 | Phase 3 | Complete |
 | EARN-02 | Phase 3 | Pending |
 | EARN-03 | Phase 3 | Pending |
 | EARN-04 | Phase 3 | Pending |
