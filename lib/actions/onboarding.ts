@@ -8,6 +8,7 @@ import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { localizedPath } from "@/lib/i18n/path";
 import { requireProfile } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
+import { isValidAvatarFile, uploadAvatar } from "@/lib/storage/avatars";
 
 export type OnboardingState = { error?: string };
 
@@ -177,21 +178,18 @@ export async function completeTeacherOnboarding(
 
   let avatarUrl = profile.avatar_url;
 
-  const avatarFile = formData.get("avatar") as File | null;
-  if (avatarFile && avatarFile.size > 0) {
-    const ext = avatarFile.name.split(".").pop() ?? "jpg";
-    const path = `${profile.user_id}/avatar.${ext}`;
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(path, avatarFile, { upsert: true });
-
+  const avatarFile = formData.get("avatar");
+  if (isValidAvatarFile(avatarFile)) {
+    const { url, error: uploadError } = await uploadAvatar(
+      supabase,
+      profile.user_id,
+      avatarFile,
+    );
     if (uploadError) {
-      console.error("teacher avatar upload failed:", uploadError.message);
+      console.error("teacher avatar upload failed:", uploadError);
       return { error: dict.teacher.onboarding.errors.avatarUploadFailed };
     }
-
-    const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
-    avatarUrl = urlData.publicUrl;
+    avatarUrl = url ?? profile.avatar_url;
   }
 
   const { error: nameError } = await supabase

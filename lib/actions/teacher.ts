@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
+import { isValidAvatarFile, uploadAvatar } from "@/lib/storage/avatars";
 
 export type TeacherActionState = { error?: string; success?: boolean };
 
@@ -34,24 +35,22 @@ export async function updateTeacherProfile(
   const offersOnline = formData.get("offersOnline") === "on";
   const offersInPerson = formData.get("offersInPerson") === "on";
 
-  let avatarUrl = profile.avatar_url;
-  const avatarFile = formData.get("avatar") as File | null;
-  if (avatarFile && avatarFile.size > 0) {
-    const ext = avatarFile.name.split(".").pop() ?? "jpg";
-    const path = `${profile.user_id}/avatar.${ext}`;
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(path, avatarFile, { upsert: true });
-    if (uploadError) return { error: uploadError.message };
-    const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
-    avatarUrl = urlData.publicUrl;
+  const avatarFile = formData.get("avatar");
+  if (isValidAvatarFile(avatarFile)) {
+    const { url, error: uploadError } = await uploadAvatar(
+      supabase,
+      profile.user_id,
+      avatarFile,
+    );
+    if (uploadError) return { error: uploadError };
+    if (url) {
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: url })
+        .eq("id", profile.id);
+      if (profileError) return { error: profileError.message };
+    }
   }
-
-  const { error: profileError } = await supabase
-    .from("profiles")
-    .update({ avatar_url: avatarUrl })
-    .eq("id", profile.id);
-  if (profileError) return { error: profileError.message };
 
   const { error: teacherError } = await supabase
     .from("teachers")
@@ -77,6 +76,7 @@ export async function updateTeacherProfile(
   }
 
   revalidatePath("/", "layout");
+  revalidatePath("/[locale]/teacher/profile", "page");
   return { success: true };
 }
 
