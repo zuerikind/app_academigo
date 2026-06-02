@@ -101,7 +101,18 @@ Plans:
   4. A student can request a reschedule; the teacher approves or rejects; on approval the original lesson is cancelled and the new one confirmed with no credit loss.
   5. The teacher dashboard shows: active students, remaining student credits, all recurring schedules, upcoming lessons, and any reschedule requests.
   6. The student dashboard shows: credit wallet, credit history, active recurring schedules, and upcoming lessons with reschedule option.
-**Plans**: TBD
+**Plans**: 9 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — DB migration: credit_wallets, credit_transactions, recurring_schedules, lessons + 3 RPCs + type regen
+- [ ] 04-02-PLAN.md — Wave 0 RED test stubs: schedule utility, schedules, reschedule, wallet, cron
+- [ ] 04-03-PLAN.md — computeOccurrences utility, wallet queries, lesson queries
+- [ ] 04-04-PLAN.md — createSchedule, updateScheduleStatus actions + schedule queries
+- [ ] 04-05-PLAN.md — completeLesson, cancelLesson, requestReschedule, approveReschedule, rejectReschedule actions
+- [ ] 04-06-PLAN.md — generate-lessons cron route + vercel.json cron entry
+- [ ] 04-07-PLAN.md — Teacher lessons dashboard page (TDASH-01..04) + nav + i18n
+- [ ] 04-08-PLAN.md — Student lessons dashboard page (SDASH-01..04)
+- [ ] 04-09-PLAN.md — Human verification checkpoint for all Phase 4 deliverables
 
 ### Phase 5: Teacher Progression
 **Goal**: Teachers have visible tier badges, can apply for level promotion, and verified teachers rank higher in the directory.
