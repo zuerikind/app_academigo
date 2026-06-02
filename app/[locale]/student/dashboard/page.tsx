@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { SectionHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
-import { StatusBadge } from "@/components/ui/status-badge";
 import { TeacherCard } from "@/components/teachers/teacher-card";
 import { getStudentNav } from "@/config/navigation";
 import { requireRoleFromParams } from "@/lib/auth/session";
@@ -11,6 +10,7 @@ import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { formatMessage } from "@/lib/i18n/format";
 import { localizedPath } from "@/lib/i18n/path";
+import { translateSubjectName } from "@/lib/i18n/subjects";
 import { getStudentDashboardData } from "@/lib/queries/student";
 import { getApprovedTeachers } from "@/lib/queries/teachers";
 
@@ -21,6 +21,7 @@ export default async function StudentDashboardPage({ params }: Props) {
   if (!isLocale(raw)) notFound();
   const dict = getDictionary(raw);
   const t = dict.student.dashboard;
+  const tb = dict.bookings;
   const profile = await requireRoleFromParams("student", raw);
   const dashboard = await getStudentDashboardData(profile.id);
   const teachers = (await getApprovedTeachers()).slice(0, 3);
@@ -75,38 +76,61 @@ export default async function StudentDashboardPage({ params }: Props) {
             </Link>
           }
         />
-        <div className="mt-6 overflow-hidden rounded-[14px] border border-academy-line bg-white">
+        <div className="mt-6 space-y-3">
           {dashboard.upcomingBookings.length === 0 ? (
-            <div className="px-6 py-9">
-              <p className="text-[14px] leading-relaxed text-academy-slate">
-                {t.noUpcoming}
-              </p>
-              {t.noUpcomingHint && (
-                <p className="mt-2 text-[12.5px] text-academy-slate-muted">
-                  {t.noUpcomingHint}
-                </p>
-              )}
+            <div className="rounded-[14px] border border-academy-line bg-white px-6 py-9">
+              <p className="text-[14px] leading-relaxed text-academy-slate">{t.noUpcoming}</p>
             </div>
           ) : (
-            <ul className="divide-y divide-academy-line">
-              {dashboard.upcomingBookings.map((b) => (
-                <li
-                  key={b.id}
-                  className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
-                >
-                  <p className="text-[13.5px] font-medium text-academy-navy">
-                    {new Date(b.start_time).toLocaleString(dateFmt, {
-                      weekday: "short",
-                      day: "2-digit",
-                      month: "short",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
-                  <StatusBadge status={b.status} />
-                </li>
-              ))}
-            </ul>
+            dashboard.upcomingBookings.map((b) => {
+              const start = new Date(b.start_time);
+              const end = new Date(b.end_time);
+              const dateStr = start.toLocaleDateString(dateFmt, { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+              const timeStr = `${start.toLocaleTimeString(dateFmt, { hour: "2-digit", minute: "2-digit" })} – ${end.toLocaleTimeString(dateFmt, { hour: "2-digit", minute: "2-digit" })}`;
+              return (
+                <div key={b.id} className="rounded-[14px] border border-academy-line bg-white p-5 shadow-sm">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-academy-navy">{b.teacherName}</p>
+                      <p className="mt-0.5 text-[13px] text-academy-slate">{dateStr} · {timeStr}</p>
+                      {b.subjects.length > 0 && (
+                        <div className="mt-1.5 flex flex-wrap gap-1">
+                          {b.subjects.map((s) => (
+                            <span key={s.id} className="inline-flex items-center rounded-full border border-[color:var(--brand)]/30 bg-[color:var(--brand)]/8 px-2 py-0.5 text-[11px] font-medium text-[color:var(--brand-deep)]">
+                              {translateSubjectName(dict, s.slug, s.name)}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {b.topic_note && (
+                        <p className="mt-1 text-[12px] text-academy-slate-muted">
+                          <span className="font-medium">{tb.topic}</span> {b.topic_note}
+                        </p>
+                      )}
+                    </div>
+                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[12px] font-medium ${b.status === "confirmed" ? "border border-green-200 bg-green-50 text-green-700" : "border border-yellow-200 bg-yellow-50 text-yellow-700"}`}>
+                      {b.status === "confirmed" ? tb.statusConfirmed : tb.pendingReview}
+                    </span>
+                  </div>
+                  <div className="mt-4">
+                    {b.status === "confirmed" && b.meeting_link ? (
+                      <a
+                        href={b.meeting_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex h-9 items-center justify-center rounded-[10px] bg-[color:var(--brand-deep)] px-4 text-sm font-medium text-white shadow-[var(--shadow-button)] transition-colors hover:bg-[color:var(--academy-navy)]"
+                      >
+                        {tb.joinLesson}
+                      </a>
+                    ) : b.status === "confirmed" ? (
+                      <span className="inline-flex h-9 items-center justify-center rounded-[10px] border border-academy-line bg-academy-mist px-4 text-sm font-medium text-academy-slate-muted opacity-60">
+                        {tb.waitingForTeacher}
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+              );
+            })
           )}
         </div>
       </section>

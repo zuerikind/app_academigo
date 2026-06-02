@@ -582,6 +582,8 @@ export const en: Dictionary = {
       pendingRequests: "Pending requests",
       viewRequests: "View requests",
       upcomingLessons: "Upcoming lessons",
+      upcomingTitle: "Upcoming lessons",
+      noUpcoming: "No confirmed lessons scheduled yet.",
       completed: "Completed",
       status: "Status",
       earningsTitle: "Earnings",

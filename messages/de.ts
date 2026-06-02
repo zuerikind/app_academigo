@@ -583,6 +583,8 @@ export const de = {
       pendingRequests: "Offene Anfragen",
       viewRequests: "Anfragen anzeigen",
       upcomingLessons: "Kommende Lektionen",
+      upcomingTitle: "Kommende Lektionen",
+      noUpcoming: "Noch keine bestätigten Lektionen geplant.",
       completed: "Abgeschlossen",
       status: "Status",
       earningsTitle: "Einnahmen",
