@@ -4,13 +4,15 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { cancelBooking } from "@/lib/actions/bookings";
 import { ReviewForm } from "@/components/student/review-form";
+import { useI18n } from "@/components/i18n/locale-provider";
+import { translateSubjectName } from "@/lib/i18n/subjects";
 import type { BookingWithRelations } from "@/lib/queries/bookings";
 
 interface StudentBookingCardProps {
   booking: BookingWithRelations;
 }
 
-function CancelButton({ label }: { label: string }) {
+function CancelButton({ label, pendingLabel }: { label: string; pendingLabel: string }) {
   const { pending } = useFormStatus();
   return (
     <button
@@ -18,67 +20,51 @@ function CancelButton({ label }: { label: string }) {
       disabled={pending}
       className="inline-flex h-8 items-center justify-center rounded-[10px] border border-academy-line bg-white px-3 text-[13px] font-medium text-academy-navy transition-colors hover:border-red-300 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
     >
-      {pending ? "Cancelling…" : label}
+      {pending ? pendingLabel : label}
     </button>
   );
 }
 
 function CancelForm({ bookingId }: { bookingId: string }) {
+  const { dict } = useI18n();
+  const tb = dict.bookings;
   const [state, action] = useActionState(cancelBooking, {});
   return (
     <form action={action}>
       <input type="hidden" name="bookingId" value={bookingId} />
-      {state.error && (
-        <p className="mb-1 text-sm text-red-600">{state.error}</p>
-      )}
-      <CancelButton label="Cancel booking" />
+      {state.error && <p className="mb-1 text-sm text-red-600">{state.error}</p>}
+      <CancelButton label={tb.cancelBooking} pendingLabel={tb.cancelling} />
     </form>
   );
 }
 
-function formatDateTime(iso: string) {
-  const date = new Date(iso);
-  return date.toLocaleString("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
-function StatusBadge({
-  status,
-}: {
-  status: "pending" | "confirmed" | "completed" | "cancelled";
-}) {
-  const styles: Record<typeof status, string> = {
-    pending:
-      "bg-yellow-50 text-yellow-700 border border-yellow-200",
-    confirmed:
-      "bg-green-50 text-green-700 border border-green-200",
-    completed:
-      "bg-blue-50 text-blue-700 border border-blue-200",
-    cancelled:
-      "bg-academy-mist text-academy-slate-muted border border-academy-line",
-  };
-  const labels: Record<typeof status, string> = {
-    pending: "Pending review",
-    confirmed: "Confirmed",
-    completed: "Completed",
-    cancelled: "Cancelled",
-  };
-  return (
-    <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[12px] font-medium ${styles[status]}`}
-    >
-      {labels[status]}
-    </span>
-  );
+function formatSessionTime(start: string, end: string, locale: string) {
+  const dateLocale = locale === "de" ? "de-CH" : "en-CH";
+  const s = new Date(start);
+  const e = new Date(end);
+  const date = s.toLocaleDateString(dateLocale, { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  const startTime = s.toLocaleTimeString(dateLocale, { hour: "2-digit", minute: "2-digit" });
+  const endTime = e.toLocaleTimeString(dateLocale, { hour: "2-digit", minute: "2-digit" });
+  return `${date} · ${startTime} – ${endTime}`;
 }
 
 export function StudentBookingCard({ booking }: StudentBookingCardProps) {
+  const { dict, locale } = useI18n();
+  const tb = dict.bookings;
+
+  const statusStyles: Record<string, string> = {
+    pending: "bg-yellow-50 text-yellow-700 border border-yellow-200",
+    confirmed: "bg-green-50 text-green-700 border border-green-200",
+    completed: "bg-blue-50 text-blue-700 border border-blue-200",
+    cancelled: "bg-academy-mist text-academy-slate-muted border border-academy-line",
+  };
+  const statusLabels: Record<string, string> = {
+    pending: tb.pendingReview,
+    confirmed: tb.statusConfirmed,
+    completed: tb.statusCompleted,
+    cancelled: tb.statusCancelled,
+  };
+
   const teacherName = booking.teacher?.profiles?.full_name ?? "Teacher";
   const isUpcoming = new Date(booking.start_time) > new Date();
 
@@ -88,25 +74,37 @@ export function StudentBookingCard({ booking }: StudentBookingCardProps) {
         <div className="min-w-0 flex-1">
           <p className="font-medium text-academy-navy">{teacherName}</p>
           <p className="mt-0.5 text-sm text-academy-slate">
-            {formatDateTime(booking.start_time)}
+            {formatSessionTime(booking.start_time, booking.end_time, locale)}
           </p>
+          {booking.subjects.length > 0 && (
+            <div className="mt-1.5 flex flex-wrap gap-1">
+              {booking.subjects.map((s) => (
+                <span
+                  key={s.id}
+                  className="inline-flex items-center rounded-full border border-[color:var(--brand)]/30 bg-[color:var(--brand)]/8 px-2 py-0.5 text-[11px] font-medium text-[color:var(--brand-deep)]"
+                >
+                  {translateSubjectName(dict, s.slug, s.name)}
+                </span>
+              ))}
+            </div>
+          )}
           {booking.topic_note && (
             <p className="mt-1 text-[13px] text-academy-slate-muted">
-              Topic: {booking.topic_note}
+              {tb.topic} {booking.topic_note}
             </p>
           )}
+          <p className="mt-1 text-[12px] text-academy-slate-muted">
+            {tb.creditsLabel} {booking.credits_reserved}
+          </p>
         </div>
-        <StatusBadge status={booking.status} />
+        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[12px] font-medium ${statusStyles[booking.status] ?? ""}`}>
+          {statusLabels[booking.status] ?? booking.status}
+        </span>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
         {booking.status === "pending" && (
-          <>
-            <p className="text-[13px] text-academy-slate-muted">
-              1 credit reserved
-            </p>
-            <CancelForm bookingId={booking.id} />
-          </>
+          <CancelForm bookingId={booking.id} />
         )}
 
         {booking.status === "confirmed" && isUpcoming && (
@@ -118,21 +116,21 @@ export function StudentBookingCard({ booking }: StudentBookingCardProps) {
                 rel="noopener noreferrer"
                 className="inline-flex h-9 items-center justify-center rounded-[10px] bg-[color:var(--brand-deep)] px-4 text-sm font-medium text-white shadow-[var(--shadow-button)] transition-colors hover:bg-[color:var(--academy-navy)]"
               >
-                Join Lesson
+                {tb.joinLesson}
               </a>
             ) : (
               <button
                 disabled
                 className="inline-flex h-9 cursor-not-allowed items-center justify-center rounded-[10px] border border-academy-line bg-academy-mist px-4 text-sm font-medium text-academy-slate-muted opacity-50"
               >
-                Waiting for teacher…
+                {tb.waitingForTeacher}
               </button>
             )}
             <a
               href={`/api/bookings/${booking.id}/ics`}
               className="inline-flex h-8 items-center justify-center rounded-[10px] border border-academy-line bg-white px-3 text-[13px] font-medium text-academy-navy transition-colors hover:border-[color:var(--brand)]/40 hover:bg-academy-mist"
             >
-              Add to calendar
+              {tb.addToCalendar}
             </a>
             <CancelForm bookingId={booking.id} />
           </>
@@ -146,9 +144,7 @@ export function StudentBookingCard({ booking }: StudentBookingCardProps) {
         )}
 
         {booking.status === "cancelled" && (
-          <p className="text-[13px] text-academy-slate-muted">
-            This booking was cancelled.
-          </p>
+          <p className="text-[13px] text-academy-slate-muted">{tb.bookingCancelled}</p>
         )}
       </div>
     </div>

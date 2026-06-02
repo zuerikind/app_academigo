@@ -5,9 +5,16 @@ import { BookingCalendar } from "@/components/student/booking-calendar";
 import { SlotPicker } from "@/components/student/slot-picker";
 import { BookingRequestForm } from "@/components/student/booking-request-form";
 
+interface Subject {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 interface BookingSectionProps {
   teacherId: string;
   teacherName: string;
+  subjects: Subject[];
   initialAvailableDays: number[];
   initialYear: number;
   initialMonth: number; // 0-indexed
@@ -16,6 +23,7 @@ interface BookingSectionProps {
 export function BookingSection({
   teacherId,
   teacherName,
+  subjects,
   initialAvailableDays,
   initialYear,
   initialMonth,
@@ -72,6 +80,7 @@ export function BookingSection({
             selectedSlotStart={selectedSlotStart}
             selectedSlotEnd={selectedSlotEnd}
             teacherName={teacherName}
+            subjects={subjects}
           />
         </div>
       )}

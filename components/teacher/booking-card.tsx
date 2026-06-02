@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Field, Input, Label } from "@/components/ui/input";
+import { useI18n } from "@/components/i18n/locale-provider";
+import { translateSubjectName } from "@/lib/i18n/subjects";
 import {
   confirmBooking,
   declineBooking,
@@ -15,8 +17,6 @@ import {
   updateBookingMeetLink,
 } from "@/lib/actions/bookings";
 import type { BookingWithRelations } from "@/lib/queries/bookings";
-
-// ---- Submit button with pending state --------------------------------
 
 function SubmitButton({ label, pendingLabel, variant = "primary" }: {
   label: string;
@@ -31,7 +31,14 @@ function SubmitButton({ label, pendingLabel, variant = "primary" }: {
   );
 }
 
-// ---- Pending booking card -------------------------------------------
+function formatDate(iso: string, locale: string) {
+  const dateLocale = locale === "de" ? "de-CH" : "en-CH";
+  const d = new Date(iso);
+  return {
+    date: d.toLocaleDateString(dateLocale, { weekday: "short", day: "numeric", month: "short", year: "numeric" }),
+    time: d.toLocaleTimeString(dateLocale, { hour: "2-digit", minute: "2-digit" }),
+  };
+}
 
 function PendingCard({
   booking,
@@ -40,12 +47,14 @@ function PendingCard({
   booking: BookingWithRelations;
   teacherDefaultMeetLink: string | null;
 }) {
+  const { dict, locale } = useI18n();
+  const tb = dict.bookings;
   const [confirmState, confirmAction] = useActionState(confirmBooking, {});
   const [declineState, declineAction] = useActionState(declineBooking, {});
 
   const studentName = booking.student?.profiles.full_name ?? "Student";
-  const startDate = new Date(booking.start_time);
-  const endDate = new Date(booking.end_time);
+  const start = formatDate(booking.start_time, locale);
+  const end = formatDate(booking.end_time, locale);
 
   return (
     <Card padding="compact" elevation="soft" className="space-y-4">
@@ -53,85 +62,95 @@ function PendingCard({
         <div>
           <p className="text-[13px] font-medium text-academy-navy">{studentName}</p>
           <p className="mt-0.5 text-[12px] text-academy-slate">
-            {startDate.toLocaleDateString("en-CH", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
-            {" · "}
-            {startDate.toLocaleTimeString("en-CH", { hour: "2-digit", minute: "2-digit" })}
-            {" – "}
-            {endDate.toLocaleTimeString("en-CH", { hour: "2-digit", minute: "2-digit" })}
+            {start.date} · {start.time} – {end.time}
           </p>
+          {booking.subjects.length > 0 && (
+            <div className="mt-1 flex flex-wrap gap-1">
+              {booking.subjects.map((s) => (
+                <span
+                  key={s.id}
+                  className="inline-flex items-center rounded-full border border-[color:var(--brand)]/30 bg-[color:var(--brand)]/8 px-2 py-0.5 text-[11px] font-medium text-[color:var(--brand-deep)]"
+                >
+                  {translateSubjectName(dict, s.slug, s.name)}
+                </span>
+              ))}
+            </div>
+          )}
           {booking.topic_note && (
             <p className="mt-1 text-[12px] text-academy-slate">
-              <span className="font-medium">Topic:</span> {booking.topic_note}
+              <span className="font-medium">{tb.topic}</span> {booking.topic_note}
             </p>
           )}
         </div>
-        <Badge variant="warning">Pending</Badge>
+        <Badge variant="warning">{tb.statusPending}</Badge>
       </div>
 
       {/* Confirm form */}
       <div className="rounded-[10px] border border-academy-line bg-academy-mist p-4 space-y-3">
-        <p className="text-[12px] font-semibold text-academy-navy uppercase tracking-wide">Confirm booking</p>
+        <p className="text-[12px] font-semibold text-academy-navy uppercase tracking-wide">
+          {tb.confirmBookingTitle}
+        </p>
 
         {teacherDefaultMeetLink === null && (
           <div className="flex items-start gap-2 rounded-[8px] border border-[color:var(--academy-warning)]/30 bg-[color:var(--academy-warning-soft)] p-3">
             <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--academy-warning)]" />
-            <p className="text-[12px] text-[color:var(--academy-warning)]">
-              No default Meet link set — you must enter one before confirming. You can save a default link in{" "}
-              <a href="../settings" className="underline font-medium">Settings</a>.
-            </p>
+            <div className="text-[12px] text-[color:var(--academy-warning)]">
+              <p>{tb.noMeetLinkWarning}</p>
+              <p className="mt-1">
+                <a href="../settings" className="underline font-medium">{tb.settingsLink}</a>
+              </p>
+            </div>
           </div>
         )}
 
         <form action={confirmAction} className="space-y-3">
           <input type="hidden" name="bookingId" value={booking.id} />
           <Field>
-            <Label htmlFor={`meetLink-${booking.id}`}>Google Meet link</Label>
+            <Label htmlFor={`meetLink-${booking.id}`}>{tb.meetLinkFieldLabel}</Label>
             <Input
               id={`meetLink-${booking.id}`}
               type="url"
               name="meetingLink"
               defaultValue={teacherDefaultMeetLink ?? ""}
-              placeholder="https://meet.google.com/…"
+              placeholder={tb.meetLinkPlaceholder}
               required
             />
           </Field>
           {confirmState.error && (
             <p className="text-[12px] text-[color:var(--academy-danger)]">{confirmState.error}</p>
           )}
-          <SubmitButton label="Confirm booking" pendingLabel="Confirming…" />
+          <SubmitButton label={tb.confirmBookingTitle} pendingLabel={tb.confirming} />
         </form>
       </div>
 
       {/* Decline form */}
       <div className="rounded-[10px] border border-academy-line bg-white p-4 space-y-3">
-        <p className="text-[12px] font-semibold text-academy-navy uppercase tracking-wide">Decline request</p>
+        <p className="text-[12px] font-semibold text-academy-navy uppercase tracking-wide">
+          {tb.declineTitle}
+        </p>
         <form action={declineAction} className="space-y-3">
           <input type="hidden" name="bookingId" value={booking.id} />
           {declineState.error && (
             <p className="text-[12px] text-[color:var(--academy-danger)]">{declineState.error}</p>
           )}
-          <SubmitButton label="Decline" pendingLabel="Declining…" variant="outline" />
+          <SubmitButton label={tb.decline} pendingLabel={tb.declining} variant="outline" />
         </form>
       </div>
     </Card>
   );
 }
 
-// ---- Confirmed (upcoming) booking card ------------------------------
-
-function ConfirmedCard({
-  booking,
-}: {
-  booking: BookingWithRelations;
-}) {
+function ConfirmedCard({ booking }: { booking: BookingWithRelations }) {
+  const { dict, locale } = useI18n();
+  const tb = dict.bookings;
   const [updateLinkState, updateLinkAction] = useActionState(updateBookingMeetLink, {});
   const [markCompleteState, markCompleteAction] = useActionState(markComplete, {});
   const [cancelState, cancelAction] = useActionState(cancelBookingAsTeacher, {});
 
   const studentName = booking.student?.profiles.full_name ?? "Student";
-  const startDate = new Date(booking.start_time);
-  const endDate = new Date(booking.end_time);
-  const isPast = startDate < new Date();
+  const start = formatDate(booking.start_time, locale);
+  const end = formatDate(booking.end_time, locale);
+  const isPast = new Date(booking.start_time) < new Date();
 
   return (
     <Card padding="compact" elevation="soft" className="space-y-4">
@@ -139,22 +158,30 @@ function ConfirmedCard({
         <div>
           <p className="text-[13px] font-medium text-academy-navy">{studentName}</p>
           <p className="mt-0.5 text-[12px] text-academy-slate">
-            {startDate.toLocaleDateString("en-CH", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
-            {" · "}
-            {startDate.toLocaleTimeString("en-CH", { hour: "2-digit", minute: "2-digit" })}
-            {" – "}
-            {endDate.toLocaleTimeString("en-CH", { hour: "2-digit", minute: "2-digit" })}
+            {start.date} · {start.time} – {end.time}
           </p>
+          {booking.subjects.length > 0 && (
+            <div className="mt-1 flex flex-wrap gap-1">
+              {booking.subjects.map((s) => (
+                <span
+                  key={s.id}
+                  className="inline-flex items-center rounded-full border border-[color:var(--brand)]/30 bg-[color:var(--brand)]/8 px-2 py-0.5 text-[11px] font-medium text-[color:var(--brand-deep)]"
+                >
+                  {translateSubjectName(dict, s.slug, s.name)}
+                </span>
+              ))}
+            </div>
+          )}
           {booking.topic_note && (
             <p className="mt-1 text-[12px] text-academy-slate">
-              <span className="font-medium">Topic:</span> {booking.topic_note}
+              <span className="font-medium">{tb.topic}</span> {booking.topic_note}
             </p>
           )}
           <p className="mt-0.5 text-[12px] text-academy-slate">
-            Credits: {booking.credits_reserved}
+            {tb.creditsLabel} {booking.credits_reserved}
           </p>
         </div>
-        <Badge variant="verified">Confirmed</Badge>
+        <Badge variant="verified">{tb.statusConfirmed}</Badge>
       </div>
 
       {/* Meet Link Status */}
@@ -162,7 +189,7 @@ function ConfirmedCard({
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <CheckCircle className="h-4 w-4 text-[color:var(--academy-success)]" />
-            <Badge variant="verified">Meet Link Added</Badge>
+            <Badge variant="verified">{tb.meetLinkAdded}</Badge>
             <a
               href={booking.meeting_link}
               target="_blank"
@@ -173,19 +200,13 @@ function ConfirmedCard({
               {booking.meeting_link}
             </a>
           </div>
-          {/* Update link form */}
           <form action={updateLinkAction} className="flex items-end gap-2">
             <input type="hidden" name="bookingId" value={booking.id} />
             <div className="flex-1">
-              <Input
-                type="url"
-                name="meetingLink"
-                defaultValue={booking.meeting_link}
-                placeholder="https://meet.google.com/…"
-                required
-              />
+              <Input type="url" name="meetingLink" defaultValue={booking.meeting_link}
+                placeholder={tb.meetLinkPlaceholder} required />
             </div>
-            <SubmitButton label="Update" pendingLabel="Saving…" variant="secondary" />
+            <SubmitButton label={tb.update} pendingLabel={tb.saving} variant="secondary" />
           </form>
           {updateLinkState.error && (
             <p className="text-[12px] text-[color:var(--academy-danger)]">{updateLinkState.error}</p>
@@ -195,19 +216,14 @@ function ConfirmedCard({
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4 text-[color:var(--academy-warning)]" />
-            <Badge variant="warning">Meet Link Missing</Badge>
+            <Badge variant="warning">{tb.meetLinkMissing}</Badge>
           </div>
           <form action={updateLinkAction} className="flex items-end gap-2">
             <input type="hidden" name="bookingId" value={booking.id} />
             <div className="flex-1">
-              <Input
-                type="url"
-                name="meetingLink"
-                placeholder="https://meet.google.com/…"
-                required
-              />
+              <Input type="url" name="meetingLink" placeholder={tb.meetLinkPlaceholder} required />
             </div>
-            <SubmitButton label="Add link" pendingLabel="Saving…" variant="primary" />
+            <SubmitButton label={tb.addLink} pendingLabel={tb.saving} variant="primary" />
           </form>
           {updateLinkState.error && (
             <p className="text-[12px] text-[color:var(--academy-danger)]">{updateLinkState.error}</p>
@@ -222,7 +238,7 @@ function ConfirmedCard({
         download
       >
         <Link2 className="h-3.5 w-3.5" />
-        Download .ics
+        {tb.downloadIcs}
       </a>
 
       {/* Actions */}
@@ -233,7 +249,7 @@ function ConfirmedCard({
             {markCompleteState.error && (
               <p className="text-[12px] text-[color:var(--academy-danger)]">{markCompleteState.error}</p>
             )}
-            <SubmitButton label="Mark complete" pendingLabel="Saving…" variant="primary" />
+            <SubmitButton label={tb.markComplete} pendingLabel={tb.saving} variant="primary" />
           </form>
         )}
         <form action={cancelAction}>
@@ -241,18 +257,19 @@ function ConfirmedCard({
           {cancelState.error && (
             <p className="text-[12px] text-[color:var(--academy-danger)]">{cancelState.error}</p>
           )}
-          <SubmitButton label="Cancel session" pendingLabel="Cancelling…" variant="ghost" />
+          <SubmitButton label={tb.cancelSession} pendingLabel={tb.cancelling} variant="ghost" />
         </form>
       </div>
     </Card>
   );
 }
 
-// ---- Completed booking card -----------------------------------------
-
 function CompletedCard({ booking }: { booking: BookingWithRelations }) {
+  const { dict, locale } = useI18n();
+  const tb = dict.bookings;
   const studentName = booking.student?.profiles.full_name ?? "Student";
-  const startDate = new Date(booking.start_time);
+  const start = formatDate(booking.start_time, locale);
+  const end = formatDate(booking.end_time, locale);
 
   return (
     <Card padding="compact" tone="muted" className="space-y-1">
@@ -260,23 +277,41 @@ function CompletedCard({ booking }: { booking: BookingWithRelations }) {
         <div>
           <p className="text-[13px] font-medium text-academy-navy">{studentName}</p>
           <p className="mt-0.5 text-[12px] text-academy-slate">
-            {startDate.toLocaleDateString("en-CH", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
+            {start.date} · {start.time} – {end.time}
           </p>
+          {booking.subjects.length > 0 && (
+            <div className="mt-1 flex flex-wrap gap-1">
+              {booking.subjects.map((s) => (
+                <span
+                  key={s.id}
+                  className="inline-flex items-center rounded-full border border-[color:var(--brand)]/30 bg-[color:var(--brand)]/8 px-2 py-0.5 text-[11px] font-medium text-[color:var(--brand-deep)]"
+                >
+                  {translateSubjectName(dict, s.slug, s.name)}
+                </span>
+              ))}
+            </div>
+          )}
+          {booking.topic_note && (
+            <p className="mt-1 text-[12px] text-academy-slate">
+              <span className="font-medium">{tb.topic}</span> {booking.topic_note}
+            </p>
+          )}
           <p className="mt-0.5 text-[12px] text-academy-slate">
-            Earned: {booking.credits_reserved} credit{booking.credits_reserved !== 1 ? "s" : ""}
+            {tb.earnedLabel} {booking.credits_reserved} credit{booking.credits_reserved !== 1 ? "s" : ""}
           </p>
         </div>
-        <Badge variant="verified">Completed</Badge>
+        <Badge variant="verified">{tb.statusCompleted}</Badge>
       </div>
     </Card>
   );
 }
-
-// ---- Cancelled booking card -----------------------------------------
 
 function CancelledCard({ booking }: { booking: BookingWithRelations }) {
+  const { dict, locale } = useI18n();
+  const tb = dict.bookings;
   const studentName = booking.student?.profiles.full_name ?? "Student";
-  const startDate = new Date(booking.start_time);
+  const start = formatDate(booking.start_time, locale);
+  const end = formatDate(booking.end_time, locale);
 
   return (
     <Card padding="compact" tone="muted" className="space-y-1">
@@ -284,16 +319,31 @@ function CancelledCard({ booking }: { booking: BookingWithRelations }) {
         <div>
           <p className="text-[13px] font-medium text-academy-navy">{studentName}</p>
           <p className="mt-0.5 text-[12px] text-academy-slate">
-            {startDate.toLocaleDateString("en-CH", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
+            {start.date} · {start.time} – {end.time}
           </p>
+          {booking.subjects.length > 0 && (
+            <div className="mt-1 flex flex-wrap gap-1">
+              {booking.subjects.map((s) => (
+                <span
+                  key={s.id}
+                  className="inline-flex items-center rounded-full border border-[color:var(--brand)]/30 bg-[color:var(--brand)]/8 px-2 py-0.5 text-[11px] font-medium text-[color:var(--brand-deep)]"
+                >
+                  {translateSubjectName(dict, s.slug, s.name)}
+                </span>
+              ))}
+            </div>
+          )}
+          {booking.topic_note && (
+            <p className="mt-1 text-[12px] text-academy-slate">
+              <span className="font-medium">{tb.topic}</span> {booking.topic_note}
+            </p>
+          )}
         </div>
-        <Badge variant="muted">Cancelled</Badge>
+        <Badge variant="muted">{tb.statusCancelled}</Badge>
       </div>
     </Card>
   );
 }
-
-// ---- Public export --------------------------------------------------
 
 export interface TeacherBookingCardProps {
   booking: BookingWithRelations;
@@ -310,6 +360,5 @@ export function TeacherBookingCard({ booking, teacherDefaultMeetLink }: TeacherB
   if (booking.status === "completed") {
     return <CompletedCard booking={booking} />;
   }
-  // cancelled
   return <CancelledCard booking={booking} />;
 }

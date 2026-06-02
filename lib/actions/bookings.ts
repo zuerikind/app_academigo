@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
-import { sendBookingConfirmation, sendMeetLinkAdded } from "@/lib/services/email";
+import { sendBookingConfirmation, sendMeetLinkAdded, sendTeacherBookingRequest } from "@/lib/services/email";
 
 export type BookingActionState = { error?: string; success?: boolean };
 
@@ -18,6 +18,7 @@ export async function requestBooking(
   const startTime = String(formData.get("startTime") ?? "").trim();
   const endTime = String(formData.get("endTime") ?? "").trim();
   const topicNote = (formData.get("topicNote") as string)?.trim() || null;
+  const subjectIds = formData.getAll("subjectIds[]").map(String).filter(Boolean);
 
   if (!teacherId || !startTime || !endTime) {
     return { error: "Missing required fields." };
@@ -36,10 +37,12 @@ export async function requestBooking(
     // Use profile.id as fallback (matches test behavior)
   }
 
-  const { error } = await supabase.rpc("create_booking", {
+  const primarySubjectId = subjectIds[0] ?? null;
+
+  const { data: bookingId, error } = await supabase.rpc("create_booking", {
     p_student_id: studentId,
     p_teacher_id: teacherId,
-    p_subject_id: null,
+    p_subject_id: primarySubjectId,
     p_start_time: startTime,
     p_end_time: endTime,
     p_credits_to_reserve: 1,
@@ -51,6 +54,56 @@ export async function requestBooking(
       return { error: "You don't have enough credits for this booking." };
     }
     return { error: error.message };
+  }
+
+  // Insert all selected subjects into booking_subjects junction table
+  if (bookingId && subjectIds.length > 0) {
+    await supabase.from("booking_subjects").insert(
+      subjectIds.map((sid) => ({ booking_id: bookingId, subject_id: sid })),
+    );
+  }
+
+  // Notify the teacher of the new booking request (non-blocking)
+  try {
+    const { data: teacherData } = await supabase
+      .from("teachers")
+      .select("profiles ( email, full_name )")
+      .eq("id", teacherId)
+      .maybeSingle();
+
+    const { data: studentData } = await supabase
+      .from("students")
+      .select("profiles ( full_name )")
+      .eq("id", studentId)
+      .maybeSingle();
+
+    const teacherProfiles = (teacherData as any)?.profiles;
+    const teacherEmail = Array.isArray(teacherProfiles)
+      ? teacherProfiles[0]?.email
+      : teacherProfiles?.email;
+    const teacherName = Array.isArray(teacherProfiles)
+      ? teacherProfiles[0]?.full_name
+      : teacherProfiles?.full_name;
+
+    const studentProfiles = (studentData as any)?.profiles;
+    const studentName = Array.isArray(studentProfiles)
+      ? studentProfiles[0]?.full_name
+      : studentProfiles?.full_name;
+
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "";
+
+    if (teacherEmail) {
+      await sendTeacherBookingRequest({
+        to: teacherEmail,
+        teacherName: teacherName ?? "Teacher",
+        studentName: studentName ?? "Student",
+        startTime,
+        topicNote,
+        dashboardUrl: `${baseUrl}/en/teacher/bookings`,
+      });
+    }
+  } catch (emailErr) {
+    console.error("[bookings] requestBooking: teacher notification failed:", emailErr);
   }
 
   revalidatePath("/", "layout");

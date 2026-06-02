@@ -23,6 +23,8 @@ export default async function StudentTeacherProfilePage({ params }: Props) {
   const dict = getDictionary(raw);
   const t = dict.teacherProfile;
   const tc = dict.common;
+  const tr = dict.reviews;
+  const dateLocale = raw === "de" ? "de-CH" : "en-CH";
   const teacher = await getTeacherProfileDetail(id);
   if (!teacher) notFound();
 
@@ -85,8 +87,7 @@ export default async function StudentTeacherProfilePage({ params }: Props) {
                     {reviewAggregate.averageRating.toFixed(1)}
                   </span>{" "}
                   <span className="text-academy-slate-muted">
-                    ({reviewAggregate.totalCount}{" "}
-                    {reviewAggregate.totalCount === 1 ? "review" : "reviews"})
+                    ({reviewAggregate.totalCount} {tr.reviewsTitle.toLowerCase()})
                   </span>
                 </p>
               ) : (
@@ -131,11 +132,11 @@ export default async function StudentTeacherProfilePage({ params }: Props) {
           <div>
             <p className="text-meta mb-4">
               {reviewAggregate.totalCount > 0
-                ? `Reviews (${reviewAggregate.totalCount})`
-                : "Reviews"}
+                ? `${tr.reviewsTitle} (${reviewAggregate.totalCount})`
+                : tr.reviewsTitle}
             </p>
             {reviews.length === 0 ? (
-              <p className="text-[13.5px] text-academy-slate-muted">No reviews yet.</p>
+              <p className="text-[13.5px] text-academy-slate-muted">{tr.noReviewsYet}</p>
             ) : (
               <div className="space-y-4">
                 {reviews.map((review) => (
@@ -163,7 +164,7 @@ export default async function StudentTeacherProfilePage({ params }: Props) {
                         </div>
                       </div>
                       <span className="shrink-0 text-[11px] text-academy-slate-muted">
-                        {new Date(review.created_at).toLocaleDateString("en-CH", {
+                        {new Date(review.created_at).toLocaleDateString(dateLocale, {
                           year: "numeric",
                           month: "short",
                           day: "numeric",
@@ -210,6 +211,7 @@ export default async function StudentTeacherProfilePage({ params }: Props) {
                 <BookingSection
                   teacherId={teacher.id}
                   teacherName={teacher.fullName}
+                  subjects={teacher.subjects.filter(Boolean) as { id: string; name: string; slug: string }[]}
                   initialAvailableDays={availableDays}
                   initialYear={now.getFullYear()}
                   initialMonth={now.getMonth()}
