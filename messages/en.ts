@@ -815,7 +815,7 @@ export const en: Dictionary = {
     markComplete: "Mark complete",
     cancel: "Cancel",
     noBookings: "No bookings yet",
-    topic: "Topic:",
+    topic: "Notes:",
     meetLink: "Meet Link:",
     joinLesson: "Join Lesson",
     waitingForTeacher: "Waiting for teacher",

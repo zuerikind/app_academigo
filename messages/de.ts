@@ -816,7 +816,7 @@ export const de = {
     markComplete: "Als abgeschlossen markieren",
     cancel: "Abbrechen",
     noBookings: "Noch keine Buchungen",
-    topic: "Thema:",
+    topic: "Notizen:",
     meetLink: "Meet-Link:",
     joinLesson: "Lektion beitreten",
     waitingForTeacher: "Warten auf Lehrperson",
