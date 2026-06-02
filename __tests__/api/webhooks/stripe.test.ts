@@ -25,6 +25,9 @@ function makeChainable(resolves: unknown) {
 jest.mock("@/lib/supabase/server", () => ({
   createClient: jest.fn(() => Promise.resolve(mocks.supabase)),
 }));
+jest.mock("@/lib/supabase/service", () => ({
+  createServiceClient: jest.fn(() => mocks.supabase),
+}));
 jest.mock("stripe", () => {
   return jest.fn().mockImplementation(() => ({
     webhooks: {
