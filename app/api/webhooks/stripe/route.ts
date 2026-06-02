@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "sk_placeholder");
@@ -45,7 +45,7 @@ async function handleCheckoutComplete(
 
   if (!studentId || !packageId) return;
 
-  const supabase = await createClient();
+  const supabase = createServiceClient();
 
   // Idempotency check: if already processed, skip
   const { data: existing } = await supabase
@@ -96,7 +96,7 @@ async function handleInvoicePaid(invoice: Stripe.Invoice): Promise<void> {
 
   if (!studentId || !packageId || !invoiceId) return;
 
-  const supabase = await createClient();
+  const supabase = createServiceClient();
 
   // Idempotency check via invoice id stored as stripe_session_id
   const { data: existing } = await supabase
