@@ -74,6 +74,45 @@
 - [x] **EARN-04**: Admin can view all pending payout requests with teacher and amount details
 - [x] **EARN-05**: Admin can mark a payout request as processed (with optional reference note)
 
+### Credit Wallet
+
+- [ ] **CRED-01**: Student's credit wallet displays current available balance
+- [ ] **CRED-02**: Every credit change (purchase, completion deduction, cancellation refund) is recorded as a transaction with amount, type, and timestamp
+- [ ] **CRED-03**: Credits are deducted only when a lesson is marked completed — not on booking
+- [ ] **CRED-04**: Credits do not expire; balance carries forward indefinitely
+
+### Recurring Schedules
+
+- [ ] **SCHED-01**: Student can create a recurring schedule with a teacher specifying weekday, start time, and end time (e.g. Monday 16:00–16:50)
+- [ ] **SCHED-02**: A schedule can be paused, resumed, or cancelled by the student or teacher
+- [ ] **SCHED-03**: Pausing a schedule immediately stops new lesson generation; resuming restarts generation from the next occurrence
+
+### Lesson Generation
+
+- [ ] **LES-01**: System auto-generates confirmed lessons for active schedules covering the next 6–8 weeks ahead
+- [ ] **LES-02**: Duplicate lesson generation is prevented (idempotent — re-running the generator does not create lessons for already-covered slots)
+- [ ] **LES-03**: Lessons support statuses: pending, confirmed, completed, cancelled, reschedule_requested
+
+### Rescheduling
+
+- [ ] **RESC-01**: Student can request a reschedule by proposing a new date/time for an upcoming lesson
+- [ ] **RESC-02**: Teacher receives the reschedule request and can approve or reject it
+- [ ] **RESC-03**: On approval: original lesson is cancelled, new lesson is confirmed, no credits are lost
+
+### Teacher Lesson Dashboard
+
+- [ ] **TDASH-01**: Teacher sees a list of active students with each student's remaining credit balance
+- [ ] **TDASH-02**: Teacher sees all recurring schedules (active, paused, cancelled) and can pause/cancel them
+- [ ] **TDASH-03**: Teacher sees upcoming lessons sorted by date
+- [ ] **TDASH-04**: Teacher sees open reschedule requests and can approve or reject them
+
+### Student Lesson Dashboard
+
+- [ ] **SDASH-01**: Student sees their credit wallet balance prominently
+- [ ] **SDASH-02**: Student sees full credit transaction history (purchase, deduction, refund, date, description)
+- [ ] **SDASH-03**: Student sees all active recurring schedules and can pause or cancel them
+- [ ] **SDASH-04**: Student sees upcoming lessons and can request a reschedule on any upcoming confirmed lesson
+
 ## v2 Requirements
 
 ### Security Hardening
@@ -156,19 +195,40 @@
 | EARN-03 | Phase 3 | Complete |
 | EARN-04 | Phase 3 | Complete |
 | EARN-05 | Phase 3 | Complete |
-| TIER-02 | Phase 4 | Pending |
-| TIER-03 | Phase 4 | Pending |
-| TIER-04 | Phase 4 | Pending |
-| TIER-05 | Phase 4 | Pending |
-| TIER-06 | Phase 4 | Pending |
-| TIER-07 | Phase 4 | Pending |
+| CRED-01 | Phase 4 | Pending |
+| CRED-02 | Phase 4 | Pending |
+| CRED-03 | Phase 4 | Pending |
+| CRED-04 | Phase 4 | Pending |
+| SCHED-01 | Phase 4 | Pending |
+| SCHED-02 | Phase 4 | Pending |
+| SCHED-03 | Phase 4 | Pending |
+| LES-01 | Phase 4 | Pending |
+| LES-02 | Phase 4 | Pending |
+| LES-03 | Phase 4 | Pending |
+| RESC-01 | Phase 4 | Pending |
+| RESC-02 | Phase 4 | Pending |
+| RESC-03 | Phase 4 | Pending |
+| TDASH-01 | Phase 4 | Pending |
+| TDASH-02 | Phase 4 | Pending |
+| TDASH-03 | Phase 4 | Pending |
+| TDASH-04 | Phase 4 | Pending |
+| SDASH-01 | Phase 4 | Pending |
+| SDASH-02 | Phase 4 | Pending |
+| SDASH-03 | Phase 4 | Pending |
+| SDASH-04 | Phase 4 | Pending |
+| TIER-02 | Phase 5 | Pending |
+| TIER-03 | Phase 5 | Pending |
+| TIER-04 | Phase 5 | Pending |
+| TIER-05 | Phase 5 | Pending |
+| TIER-06 | Phase 5 | Pending |
+| TIER-07 | Phase 5 | Pending |
 
 **Coverage:**
-- v1 requirements: 45 total
-- Mapped to phases: 45
+- v1 requirements: 66 total
+- Mapped to phases: 66
 - Unmapped: 0
 
-**Note:** The original coverage note stated 44 requirements. A recount of all defined requirement IDs yields 45 (AUTH×4, TIER×7, ADMIN×8, AVAIL×3, BOOK×9, PAY×5, REV×4, EARN×5). All 45 are mapped.
+**Breakdown:** AUTH×4, TIER×7, ADMIN×8, AVAIL×3, BOOK×9, PAY×5, REV×4, EARN×5, CRED×4, SCHED×3, LES×3, RESC×3, TDASH×4, SDASH×4 = 66
 
 ---
 *Requirements defined: 2026-05-28*

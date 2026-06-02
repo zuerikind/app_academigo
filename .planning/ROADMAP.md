@@ -3,7 +3,7 @@
 **Project:** Academigo — Swiss academic tutoring marketplace
 **Core Value:** Students can find a qualified, vetted teacher for any school subject and book a paid session in under two minutes.
 **Created:** 2026-05-28
-**Granularity:** Coarse (4 phases derived from dependency-driven build order)
+**Granularity:** Coarse (5 phases derived from dependency-driven build order)
 
 ---
 
@@ -12,7 +12,8 @@
 - [ ] **Phase 1: Foundation** — Schema migrations, atomic booking RPCs, auth security patch, email verification and password reset flows
 - [x] **Phase 2: Admin Portal** — Functioning admin dashboard, teacher approval gate, student/booking/payout management views (completed 2026-05-30)
 - [ ] **Phase 3: Core Transaction** — Availability management, Stripe credit purchase, end-to-end booking, post-session reviews, teacher earnings and payouts
-- [ ] **Phase 4: Teacher Progression** — 3-tier badge display, in-app promotion requests, admin promotion review, directory sort by tier
+- [ ] **Phase 4: Recurring Lessons** — Credit wallet, recurring learning schedules, auto-generated lessons, rescheduling workflow, teacher and student lesson dashboards
+- [ ] **Phase 5: Teacher Progression** — 3-tier badge display, in-app promotion requests, admin promotion review, directory sort by tier
 
 ---
 
@@ -89,9 +90,22 @@ Plans:
 - [ ] 03-12-PLAN.md — Admin Missing Meet Links page + getMissingMeetLinks query + admin nav update
 - [ ] 03-13-PLAN.md — Human verification checkpoint for all Phase 3 deliverables
 
-### Phase 4: Teacher Progression
+### Phase 4: Recurring Lessons
+**Goal**: Students and teachers have a recurring lesson system — students buy credits that never expire, schedules auto-generate lessons 6–8 weeks ahead, and either party can reschedule without losing credits. Both dashboards surface the full lesson picture.
+**Depends on**: Phase 3 (credit purchase, completed booking model, teacher availability)
+**Requirements**: CRED-01, CRED-02, CRED-03, CRED-04, SCHED-01, SCHED-02, SCHED-03, LES-01, LES-02, LES-03, RESC-01, RESC-02, RESC-03, TDASH-01, TDASH-02, TDASH-03, TDASH-04, SDASH-01, SDASH-02, SDASH-03, SDASH-04
+**Success Criteria** (what must be TRUE):
+  1. A student's credit wallet shows current balance and a full transaction history (purchases, deductions on completion, refunds on cancellation).
+  2. A student can set up a recurring schedule with a teacher (e.g. Monday 16:00–16:50); the system auto-generates confirmed lessons 6–8 weeks ahead with no duplicates.
+  3. Pausing a schedule stops new lesson generation immediately; resuming restarts it from the next occurrence.
+  4. A student can request a reschedule; the teacher approves or rejects; on approval the original lesson is cancelled and the new one confirmed with no credit loss.
+  5. The teacher dashboard shows: active students, remaining student credits, all recurring schedules, upcoming lessons, and any reschedule requests.
+  6. The student dashboard shows: credit wallet, credit history, active recurring schedules, and upcoming lessons with reschedule option.
+**Plans**: TBD
+
+### Phase 5: Teacher Progression
 **Goal**: Teachers have visible tier badges, can apply for level promotion, and verified teachers rank higher in the directory.
-**Depends on**: Phase 3 (completed sessions and reviews exist as promotion evidence)
+**Depends on**: Phase 4 (completed sessions and reviews exist as promotion evidence)
 **Requirements**: TIER-02, TIER-03, TIER-04, TIER-05, TIER-06, TIER-07
 **Success Criteria** (what must be TRUE):
   1. Teacher cards in the directory and individual teacher profile pages display the correct tier badge (Junior / Academigo Teacher / Verified) and CHF session rate for that tier.
@@ -109,14 +123,15 @@ Plans:
 | 1. Foundation | 4/5 | In Progress|  |
 | 2. Admin Portal | 7/7 | Complete   | 2026-05-30 |
 | 3. Core Transaction | 12/13 | In Progress|  |
-| 4. Teacher Progression | 0/? | Not started | - |
+| 4. Recurring Lessons | 0/? | Not started | - |
+| 5. Teacher Progression | 0/? | Not started | - |
 
 ---
 
 ## Coverage Validation
 
-**Total v1 requirements:** 45
-**Mapped:** 45/45
+**Total v1 requirements:** 66
+**Mapped:** 66/66
 
 | Requirement | Phase |
 |-------------|-------|
@@ -159,12 +174,33 @@ Plans:
 | EARN-03 | Phase 3 |
 | EARN-04 | Phase 3 |
 | EARN-05 | Phase 3 |
-| TIER-02 | Phase 4 |
-| TIER-03 | Phase 4 |
-| TIER-04 | Phase 4 |
-| TIER-05 | Phase 4 |
-| TIER-06 | Phase 4 |
-| TIER-07 | Phase 4 |
+| CRED-01 | Phase 4 |
+| CRED-02 | Phase 4 |
+| CRED-03 | Phase 4 |
+| CRED-04 | Phase 4 |
+| SCHED-01 | Phase 4 |
+| SCHED-02 | Phase 4 |
+| SCHED-03 | Phase 4 |
+| LES-01 | Phase 4 |
+| LES-02 | Phase 4 |
+| LES-03 | Phase 4 |
+| RESC-01 | Phase 4 |
+| RESC-02 | Phase 4 |
+| RESC-03 | Phase 4 |
+| TDASH-01 | Phase 4 |
+| TDASH-02 | Phase 4 |
+| TDASH-03 | Phase 4 |
+| TDASH-04 | Phase 4 |
+| SDASH-01 | Phase 4 |
+| SDASH-02 | Phase 4 |
+| SDASH-03 | Phase 4 |
+| SDASH-04 | Phase 4 |
+| TIER-02 | Phase 5 |
+| TIER-03 | Phase 5 |
+| TIER-04 | Phase 5 |
+| TIER-05 | Phase 5 |
+| TIER-06 | Phase 5 |
+| TIER-07 | Phase 5 |
 
 ---
 
@@ -174,7 +210,8 @@ Plans:
 2. **Security before admin**: The `handle_new_user` admin bypass must be closed before any admin portal page ships.
 3. **Admin before booking**: Teachers must have `is_approved = true` before students can discover or book them. Without Phase 2, the entire marketplace is empty.
 4. **Full transaction loop as one phase**: Stripe, availability, booking, reviews, and earnings are tightly interdependent. Delivering any subset appears broken — students need credits to book, bookings need slots, reviews need completed bookings, earnings need completed bookings.
-5. **Progression system last**: Tier badge display (Phase 4) is cosmetic and needs completed sessions and reviews to serve as promotion evidence. It does not block the core marketplace loop.
+5. **Recurring system before progression**: The recurring lesson model (Phase 4) extends the core transaction loop with schedules, auto-generation, and rescheduling — it is functional and revenue-generating. Tier badge display (Phase 5) is cosmetic and relies on recurring lesson completion data as promotion evidence.
+6. **Progression system last**: Tier badge display (Phase 5) is cosmetic and needs completed sessions and reviews to serve as promotion evidence. It does not block the core marketplace loop.
 
 ---
 
@@ -183,3 +220,4 @@ Plans:
 *Updated: 2026-05-30 — Phase 2 planned (7 plans across 5 waves)*
 *Updated: 2026-05-31 — Phase 3 planned (10 plans across 5 waves)*
 *Updated: 2026-06-01 — Phase 3 replanned (13 plans across 5 waves) — added Google Meet link management, Resend email service, Vercel Cron reminders, admin missing-links view*
+*Updated: 2026-06-02 — Added Phase 4: Recurring Lessons (21 requirements); Teacher Progression moved to Phase 5*
