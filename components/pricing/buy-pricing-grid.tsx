@@ -10,8 +10,8 @@ import { cn, formatChf } from "@/lib/utils";
 /** Maps option IDs from config/pricing.ts to DB credit_packages slugs */
 const OPTION_TO_SLUG: Record<string, string> = {
   single: "single",
-  pack5: "five-pack",
-  pack10: "ten-pack",
+  pack5: "pack5",
+  pack10: "pack10",
 };
 
 /** Shared heights so tier cards align in the 3-column grid. */
