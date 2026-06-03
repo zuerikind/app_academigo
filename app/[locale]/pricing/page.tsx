@@ -27,10 +27,6 @@ export default async function PricingPage({ params }: Props) {
         <div className="mt-8 rounded-2xl border border-academy-line/80 bg-gradient-to-b from-academy-paper-soft to-white p-3 sm:mt-12 sm:rounded-[20px] sm:p-5 lg:mt-16 lg:p-8">
           <PricingGrid />
         </div>
-
-        <p className="mx-auto mt-6 max-w-xl rounded-xl border border-academy-line bg-white px-4 py-3.5 text-center text-[13px] leading-relaxed text-academy-slate-muted shadow-soft sm:mt-8 sm:px-5 sm:py-4">
-          {t.checkoutNote}
-        </p>
       </Section>
     </PublicLayout>
   );

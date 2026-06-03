@@ -2,8 +2,14 @@ import { Resend } from "resend";
 import { BookingConfirmationEmail } from "@/emails/booking-confirmation";
 import { MeetLinkAddedEmail } from "@/emails/meet-link-added";
 import { TeacherReminderEmail } from "@/emails/teacher-reminder";
+import { TeacherBookingRequestEmail } from "@/emails/teacher-booking-request";
+import { PayoutProcessedEmail } from "@/emails/payout-processed";
 
-const resend = new Resend(process.env.RESEND_API_KEY!);
+let _resend: Resend | null = null;
+function getResend(): Resend {
+  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY ?? "re_placeholder");
+  return _resend;
+}
 const FROM =
   process.env.RESEND_FROM_EMAIL ?? "Academigo <noreply@academigo.xyz>";
 
@@ -15,7 +21,7 @@ export async function sendBookingConfirmation(params: {
   meetingLink: string | null;
 }): Promise<void> {
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await getResend().emails.send({
       from: FROM,
       to: params.to,
       subject: "Your lesson is confirmed — Academigo",
@@ -42,7 +48,7 @@ export async function sendMeetLinkAdded(params: {
   meetingLink: string;
 }): Promise<void> {
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await getResend().emails.send({
       from: FROM,
       to: params.to,
       subject: "Meeting link added for your lesson — Academigo",
@@ -74,7 +80,7 @@ export async function sendTeacherReminder(params: {
       ? `Reminder: lesson coming up — Academigo`
       : `Action required: add Meet link before your lesson — Academigo`;
 
-    const { error } = await resend.emails.send({
+    const { error } = await getResend().emails.send({
       from: FROM,
       to: params.to,
       subject,
@@ -91,5 +97,57 @@ export async function sendTeacherReminder(params: {
     }
   } catch (err) {
     console.error("[email] sendTeacherReminder failed:", err);
+  }
+}
+
+export async function sendPayoutProcessed(params: {
+  to: string;
+  teacherName: string;
+  amountChf: number;
+}): Promise<void> {
+  try {
+    const { error } = await getResend().emails.send({
+      from: FROM,
+      to: params.to,
+      subject: "Deine Auszahlung ist unterwegs — Academigo",
+      react: PayoutProcessedEmail({
+        teacherName: params.teacherName,
+        amountChf: params.amountChf,
+      }),
+    });
+    if (error) {
+      console.error("[email] sendPayoutProcessed failed:", error);
+    }
+  } catch (err) {
+    console.error("[email] sendPayoutProcessed failed:", err);
+  }
+}
+
+export async function sendTeacherBookingRequest(params: {
+  to: string;
+  teacherName: string;
+  studentName: string;
+  startTime: string;
+  topicNote: string | null;
+  dashboardUrl: string;
+}): Promise<void> {
+  try {
+    const { error } = await getResend().emails.send({
+      from: FROM,
+      to: params.to,
+      subject: `New lesson request from ${params.studentName} — Academigo`,
+      react: TeacherBookingRequestEmail({
+        teacherName: params.teacherName,
+        studentName: params.studentName,
+        startTime: params.startTime,
+        topicNote: params.topicNote,
+        dashboardUrl: params.dashboardUrl,
+      }),
+    });
+    if (error) {
+      console.error("[email] sendTeacherBookingRequest failed:", error);
+    }
+  } catch (err) {
+    console.error("[email] sendTeacherBookingRequest failed:", err);
   }
 }

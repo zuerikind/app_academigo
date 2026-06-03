@@ -26,9 +26,11 @@ type BuyAction = (
 
 function SubmitButton({
   label,
+  pendingLabel,
   highlight,
 }: {
   label: string;
+  pendingLabel: string;
   highlight: boolean;
 }) {
   const { pending } = useFormStatus();
@@ -49,7 +51,7 @@ function SubmitButton({
       ) : (
         <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
       )}
-      {pending ? "Redirecting…" : label}
+      {pending ? pendingLabel : label}
     </button>
   );
 }
@@ -57,11 +59,13 @@ function SubmitButton({
 function BuyForm({
   packageSlug,
   label,
+  pendingLabel,
   highlight,
   action,
 }: {
   packageSlug: string;
   label: string;
+  pendingLabel: string;
   highlight: boolean;
   action: BuyAction;
 }) {
@@ -69,7 +73,7 @@ function BuyForm({
   return (
     <form action={formAction}>
       <input type="hidden" name="packageSlug" value={packageSlug} />
-      <SubmitButton label={label} highlight={highlight} />
+      <SubmitButton label={label} pendingLabel={pendingLabel} highlight={highlight} />
       {state.error && (
         <p className="mt-2 text-[12px] text-red-600">{state.error}</p>
       )}
@@ -199,7 +203,8 @@ export function BuyPricingGrid({ action }: { action: BuyAction }) {
                     <BuyForm
                       key={option.id}
                       packageSlug={OPTION_TO_SLUG[option.id] ?? option.id}
-                      label={`Buy ${t.tiers.essentials.options[option.id]}`}
+                      label={`${t.buyButton} — ${t.tiers.essentials.options[option.id]}`}
+                      pendingLabel={t.redirecting}
                       highlight={false}
                       action={action}
                     />
@@ -208,7 +213,8 @@ export function BuyPricingGrid({ action }: { action: BuyAction }) {
               ) : (
                 <BuyForm
                   packageSlug={tier.id}
-                  label={`Subscribe — ${formatChf((tier as { priceChf: number }).priceChf)}/mo`}
+                  label={`${t.subscribeButton} — ${formatChf((tier as { priceChf: number }).priceChf)}${t.perMonth}`}
+                  pendingLabel={t.redirecting}
                   highlight={tier.highlight}
                   action={action}
                 />

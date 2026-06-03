@@ -83,18 +83,18 @@ export default async function StudentBookingsPage({ params }: Props) {
         {/* Credit balance */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <StatCard
-            label="Available Credits"
+            label={dict.student.dashboard.availableCredits}
             value={`${credits} credits`}
             icon="coins"
             tone="brand"
-            hint="Each session costs 1 credit"
+            hint={t.creditsHint}
           />
         </div>
 
         {/* Upcoming bookings */}
         <section>
           <h2 className="mb-4 font-display text-[16px] font-semibold tracking-tight text-academy-navy">
-            Upcoming
+            {t.upcoming}
           </h2>
           {upcoming.length === 0 ? (
             <EmptyState
@@ -118,7 +118,7 @@ export default async function StudentBookingsPage({ params }: Props) {
         {past.length > 0 && (
           <section>
             <h2 className="mb-4 font-display text-[16px] font-semibold tracking-tight text-academy-navy">
-              Past Sessions
+              {t.pastSessions}
             </h2>
             <div className="space-y-3">
               {past.map((booking) => (
@@ -127,6 +127,42 @@ export default async function StudentBookingsPage({ params }: Props) {
             </div>
           </section>
         )}
+
+        {/* Credit history — completed sessions only */}
+        {(() => {
+          const completed = bookings.filter((b) => b.status === "completed");
+          const dateFmt = raw === "de" ? "de-CH" : "en-CH";
+          return (
+            <section>
+              <h2 className="mb-4 font-display text-[16px] font-semibold tracking-tight text-academy-navy">
+                {t.creditHistory}
+              </h2>
+              {completed.length === 0 ? (
+                <p className="text-[13px] text-academy-slate-muted">{t.creditHistoryEmpty}</p>
+              ) : (
+                <div className="rounded-2xl border border-academy-line bg-white divide-y divide-academy-line/60">
+                  {completed.map((b) => {
+                    const start = new Date(b.start_time);
+                    const dateStr = start.toLocaleDateString(dateFmt, { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+                    const timeStr = start.toLocaleTimeString(dateFmt, { hour: "2-digit", minute: "2-digit", timeZone: "UTC" });
+                    const teacher = b.teacher?.profiles?.full_name ?? "Teacher";
+                    return (
+                      <div key={b.id} className="flex items-center justify-between gap-3 px-4 py-3">
+                        <div className="min-w-0">
+                          <p className="text-[13px] font-medium text-academy-navy truncate">{teacher}</p>
+                          <p className="text-[11px] text-academy-slate-muted">{dateStr} · {timeStr}</p>
+                        </div>
+                        <span className="shrink-0 text-[13px] font-semibold text-red-600 text-numeric">
+                          {t.creditDeducted.replace("{n}", String(b.credits_reserved))}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </section>
+          );
+        })()}
       </div>
     </DashboardLayout>
   );

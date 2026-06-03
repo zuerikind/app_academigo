@@ -15,4 +15,5 @@ export type IconName =
   | "user"
   | "settings"
   | "book"
-  | "alertTriangle";
+  | "alertTriangle"
+  | "star";

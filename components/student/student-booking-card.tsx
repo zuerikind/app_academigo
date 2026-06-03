@@ -42,9 +42,9 @@ function formatSessionTime(start: string, end: string, locale: string) {
   const dateLocale = locale === "de" ? "de-CH" : "en-CH";
   const s = new Date(start);
   const e = new Date(end);
-  const date = s.toLocaleDateString(dateLocale, { weekday: "short", day: "numeric", month: "short", year: "numeric" });
-  const startTime = s.toLocaleTimeString(dateLocale, { hour: "2-digit", minute: "2-digit" });
-  const endTime = e.toLocaleTimeString(dateLocale, { hour: "2-digit", minute: "2-digit" });
+  const date = s.toLocaleDateString(dateLocale, { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+  const startTime = s.toLocaleTimeString(dateLocale, { hour: "2-digit", minute: "2-digit", timeZone: "UTC" });
+  const endTime = e.toLocaleTimeString(dateLocale, { hour: "2-digit", minute: "2-digit", timeZone: "UTC" });
   return `${date} · ${startTime} – ${endTime}`;
 }
 
@@ -137,10 +137,18 @@ export function StudentBookingCard({ booking }: StudentBookingCardProps) {
         )}
 
         {booking.status === "completed" && (
-          <ReviewForm
-            bookingId={booking.id}
-            hasReview={booking.review !== null && booking.review !== undefined}
-          />
+          <div className="mt-2 rounded-[12px] border border-academy-line bg-academy-mist p-4">
+            <p className="mb-0.5 text-[13px] font-semibold text-academy-navy">
+              {dict.reviews.feedbackTitle}
+            </p>
+            <p className="mb-3 text-[12px] text-academy-slate-muted">
+              {dict.reviews.feedbackSubtitle}
+            </p>
+            <ReviewForm
+              bookingId={booking.id}
+              hasReview={booking.review !== null && booking.review !== undefined}
+            />
+          </div>
         )}
 
         {booking.status === "cancelled" && (

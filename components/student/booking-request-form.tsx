@@ -27,13 +27,13 @@ function formatSlotDisplay(isoStart: string, isoEnd: string, locale: string): st
     const end = new Date(isoEnd);
     const dateStr = start.toLocaleDateString(dateLocale, {
       weekday: "long", year: "numeric", month: "long", day: "numeric",
-      timeZone: "Europe/Zurich",
+      timeZone: "UTC",
     });
     const startTime = start.toLocaleTimeString(dateLocale, {
-      hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich",
+      hour: "2-digit", minute: "2-digit", timeZone: "UTC",
     });
     const endTime = end.toLocaleTimeString(dateLocale, {
-      hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich",
+      hour: "2-digit", minute: "2-digit", timeZone: "UTC",
     });
     return `${dateStr} · ${startTime}–${endTime}`;
   } catch {

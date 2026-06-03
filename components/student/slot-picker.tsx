@@ -1,7 +1,8 @@
 "use client";
 
 import { startTransition, useEffect, useState } from "react";
-import { getAvailableSlotsAction } from "@/lib/actions/availability";
+import { getSlotsByStatusAction } from "@/lib/actions/availability";
+import { useI18n } from "@/components/i18n/locale-provider";
 import { LESSON_DURATION_MINUTES } from "@/lib/utils/slots";
 import { cn } from "@/lib/utils";
 
@@ -11,20 +12,8 @@ interface SlotPickerProps {
   onSlotSelected: (slotStart: string, slotEnd: string) => void;
 }
 
-/**
- * Formats a "HH:MM" time string into a localized display string (e.g. "14:00").
- * The display is kept simple as HH:MM in local time.
- */
-function formatSlotTime(time: string): string {
-  return time;
-}
-
-/**
- * Converts a YYYY-MM-DD date string and "HH:MM" time string into an ISO-like
- * datetime string "YYYY-MM-DDTHH:MM:00" suitable for the booking RPC.
- */
 function toDateTimeString(dateStr: string, time: string): string {
-  return `${dateStr}T${time}:00`;
+  return `${dateStr}T${time}:00Z`;
 }
 
 function addMinutes(time: string, minutes: number): string {
@@ -36,11 +25,14 @@ function addMinutes(time: string, minutes: number): string {
 }
 
 export function SlotPicker({ teacherId, selectedDate, onSlotSelected }: SlotPickerProps) {
-  const [slots, setSlots] = useState<string[]>([]);
+  const { dict } = useI18n();
+  const tb = dict.bookings;
+
+  const [available, setAvailable] = useState<string[]>([]);
+  const [unavailable, setUnavailable] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
-  // Build date string for the selected date
   const year = selectedDate.getFullYear();
   const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
   const day = String(selectedDate.getDate()).padStart(2, "0");
@@ -50,8 +42,9 @@ export function SlotPicker({ teacherId, selectedDate, onSlotSelected }: SlotPick
     setSelectedSlot(null);
     setLoading(true);
     startTransition(async () => {
-      const result = await getAvailableSlotsAction(teacherId, selectedDate.toISOString());
-      setSlots(result);
+      const result = await getSlotsByStatusAction(teacherId, dateStr);
+      setAvailable(result.available);
+      setUnavailable(result.unavailable);
       setLoading(false);
     });
   }, [teacherId, dateStr]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -67,40 +60,52 @@ export function SlotPicker({ teacherId, selectedDate, onSlotSelected }: SlotPick
   if (loading) {
     return (
       <div className="flex h-16 items-center justify-center text-[13px] text-academy-slate-muted">
-        Loading slots…
+        {tb.loadingSlots}
       </div>
     );
   }
 
-  if (slots.length === 0) {
+  if (available.length === 0 && unavailable.length === 0) {
     return (
-      <p className="text-[13px] text-academy-slate-muted">
-        No available slots for this day.
-      </p>
+      <p className="text-[13px] text-academy-slate-muted">{tb.noSlotsForDay}</p>
     );
   }
+
+  // Merge and sort all slots for display order
+  const allSlotTimes = [...new Set([...available, ...unavailable])].sort();
+  const unavailableSet = new Set(unavailable);
 
   return (
     <div>
       <p className="mb-2 text-[12px] font-medium uppercase tracking-wide text-academy-slate-muted">
-        Available times on {dateStr}
+        {tb.availableTimesOn.replace("{date}", dateStr)}
       </p>
       <div className="flex flex-wrap gap-2">
-        {slots.map((slot) => (
-          <button
-            key={slot}
-            onClick={() => handleSlotClick(slot)}
-            aria-pressed={selectedSlot === slot}
-            className={cn(
-              "rounded-md border px-3 py-1.5 text-[13px] font-medium transition-colors",
-              selectedSlot === slot
-                ? "border-[color:var(--brand)] bg-[color:var(--brand)] text-white"
-                : "border-academy-line text-academy-navy hover:border-[color:var(--brand)]/40 hover:bg-[color:var(--brand-tint)]",
-            )}
-          >
-            {formatSlotTime(slot)}
-          </button>
-        ))}
+        {allSlotTimes.map((slot) => {
+          const isUnavailable = unavailableSet.has(slot);
+          const isSelected = selectedSlot === slot;
+          return (
+            <button
+              key={slot}
+              onClick={() => !isUnavailable && handleSlotClick(slot)}
+              disabled={isUnavailable}
+              aria-pressed={isSelected}
+              title={isUnavailable ? tb.slotUnavailable : undefined}
+              className={cn(
+                "rounded-md border px-3 py-1.5 text-[13px] font-medium transition-colors",
+                isSelected &&
+                  "border-[color:var(--brand)] bg-[color:var(--brand)] text-white",
+                !isSelected &&
+                  !isUnavailable &&
+                  "border-academy-line text-academy-navy hover:border-[color:var(--brand)]/40 hover:bg-[color:var(--brand-tint)]",
+                isUnavailable &&
+                  "cursor-not-allowed border-academy-line/50 text-academy-slate-muted line-through opacity-50",
+              )}
+            >
+              {slot}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

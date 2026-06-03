@@ -2,14 +2,8 @@
 
 import { startTransition, useState } from "react";
 import { getAvailableDaysAction } from "@/lib/actions/availability";
+import { useI18n } from "@/components/i18n/locale-provider";
 import { cn } from "@/lib/utils";
-
-const DAY_HEADERS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
-
-const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-];
 
 interface BookingCalendarProps {
   teacherId: string;
@@ -26,6 +20,9 @@ export function BookingCalendar({
   initialMonth,
   onDaySelected,
 }: BookingCalendarProps) {
+  const { dict } = useI18n();
+  const tc = dict.calendar;
+
   const [currentYear, setCurrentYear] = useState(initialYear);
   const [currentMonth, setCurrentMonth] = useState(initialMonth); // 0-indexed
   const [availableDays, setAvailableDays] = useState<number[]>(initialAvailableDays);
@@ -53,7 +50,6 @@ export function BookingCalendar({
     setLoading(true);
 
     startTransition(async () => {
-      // getAvailableDaysForMonth uses 1-indexed months
       const days = await getAvailableDaysAction(teacherId, newYear, newMonth + 1);
       setAvailableDays(days);
       setLoading(false);
@@ -84,10 +80,10 @@ export function BookingCalendar({
           className="rounded-md border border-academy-line px-2.5 py-1 text-[13px] text-academy-slate transition-colors hover:border-[color:var(--brand)]/40 hover:text-academy-navy disabled:opacity-40"
           aria-label="Previous month"
         >
-          ← Prev
+          {tc.prev}
         </button>
         <span className="font-display text-[14px] font-semibold text-academy-navy">
-          {MONTH_NAMES[currentMonth]} {currentYear}
+          {tc.monthNames[currentMonth]} {currentYear}
         </span>
         <button
           onClick={() => navigateMonth(1)}
@@ -95,13 +91,13 @@ export function BookingCalendar({
           className="rounded-md border border-academy-line px-2.5 py-1 text-[13px] text-academy-slate transition-colors hover:border-[color:var(--brand)]/40 hover:text-academy-navy disabled:opacity-40"
           aria-label="Next month"
         >
-          Next →
+          {tc.next}
         </button>
       </div>
 
       {/* Day-of-week headers */}
       <div className="mb-1 grid grid-cols-7">
-        {DAY_HEADERS.map((h) => (
+        {tc.dayHeaders.map((h) => (
           <div
             key={h}
             className="py-1 text-center text-[11px] font-medium uppercase tracking-wide text-academy-slate-muted"
@@ -114,7 +110,7 @@ export function BookingCalendar({
       {/* Calendar grid */}
       {loading ? (
         <div className="flex h-32 items-center justify-center text-[13px] text-academy-slate-muted">
-          Loading…
+          {tc.loading}
         </div>
       ) : (
         <div className="grid grid-cols-7 gap-px rounded-md bg-academy-line">
@@ -163,11 +159,11 @@ export function BookingCalendar({
       <div className="mt-2 flex items-center gap-3 text-[11px] text-academy-slate-muted">
         <span className="flex items-center gap-1">
           <span className="inline-block h-2.5 w-2.5 rounded-sm bg-[color:var(--brand-tint)]" />
-          Available
+          {tc.available}
         </span>
         <span className="flex items-center gap-1">
           <span className="inline-block h-2.5 w-2.5 rounded-sm bg-[color:var(--brand)]" />
-          Selected
+          {tc.selected}
         </span>
       </div>
     </div>

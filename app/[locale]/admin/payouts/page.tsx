@@ -1,13 +1,12 @@
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { Table } from "@/components/ui/table";
-import { markPayoutProcessed } from "@/lib/actions/admin";
+import { PayoutDetailDialog } from "@/components/admin/payout-detail-dialog";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
-import { getAdminPayouts } from "@/lib/queries/admin";
+import { getAdminPayoutsWithEarnings } from "@/lib/queries/admin";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -18,9 +17,28 @@ export default async function AdminPayoutsPage({ params }: Props) {
   const dict = getDictionary(raw);
   const t = dict.admin.payouts;
 
-  const payouts = await getAdminPayouts();
+  const payouts = await getAdminPayoutsWithEarnings();
 
   type PayoutRow = (typeof payouts)[number];
+
+  const dialogLabels = {
+    viewDetails: t.viewDetails,
+    dialogTitle: t.dialogTitle,
+    dialogTeacher: t.dialogTeacher,
+    dialogEmail: t.dialogEmail,
+    dialogAmount: t.dialogAmount,
+    dialogRequested: t.dialogRequested,
+    dialogSessions: t.dialogSessions,
+    dialogColDate: t.dialogColDate,
+    dialogColStudent: t.dialogColStudent,
+    dialogColSubject: t.dialogColSubject,
+    dialogColAmount: t.dialogColAmount,
+    dialogNoSessions: t.dialogNoSessions,
+    confirmPayout: t.confirmPayout,
+    confirmPayoutLoading: t.confirmPayoutLoading,
+    statusProcessed: t.statusProcessed,
+    close: t.close,
+  };
 
   const columns = [
     {
@@ -57,21 +75,9 @@ export default async function AdminPayoutsPage({ params }: Props) {
     {
       key: "actions",
       header: t.colActions,
-      render: (row: PayoutRow) => {
-        if (row.status === "processed") return null;
-        const action = async (formData: FormData) => {
-          "use server";
-          await markPayoutProcessed({}, formData);
-        };
-        return (
-          <form action={action}>
-            <input type="hidden" name="payoutId" value={row.id} />
-            <Button type="submit" variant="secondary" size="sm">
-              {t.markProcessed}
-            </Button>
-          </form>
-        );
-      },
+      render: (row: PayoutRow) => (
+        <PayoutDetailDialog payout={row as any} labels={dialogLabels} />
+      ),
     },
   ];
 

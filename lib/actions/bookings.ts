@@ -219,10 +219,16 @@ export async function markComplete(
   const supabase = await createClient();
 
   const bookingId = String(formData.get("bookingId") ?? "").trim();
+  const sessionRating = (formData.get("sessionRating") as string)?.trim() || null;
+  const teacherNotes = (formData.get("teacherNotes") as string)?.trim() || null;
+
   if (!bookingId) return { error: "Missing booking ID." };
+  if (!sessionRating) return { error: "Please select a session rating." };
 
   const { error } = await supabase.rpc("complete_booking", {
     p_booking_id: bookingId,
+    p_session_rating: sessionRating,
+    p_teacher_notes: teacherNotes,
   });
 
   if (error) return { error: error.message };

@@ -166,6 +166,61 @@ export async function getAdminPayouts() {
   return data;
 }
 
+export async function getAdminPayoutsWithEarnings() {
+  const supabase = await createClient();
+
+  const { data: payouts, error } = await supabase
+    .from("payout_requests")
+    .select(
+      `
+      id,
+      amount_chf,
+      status,
+      note,
+      created_at,
+      teachers ( profiles ( full_name, email ) )
+    `,
+    )
+    .order("created_at", { ascending: false });
+
+  if (error || !payouts) return [];
+
+  // Fetch earnings linked to these payouts (requires migration 20260603000007).
+  // If the column doesn't exist yet the query errors gracefully and earnings
+  // are omitted rather than breaking the whole page.
+  const payoutIds = payouts.map((p) => p.id);
+  const { data: earnings } = payoutIds.length
+    ? await supabase
+        .from("teacher_earnings")
+        .select(
+          `
+          id,
+          amount,
+          payout_request_id,
+          bookings (
+            start_time,
+            students ( profiles ( full_name ) ),
+            subjects ( name )
+          )
+        `,
+        )
+        .in("payout_request_id", payoutIds)
+    : { data: [] };
+
+  type EarningItem = NonNullable<typeof earnings>[number];
+  const earningsByPayout = (earnings ?? []).reduce<Record<string, EarningItem[]>>((acc, e) => {
+    const pid = (e as any).payout_request_id as string;
+    if (!acc[pid]) acc[pid] = [];
+    acc[pid]!.push(e);
+    return acc;
+  }, {});
+
+  return payouts.map((p) => ({
+    ...p,
+    teacher_earnings: earningsByPayout[p.id] ?? [],
+  }));
+}
+
 // EARN-04/05 confirmed: this query reads rows inserted by requestPayout (lib/actions/earnings.ts).
 // requestPayout inserts: { teacher_id, amount_chf, status: 'pending' }
 // Column alignment verified in Phase 3 plan 03-11.
@@ -189,6 +244,29 @@ export async function getPayoutRequests() {
   return data ?? [];
 }
 
+export async function getAdminSessions() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("bookings")
+    .select(
+      `
+      id,
+      start_time,
+      end_time,
+      session_rating,
+      teacher_private_notes,
+      students ( profiles ( full_name ) ),
+      teachers ( profiles ( full_name ) ),
+      reviews ( rating, comment )
+    `,
+    )
+    .eq("status", "completed")
+    .order("start_time", { ascending: true });
+
+  if (error || !data) return [];
+  return data;
+}
+
 export async function getMissingMeetLinks() {
   const supabase = await createClient();
   const now = new Date().toISOString();
@@ -207,6 +285,13 @@ export async function getMissingMeetLinks() {
     .order("start_time", { ascending: true });
   if (error) throw error;
   return data ?? [];
+}
+
+export async function getPlatformSettings(): Promise<Record<string, string>> {
+  const supabase = await createClient();
+  const { data } = await supabase.from("platform_settings").select("key, value");
+  if (!data) return {};
+  return Object.fromEntries((data as Array<{ key: string; value: string }>).map((r) => [r.key, r.value]));
 }
 
 export async function getAdminPromotions() {

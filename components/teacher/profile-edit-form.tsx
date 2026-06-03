@@ -38,7 +38,7 @@ export function TeacherProfileEditForm({
   const currentOtherLangs = currentLangs.filter((l) => !fixedLangsSet.has(l));
 
   return (
-    <form action={formAction} encType="multipart/form-data" className="space-y-6">
+    <form action={formAction} className="space-y-6">
       {state.error && (
         <p className="rounded-md border border-[color:var(--academy-danger)]/25 bg-[color:var(--academy-danger-soft)] px-3.5 py-2.5 text-[13px] text-[color:var(--academy-danger)]">
           {state.error}

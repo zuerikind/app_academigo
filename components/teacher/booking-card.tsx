@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { CheckCircle, AlertCircle, Link2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -35,8 +35,8 @@ function formatDate(iso: string, locale: string) {
   const dateLocale = locale === "de" ? "de-CH" : "en-CH";
   const d = new Date(iso);
   return {
-    date: d.toLocaleDateString(dateLocale, { weekday: "short", day: "numeric", month: "short", year: "numeric" }),
-    time: d.toLocaleTimeString(dateLocale, { hour: "2-digit", minute: "2-digit" }),
+    date: d.toLocaleDateString(dateLocale, { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }),
+    time: d.toLocaleTimeString(dateLocale, { hour: "2-digit", minute: "2-digit", timeZone: "UTC" }),
   };
 }
 
@@ -140,17 +140,73 @@ function PendingCard({
   );
 }
 
+const SESSION_RATINGS = [
+  { value: "excellent", emoji: "🌟", labelKey: "ratingExcellent" as const },
+  { value: "good",      emoji: "👍", labelKey: "ratingGood"      as const },
+  { value: "challenging", emoji: "😕", labelKey: "ratingChallenging" as const },
+  { value: "no_show",  emoji: "❌", labelKey: "ratingNoShow"    as const },
+];
+
+function CompleteSessionForm({ booking }: { booking: BookingWithRelations }) {
+  const { dict } = useI18n();
+  const tb = dict.bookings;
+  const [markCompleteState, markCompleteAction] = useActionState(markComplete, {});
+
+  return (
+    <form action={markCompleteAction} className="space-y-4">
+      <input type="hidden" name="bookingId" value={booking.id} />
+
+      <div>
+        <p className="mb-1 text-[12px] font-semibold uppercase tracking-wide text-academy-navy">
+          {tb.sessionEvalTitle}
+        </p>
+        <p className="mb-3 text-[11px] text-academy-slate-muted">{tb.sessionEvalSubtitle}</p>
+        <div className="grid grid-cols-2 gap-2">
+          {SESSION_RATINGS.map(({ value, emoji, labelKey }) => (
+            <label
+              key={value}
+              className="flex cursor-pointer items-center gap-2 rounded-[8px] border border-academy-line bg-white px-3 py-2.5 text-[13px] font-medium text-academy-navy transition-colors has-[:checked]:border-[color:var(--brand)] has-[:checked]:bg-[color:var(--brand)]/8 has-[:checked]:text-[color:var(--brand-deep)] hover:border-[color:var(--brand)]/40"
+            >
+              <input type="radio" name="sessionRating" value={value} className="sr-only" required />
+              <span>{emoji}</span>
+              <span>{tb[labelKey]}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label className="mb-1.5 block text-[12px] font-medium text-academy-navy">
+          {tb.teacherNotesLabel}{" "}
+          <span className="font-normal text-academy-slate-muted">(optional)</span>
+        </label>
+        <textarea
+          name="teacherNotes"
+          rows={2}
+          placeholder={tb.teacherNotesPlaceholder}
+          className="w-full rounded-[8px] border border-academy-line bg-white px-3 py-2 text-[13px] text-academy-navy placeholder:text-academy-slate-muted focus:border-[color:var(--brand)]/60 focus:outline-none focus:ring-2 focus:ring-[color:var(--brand)]/15"
+        />
+      </div>
+
+      {markCompleteState.error && (
+        <p className="text-[12px] text-[color:var(--academy-danger)]">{markCompleteState.error}</p>
+      )}
+
+      <SubmitButton label={tb.completeSession} pendingLabel={tb.saving} variant="primary" />
+    </form>
+  );
+}
+
 function ConfirmedCard({ booking }: { booking: BookingWithRelations }) {
   const { dict, locale } = useI18n();
   const tb = dict.bookings;
+  const [showEval, setShowEval] = useState(false);
   const [updateLinkState, updateLinkAction] = useActionState(updateBookingMeetLink, {});
-  const [markCompleteState, markCompleteAction] = useActionState(markComplete, {});
   const [cancelState, cancelAction] = useActionState(cancelBookingAsTeacher, {});
 
   const studentName = booking.student?.profiles.full_name ?? "Student";
   const start = formatDate(booking.start_time, locale);
   const end = formatDate(booking.end_time, locale);
-  const isPast = new Date(booking.start_time) < new Date();
 
   return (
     <Card padding="compact" elevation="soft" className="space-y-4">
@@ -241,25 +297,32 @@ function ConfirmedCard({ booking }: { booking: BookingWithRelations }) {
         {tb.downloadIcs}
       </a>
 
-      {/* Actions */}
-      <div className="flex flex-wrap gap-2">
-        {isPast && (
-          <form action={markCompleteAction}>
+      {/* Complete session / evaluation */}
+      {showEval ? (
+        <div className="rounded-[10px] border border-academy-line bg-academy-mist p-4">
+          <CompleteSessionForm booking={booking} />
+          <button
+            type="button"
+            onClick={() => setShowEval(false)}
+            className="mt-3 text-[12px] text-academy-slate-muted hover:text-academy-navy"
+          >
+            {tb.backToActions}
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          <Button variant="primary" size="sm" onClick={() => setShowEval(true)}>
+            {tb.markComplete}
+          </Button>
+          <form action={cancelAction}>
             <input type="hidden" name="bookingId" value={booking.id} />
-            {markCompleteState.error && (
-              <p className="text-[12px] text-[color:var(--academy-danger)]">{markCompleteState.error}</p>
+            {cancelState.error && (
+              <p className="text-[12px] text-[color:var(--academy-danger)]">{cancelState.error}</p>
             )}
-            <SubmitButton label={tb.markComplete} pendingLabel={tb.saving} variant="primary" />
+            <SubmitButton label={tb.cancelSession} pendingLabel={tb.cancelling} variant="ghost" />
           </form>
-        )}
-        <form action={cancelAction}>
-          <input type="hidden" name="bookingId" value={booking.id} />
-          {cancelState.error && (
-            <p className="text-[12px] text-[color:var(--academy-danger)]">{cancelState.error}</p>
-          )}
-          <SubmitButton label={tb.cancelSession} pendingLabel={tb.cancelling} variant="ghost" />
-        </form>
-      </div>
+        </div>
+      )}
     </Card>
   );
 }

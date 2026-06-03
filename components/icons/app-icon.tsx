@@ -14,6 +14,7 @@ import {
   Monitor,
   Package,
   Settings,
+  Star,
   User,
   Users,
   type LucideProps,
@@ -37,6 +38,7 @@ const registry = {
   user: User,
   settings: Settings,
   book: BookOpen,
+  star: Star,
 } satisfies Record<IconName, React.ComponentType<LucideProps>>;
 
 export function AppIcon({

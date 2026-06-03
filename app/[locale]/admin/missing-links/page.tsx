@@ -14,6 +14,7 @@ export default async function AdminMissingLinksPage({ params }: Props) {
 
   const dict = getDictionary(raw);
   const t = dict.admin.missingLinks;
+  const dateLocale = raw === "de" ? "de-CH" : "en-CH";
 
   const bookings = await getMissingMeetLinks();
 
@@ -33,12 +34,13 @@ export default async function AdminMissingLinksPage({ params }: Props) {
     );
     return {
       id: b.id,
-      dateTime: new Date(b.start_time).toLocaleDateString("de-CH", {
+      dateTime: new Date(b.start_time).toLocaleDateString(dateLocale, {
         weekday: "short",
         day: "numeric",
         month: "short",
         hour: "2-digit",
         minute: "2-digit",
+        timeZone: "UTC",
       }),
       teacher: teacherName,
       student: studentName,
@@ -66,7 +68,7 @@ export default async function AdminMissingLinksPage({ params }: Props) {
     },
     {
       key: "hoursUntil",
-      header: "Time Until",
+      header: t.colHoursUntil,
       render: (row: Row) => row.hoursUntil,
     },
   ];

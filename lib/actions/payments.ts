@@ -57,6 +57,14 @@ export async function createCheckoutSession(
         package_id: pkg.id,
         package_slug: pkg.slug,
       },
+      ...(pkg.is_subscription && {
+        subscription_data: {
+          metadata: {
+            student_id: student.id,
+            package_id: pkg.id,
+          },
+        },
+      }),
     });
   } catch {
     return { error: "Checkout session creation failed." };
@@ -65,4 +73,61 @@ export async function createCheckoutSession(
   if (!session.url) return { error: "Checkout session creation failed." };
 
   redirect(session.url);
+}
+
+export async function createPortalSession(
+  _prev: { error?: string },
+  formData: FormData,
+): Promise<{ error?: string }> {
+  const locale = await getActionLocale(formData);
+  const profile = await requireRole("student", locale);
+  const supabase = await createClient();
+
+  const { data: student } = await supabase
+    .from("students")
+    .select("id, stripe_customer_id")
+    .eq("profile_id", profile.id)
+    .maybeSingle();
+
+  if (!student?.stripe_customer_id) {
+    return { error: "No billing account found." };
+  }
+
+  // Look up the most recent active subscription ID so we can deep-link
+  // directly to the cancellation flow instead of the portal overview.
+  const { data: latestSubPayment } = await supabase
+    .from("payments")
+    .select("stripe_subscription_id")
+    .eq("student_id", student.id)
+    .not("stripe_subscription_id", "is", null)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const returnUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}${localizedPath(locale, "/student/packages")}`;
+  const subscriptionId = latestSubPayment?.stripe_subscription_id ?? null;
+
+  let portalSession: Stripe.BillingPortal.Session;
+  try {
+    portalSession = await stripe.billingPortal.sessions.create({
+      customer: student.stripe_customer_id,
+      return_url: returnUrl,
+      ...(subscriptionId && {
+        flow_data: {
+          type: "subscription_cancel",
+          after_completion: {
+            type: "redirect",
+            redirect: { return_url: returnUrl },
+          },
+          subscription_cancel: {
+            subscription: subscriptionId,
+          },
+        },
+      }),
+    });
+  } catch {
+    return { error: "Could not open billing portal." };
+  }
+
+  redirect(portalSession.url);
 }

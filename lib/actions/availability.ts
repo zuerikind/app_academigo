@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import {
   getAvailableDaysForMonth,
   getAvailableSlotsForDay,
+  getSlotsByStatusForDay,
 } from "@/lib/queries/availability";
 
 export type AvailabilityActionState = { error?: string };
@@ -200,12 +201,23 @@ export async function getAvailableDaysAction(
 }
 
 /**
- * Server Action wrapper: returns available slot ISO datetime strings for a given date.
- * Called client-side when student selects a calendar day.
+ * Server Action wrapper: returns available slot times (HH:MM) for a given date.
+ * @param dateStr - Date in "YYYY-MM-DD" format (no timezone conversion)
  */
 export async function getAvailableSlotsAction(
   teacherId: string,
-  dateISO: string,
+  dateStr: string,
 ): Promise<string[]> {
-  return getAvailableSlotsForDay(teacherId, new Date(dateISO));
+  return getAvailableSlotsForDay(teacherId, dateStr);
+}
+
+/**
+ * Server Action wrapper: returns all slots for a day split into available and unavailable.
+ * Unavailable slots belong to the teacher's recurring schedule but are blocked by a booking or blocker.
+ */
+export async function getSlotsByStatusAction(
+  teacherId: string,
+  dateStr: string,
+): Promise<{ available: string[]; unavailable: string[] }> {
+  return getSlotsByStatusForDay(teacherId, dateStr);
 }

@@ -120,5 +120,15 @@ export function getAdminNav(dict: Dictionary, locale: Locale): NavItem[] {
       href: localizedPath(locale, "/admin/missing-links"),
       icon: "alertTriangle",
     },
+    {
+      label: dict.admin.nav.sessions,
+      href: localizedPath(locale, "/admin/sessions"),
+      icon: "star",
+    },
+    {
+      label: dict.admin.nav.settings,
+      href: localizedPath(locale, "/admin/settings"),
+      icon: "settings",
+    },
   ];
 }

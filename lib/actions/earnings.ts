@@ -13,60 +13,58 @@ export async function requestPayout(
   const profile = await requireRole("teacher");
   const supabase = await createClient();
 
-  // Use profile.id as teacher_id directly (profile_id = teacher's profile)
-  const teacherId = profile.id;
+  // Resolve teachers.id and check bank details from profile_id
+  const { data: teacherRecord, error: teacherError } = await supabase
+    .from("teachers")
+    .select("id, payout_info_placeholder")
+    .eq("profile_id", profile.id)
+    .maybeSingle();
 
-  // Fetch pending balance from teacher_earnings (rows where payout_request_id IS NULL)
+  if (teacherError || !teacherRecord) {
+    return { error: "Teacher record not found." };
+  }
+
+  if (!teacherRecord.payout_info_placeholder?.trim()) {
+    return { error: "Please save your bank details in Settings before requesting a payout." };
+  }
+
+  const teacherId = teacherRecord.id;
+
+  // Sum all available (unpaid) earnings
   const { data: earningsData, error: earningsError } = await supabase
     .from("teacher_earnings")
-    .select("amount_chf, pending_amount_chf")
+    .select("amount")
     .eq("teacher_id", teacherId)
-    .is("payout_request_id", null);
+    .eq("status", "available");
 
-  if (earningsError) {
-    if (
-      earningsError.message?.includes("payout_already_pending") ||
-      earningsError.code === "P0001"
-    ) {
-      return { error: "A payout request is already pending." };
-    }
-    return { error: earningsError.message };
-  }
+  if (earningsError) return { error: earningsError.message };
 
-  // Handle both array (real DB) and single object (test mock) response shapes
-  let pendingBalance = 0;
-  if (Array.isArray(earningsData)) {
-    pendingBalance = earningsData.reduce(
-      (sum: number, row: any) => sum + (row.amount_chf ?? 0),
-      0,
-    );
-  } else if (earningsData) {
-    // Test mock returns a single object with pending_amount_chf
-    pendingBalance = (earningsData as any).pending_amount_chf ?? 0;
-  }
+  const pendingBalance = (earningsData ?? []).reduce(
+    (sum: number, row: any) => sum + (row.amount ?? 0),
+    0,
+  );
 
   if (pendingBalance <= 0) {
     return { error: "No pending balance." };
   }
 
-  // Insert payout request
-  const { error: insertError } = await supabase
+  const { data: insertData, error: insertError } = await supabase
     .from("payout_requests")
     .insert({
       teacher_id: teacherId,
-      amount_chf: pendingBalance,
+      amount_chf: Math.round(pendingBalance * 100) / 100,
       status: "pending",
-    });
+    })
+    .select("id")
+    .single();
 
-  if (insertError) {
-    if (
-      insertError.message?.includes("payout_already_pending") ||
-      insertError.code === "P0001"
-    ) {
-      return { error: "A payout request is already pending." };
-    }
-    return { error: insertError.message };
-  }
+  if (insertError || !insertData) return { error: insertError?.message ?? "Insert failed" };
+
+  await supabase
+    .from("teacher_earnings")
+    .update({ payout_request_id: insertData.id })
+    .eq("teacher_id", teacherId)
+    .eq("status", "available");
 
   revalidatePath("/", "layout");
   return { success: true };

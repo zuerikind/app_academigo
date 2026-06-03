@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Star } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardHeader } from "@/components/ui/card";
 import { SectionHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { getTeacherNav } from "@/config/navigation";
@@ -13,8 +13,121 @@ import { formatMessage } from "@/lib/i18n/format";
 import { localizedPath } from "@/lib/i18n/path";
 import { translateSubjectName } from "@/lib/i18n/subjects";
 import { getTeacherDashboardData } from "@/lib/queries/teacher-dashboard";
+import { getPlatformSettings } from "@/lib/queries/admin";
 
 type Props = { params: Promise<{ locale: string }> };
+
+type DashboardT = ReturnType<typeof getDictionary>["teacher"]["dashboard"];
+
+type LevelNext = { sessions: number; rating: number; rate: number };
+type LevelConfig = { rate: number; next: LevelNext | null };
+
+function buildLevelConfig(s: Record<string, string>): Record<string, LevelConfig> {
+  const jRate  = parseFloat(s.tier_junior_rate_chf  ?? "30");
+  const mRate  = parseFloat(s.tier_mid_rate_chf     ?? "45");
+  const tRate  = parseFloat(s.tier_top_rate_chf     ?? "60");
+  return {
+    junior:            { rate: jRate, next: { sessions: parseInt(s.tier_junior_sessions_to_promote ?? "15"), rating: parseFloat(s.tier_junior_rating_to_promote ?? "4.0"), rate: mRate } },
+    academigo_teacher: { rate: mRate, next: { sessions: parseInt(s.tier_mid_sessions_to_promote   ?? "30"), rating: parseFloat(s.tier_mid_rating_to_promote   ?? "4.5"), rate: tRate } },
+    verified:          { rate: tRate, next: null },
+  };
+}
+
+function TeacherLevelCard({
+  level,
+  completedLessons,
+  averageRating,
+  reviewCount,
+  t,
+  levelConfig,
+}: {
+  level: string;
+  completedLessons: number;
+  averageRating: number;
+  reviewCount: number;
+  t: DashboardT;
+  levelConfig: Record<string, LevelConfig>;
+}) {
+  const levelLabel: Record<string, string> = {
+    junior: t.levelJunior,
+    academigo_teacher: t.levelAcademigoTeacher,
+    verified: t.levelVerified,
+  };
+  const config = levelConfig[level] ?? { rate: 30, next: null };
+  const next = config.next;
+  const label = levelLabel[level] ?? level;
+
+  return (
+    <div className="rounded-[14px] border border-academy-line bg-white p-6">
+      <p className="text-meta mb-2">{t.levelTitle}</p>
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <span className="inline-flex items-center rounded-full bg-[color:var(--brand)]/10 px-3 py-1 text-[13px] font-semibold text-[color:var(--brand-deep)]">
+          {label}
+        </span>
+        <span className="font-display text-[15px] font-semibold text-academy-navy">
+          {t.levelRate.replace("{rate}", String(config.rate))}
+        </span>
+      </div>
+
+      {next ? (
+        <div className="mt-5 space-y-4">
+          <p className="text-[12px] font-semibold uppercase tracking-wide text-academy-slate">
+            {t.nextLevelTitle}
+          </p>
+
+          {/* Sessions progress */}
+          <div>
+            <div className="mb-1 flex justify-between text-[12px] text-academy-slate">
+              <span>Completed sessions</span>
+              <span className="font-medium text-academy-navy">
+                {Math.min(completedLessons, next.sessions)}/{next.sessions}
+              </span>
+            </div>
+            <div className="h-1.5 overflow-hidden rounded-full bg-academy-mist-dark">
+              <div
+                className="h-full rounded-full bg-[color:var(--brand-deep)] transition-all duration-500"
+                style={{ width: `${Math.min((completedLessons / next.sessions) * 100, 100)}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Rating requirement */}
+          <div>
+            <div className="mb-1 flex justify-between text-[12px] text-academy-slate">
+              <span>Average rating</span>
+              <span className={`font-medium ${reviewCount > 0 && averageRating >= next.rating ? "text-[color:var(--academy-success)]" : "text-academy-navy"}`}>
+                {reviewCount > 0 ? `${averageRating} ★` : "—"} / {next.rating}★ required
+              </span>
+            </div>
+            <div className="h-1.5 overflow-hidden rounded-full bg-academy-mist-dark">
+              <div
+                className="h-full rounded-full bg-[color:var(--brand-deep)] transition-all duration-500"
+                style={{ width: reviewCount > 0 ? `${Math.min((averageRating / next.rating) * 100, 100)}%` : "0%" }}
+              />
+            </div>
+          </div>
+
+          <p className="text-[12px] text-academy-slate">
+            {t.nextLevelRequirements
+              .replace("{sessions}", String(next.sessions))
+              .replace("{rating}", String(next.rating))}
+          </p>
+          <p className="text-[12px] font-medium text-[color:var(--brand-deep)]">
+            {t.nextLevelRate.replace("{rate}", String(next.rate))}
+          </p>
+          <a
+            href="faq"
+            className="mt-1 inline-flex text-[12px] font-medium text-[color:var(--brand-deep)] hover:underline"
+          >
+            {t.learnMoreLevels} →
+          </a>
+        </div>
+      ) : (
+        <p className="mt-3 text-[13px] text-academy-slate">{t.alreadyTopLevel}</p>
+      )}
+    </div>
+  );
+}
 
 export default async function TeacherDashboardPage({ params }: Props) {
   const { locale: raw } = await params;
@@ -24,7 +137,11 @@ export default async function TeacherDashboardPage({ params }: Props) {
   const tc = dict.common;
   const tb = dict.bookings;
   const profile = await requireRoleFromParams("teacher", raw);
-  const data = await getTeacherDashboardData(profile.id);
+  const [data, platformSettings] = await Promise.all([
+    getTeacherDashboardData(profile.id),
+    getPlatformSettings(),
+  ]);
+  const levelConfig = buildLevelConfig(platformSettings);
   const name = profile.full_name?.split(" ")[0] ?? "Teacher";
   const dateFmt = raw === "de" ? "de-CH" : "en-CH";
 
@@ -75,7 +192,7 @@ export default async function TeacherDashboardPage({ params }: Props) {
         </div>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label={t.pendingRequests}
           value={data.pendingRequests}
@@ -94,6 +211,14 @@ export default async function TeacherDashboardPage({ params }: Props) {
           value={data.completedLessons}
           icon="checkCircle"
           tone="calm"
+        />
+        <StatCard
+          label={t.yourRating}
+          value={data.reviewCount > 0 ? `${data.averageRating} ★` : t.noRatingYet}
+          icon="star"
+          tone="brand"
+          href={localizedPath(raw, "/teacher/earnings")}
+          hrefLabel={formatMessage(t.reviewsCount, { count: String(data.reviewCount) })}
         />
       </div>
 
@@ -119,8 +244,8 @@ export default async function TeacherDashboardPage({ params }: Props) {
             data.upcomingBookings.map((b) => {
               const start = new Date(b.start_time);
               const end = new Date(b.end_time);
-              const dateStr = start.toLocaleDateString(dateFmt, { weekday: "short", day: "numeric", month: "short", year: "numeric" });
-              const timeStr = `${start.toLocaleTimeString(dateFmt, { hour: "2-digit", minute: "2-digit" })} – ${end.toLocaleTimeString(dateFmt, { hour: "2-digit", minute: "2-digit" })}`;
+              const dateStr = start.toLocaleDateString(dateFmt, { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+              const timeStr = `${start.toLocaleTimeString(dateFmt, { hour: "2-digit", minute: "2-digit", timeZone: "UTC" })} – ${end.toLocaleTimeString(dateFmt, { hour: "2-digit", minute: "2-digit", timeZone: "UTC" })}`;
               return (
                 <div key={b.id} className="rounded-[14px] border border-academy-line bg-white p-5 shadow-sm">
                   <div className="flex flex-wrap items-start justify-between gap-3">
@@ -170,14 +295,32 @@ export default async function TeacherDashboardPage({ params }: Props) {
         </div>
       </section>
 
-      <div className="mt-12">
-        <Card padding="loose">
-          <CardHeader
-            eyebrow={t.status}
-            title={t.earningsTitle}
-            description={t.earningsNote}
-          />
-        </Card>
+      {/* Teacher level + earnings */}
+      <div className="mt-12 grid gap-5 lg:grid-cols-2">
+        {/* Level card */}
+        <TeacherLevelCard
+          level={data.teacherLevel}
+          completedLessons={data.completedLessons}
+          averageRating={data.averageRating}
+          reviewCount={data.reviewCount}
+          t={t}
+          levelConfig={levelConfig}
+        />
+
+        {/* Earnings card */}
+        <div className="rounded-[14px] border border-academy-line bg-white p-6">
+          <p className="text-meta mb-1">{t.earningsTitle}</p>
+          <p className="font-display text-[28px] font-semibold leading-none tracking-tight text-academy-navy text-numeric">
+            CHF {data.totalEarned.toFixed(2)}
+          </p>
+          <p className="mt-2 text-[13px] text-academy-slate">{t.earningsNote}</p>
+          <Link
+            href={localizedPath(raw, "/teacher/earnings")}
+            className="mt-4 inline-flex items-center text-[13px] font-medium text-[color:var(--brand-deep)] hover:text-academy-navy"
+          >
+            {t.viewEarnings}
+          </Link>
+        </div>
       </div>
     </DashboardLayout>
   );

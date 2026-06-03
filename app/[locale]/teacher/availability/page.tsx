@@ -18,16 +18,6 @@ import { getDictionary } from "@/lib/i18n/get-dictionary";
 
 type Props = { params: Promise<{ locale: string }> };
 
-const DAY_LABELS = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-
 export default async function TeacherAvailabilityPage({ params }: Props) {
   const { locale: raw } = await params;
   if (!isLocale(raw)) notFound();
@@ -68,25 +58,19 @@ export default async function TeacherAvailabilityPage({ params }: Props) {
         {/* Add availability range */}
         <section className="rounded-lg border border-academy-line bg-white p-6">
           <h2 className="mb-1 text-[15px] font-semibold text-academy-navy">
-            Add availability
+            {t.addTitle}
           </h2>
-          <p className="mb-5 text-[13px] text-academy-slate">
-            Set weekly recurring time windows when you are available to teach.
-            Lessons are 50 minutes. Students can book slots at 15-minute
-            increments within your ranges.
-          </p>
+          <p className="mb-5 text-[13px] text-academy-slate">{t.addDesc}</p>
           <AddAvailabilityRangeForm action={setAvailabilityRange} />
         </section>
 
         {/* Current availability */}
         <section className="rounded-lg border border-academy-line bg-white p-6">
           <h2 className="mb-4 text-[15px] font-semibold text-academy-navy">
-            Current availability
+            {t.currentTitle}
           </h2>
           {ranges.length === 0 ? (
-            <p className="text-[13px] text-academy-slate">
-              No availability set yet. Add a range above to get started.
-            </p>
+            <p className="text-[13px] text-academy-slate">{t.noRanges}</p>
           ) : (
             <ul className="space-y-2">
               {ranges.map((range) => (
@@ -96,7 +80,7 @@ export default async function TeacherAvailabilityPage({ params }: Props) {
                 >
                   <span className="text-[13.5px] text-academy-navy">
                     <span className="font-medium">
-                      {DAY_LABELS[range.day_of_week]}
+                      {t.dayLabels[range.day_of_week]}
                     </span>
                     <span className="mx-2 text-academy-slate">·</span>
                     {range.start_time} – {range.end_time}
@@ -107,7 +91,7 @@ export default async function TeacherAvailabilityPage({ params }: Props) {
                       type="submit"
                       className="text-[12.5px] text-[color:var(--academy-danger)] hover:underline"
                     >
-                      Remove
+                      {t.remove}
                     </button>
                   </form>
                 </li>
@@ -119,12 +103,9 @@ export default async function TeacherAvailabilityPage({ params }: Props) {
         {/* Blocked dates */}
         <section className="rounded-lg border border-academy-line bg-white p-6">
           <h2 className="mb-1 text-[15px] font-semibold text-academy-navy">
-            Blocked dates
+            {t.blockedTitle}
           </h2>
-          <p className="mb-5 text-[13px] text-academy-slate">
-            Block specific dates when you are unavailable, even if they fall
-            within a weekly range.
-          </p>
+          <p className="mb-5 text-[13px] text-academy-slate">{t.blockedDesc}</p>
           <AddBlockerForm action={setAvailabilityBlocker} />
           {blockers.length > 0 && (
             <ul className="mt-4 space-y-2">
@@ -143,7 +124,7 @@ export default async function TeacherAvailabilityPage({ params }: Props) {
                     )}
                     {!b.start_time && (
                       <span className="ml-2 text-[12px] text-academy-slate">
-                        all day
+                        {t.allDay}
                       </span>
                     )}
                   </span>
@@ -153,7 +134,7 @@ export default async function TeacherAvailabilityPage({ params }: Props) {
                       type="submit"
                       className="text-[12.5px] text-[color:var(--academy-danger)] hover:underline"
                     >
-                      Remove
+                      {t.remove}
                     </button>
                   </form>
                 </li>

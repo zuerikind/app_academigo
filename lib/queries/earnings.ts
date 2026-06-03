@@ -15,7 +15,7 @@ export async function getTeacherEarnings(teacherId: string): Promise<EarningWith
   const { data, error } = await supabase
     .from("teacher_earnings")
     .select(`
-      id, amount_chf, created_at,
+      id, amount, created_at,
       bookings (
         students ( id, profiles ( full_name ) )
       )
@@ -33,7 +33,7 @@ export async function getTeacherEarnings(teacherId: string): Promise<EarningWith
 
     return {
       id: e.id,
-      amount_chf: e.amount_chf,
+      amount_chf: e.amount ?? 0,
       created_at: e.created_at,
       booking: {
         student: { profiles: { full_name: fullName } },
@@ -42,19 +42,32 @@ export async function getTeacherEarnings(teacherId: string): Promise<EarningWith
   });
 }
 
+export async function getTeacherTotalEarned(teacherId: string): Promise<number> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("teacher_earnings")
+    .select("amount")
+    .eq("teacher_id", teacherId);
+  if (error || !data) return 0;
+  return Math.round(
+    (data as Array<{ amount: number }>).reduce((sum, row) => sum + (row.amount ?? 0), 0) * 100,
+  ) / 100;
+}
+
 export async function getTeacherPendingBalance(teacherId: string): Promise<number> {
   const supabase = await createClient();
 
+  // "available" = earned but not yet requested for payout
   const { data, error } = await supabase
     .from("teacher_earnings")
-    .select("amount_chf")
+    .select("amount")
     .eq("teacher_id", teacherId)
-    .is("payout_request_id", null);
+    .eq("status", "available");
 
   if (error || !data) return 0;
 
-  const total = (data as Array<{ amount_chf: number }>).reduce(
-    (sum, row) => sum + (row.amount_chf ?? 0),
+  const total = (data as Array<{ amount: number }>).reduce(
+    (sum, row) => sum + (row.amount ?? 0),
     0,
   );
 

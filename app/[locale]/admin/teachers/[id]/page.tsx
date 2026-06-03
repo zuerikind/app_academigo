@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { approveTeacher } from "@/lib/actions/admin";
+import { approveTeacher, setTeacherActive } from "@/lib/actions/admin";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { getAdminTeacherDetail } from "@/lib/queries/admin";
@@ -38,6 +38,11 @@ export default async function AdminTeacherDetailPage({ params }: Props) {
   const approveAction = async (formData: FormData) => {
     "use server";
     await approveTeacher({}, formData);
+  };
+
+  const setActiveAction = async (formData: FormData) => {
+    "use server";
+    await setTeacherActive({}, formData);
   };
 
   const initials = (profile?.full_name ?? "?")
@@ -77,6 +82,11 @@ export default async function AdminTeacherDetailPage({ params }: Props) {
                 <Badge variant="verified">{t.statusApproved}</Badge>
               ) : (
                 <Badge variant="warning">{t.statusPending}</Badge>
+              )}
+              {teacher.is_active ? (
+                <Badge variant="verified">{t.statusActive}</Badge>
+              ) : (
+                <Badge variant="warning">{t.statusInactive}</Badge>
               )}
               {teacher.is_verified && <Badge variant="verified">{tc.verified}</Badge>}
               <Badge variant="muted">{teacher.teacher_level}</Badge>
@@ -165,19 +175,34 @@ export default async function AdminTeacherDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Approve action */}
-      {!teacher.is_approved ? (
+      {/* Admin actions */}
+      <div className="space-y-4">
+        {!teacher.is_approved ? (
+          <div className="rounded-lg border border-academy-line bg-white p-6">
+            <form action={approveAction}>
+              <input type="hidden" name="teacherId" value={teacher.id} />
+              <Button type="submit" variant="primary">
+                {td.approveAction}
+              </Button>
+            </form>
+          </div>
+        ) : (
+          <p className="text-[13px] text-academy-slate">{td.alreadyApproved}</p>
+        )}
+
         <div className="rounded-lg border border-academy-line bg-white p-6">
-          <form action={approveAction}>
+          <p className="mb-4 text-[13px] text-academy-slate">
+            {teacher.is_active ? td.teacherActive : td.teacherInactive}
+          </p>
+          <form action={setActiveAction}>
             <input type="hidden" name="teacherId" value={teacher.id} />
-            <Button type="submit" variant="primary">
-              {td.approveAction}
+            <input type="hidden" name="isActive" value={teacher.is_active ? "false" : "true"} />
+            <Button type="submit" variant={teacher.is_active ? "secondary" : "primary"}>
+              {teacher.is_active ? td.deactivateAction : td.activateAction}
             </Button>
           </form>
         </div>
-      ) : (
-        <p className="text-[13px] text-academy-slate">{td.alreadyApproved}</p>
-      )}
+      </div>
     </div>
   );
 }

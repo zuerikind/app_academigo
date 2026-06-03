@@ -54,13 +54,13 @@ export default async function TeacherBookingsPage({ params }: Props) {
     >
       <div className="space-y-10">
         {/* Requests (pending) */}
-        <section className="space-y-4">
-          <h2 className="text-[15px] font-semibold text-academy-navy">Requests</h2>
+        <section id="requests" className="space-y-4">
+          <h2 className="text-[15px] font-semibold text-academy-navy">{t.requests}</h2>
           {pendingBookings.length === 0 ? (
             <EmptyState
               icon="book"
-              title="No pending requests"
-              description="New booking requests from students will appear here."
+              title={t.pendingEmptyTitle}
+              description={t.pendingEmptyDesc}
             />
           ) : (
             <div className="space-y-4">
@@ -77,12 +77,12 @@ export default async function TeacherBookingsPage({ params }: Props) {
 
         {/* Upcoming (confirmed, future) */}
         <section className="space-y-4">
-          <h2 className="text-[15px] font-semibold text-academy-navy">Upcoming</h2>
+          <h2 className="text-[15px] font-semibold text-academy-navy">{t.upcoming}</h2>
           {upcomingBookings.length === 0 ? (
             <EmptyState
               icon="calendar"
-              title="No upcoming sessions"
-              description="Confirmed upcoming sessions will appear here."
+              title={t.upcomingEmptyTitle}
+              description={t.upcomingEmptyDesc}
             />
           ) : (
             <div className="space-y-4">
@@ -99,12 +99,12 @@ export default async function TeacherBookingsPage({ params }: Props) {
 
         {/* Past sessions (completed + cancelled) */}
         <section className="space-y-4">
-          <h2 className="text-[15px] font-semibold text-academy-navy">Past Sessions</h2>
+          <h2 className="text-[15px] font-semibold text-academy-navy">{t.pastSessions}</h2>
           {pastSessions.length === 0 ? (
             <EmptyState
               icon="checkCircle"
-              title="No past sessions"
-              description="Completed and cancelled sessions will appear here."
+              title={t.pastEmptyTitle}
+              description={t.pastEmptyDesc}
             />
           ) : (
             <div className="space-y-3">

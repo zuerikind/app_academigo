@@ -3,17 +3,8 @@
 import { useActionState } from "react";
 import { Field, Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/components/i18n/locale-provider";
 import type { AvailabilityActionState } from "@/lib/actions/availability";
-
-const DAY_LABELS = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
 
 // Display order: Monday first (1..6, then 0 = Sunday)
 const ORDERED_DAYS = [1, 2, 3, 4, 5, 6, 0];
@@ -23,6 +14,8 @@ export function AddAvailabilityRangeForm({
 }: {
   action: (prev: AvailabilityActionState, formData: FormData) => Promise<AvailabilityActionState>;
 }) {
+  const { dict } = useI18n();
+  const t = dict.teacher.availability;
   const [state, formAction, pending] = useActionState(action, {});
 
   return (
@@ -34,7 +27,7 @@ export function AddAvailabilityRangeForm({
       )}
       <div className="grid gap-4 sm:grid-cols-3">
         <Field>
-          <Label htmlFor="dayOfWeek">Day</Label>
+          <Label htmlFor="dayOfWeek">{t.formDay}</Label>
           <select
             id="dayOfWeek"
             name="dayOfWeek"
@@ -43,22 +36,22 @@ export function AddAvailabilityRangeForm({
           >
             {ORDERED_DAYS.map((d) => (
               <option key={d} value={d}>
-                {DAY_LABELS[d]}
+                {t.dayLabels[d]}
               </option>
             ))}
           </select>
         </Field>
         <Field>
-          <Label htmlFor="startTime">From</Label>
+          <Label htmlFor="startTime">{t.formFrom}</Label>
           <Input id="startTime" name="startTime" type="time" required />
         </Field>
         <Field>
-          <Label htmlFor="endTime">To</Label>
+          <Label htmlFor="endTime">{t.formTo}</Label>
           <Input id="endTime" name="endTime" type="time" required />
         </Field>
       </div>
       <Button type="submit" variant="primary" disabled={pending}>
-        {pending ? "Adding…" : "Add range"}
+        {pending ? t.formAdding : t.formAddRange}
       </Button>
     </form>
   );
@@ -69,6 +62,8 @@ export function AddBlockerForm({
 }: {
   action: (prev: AvailabilityActionState, formData: FormData) => Promise<AvailabilityActionState>;
 }) {
+  const { dict } = useI18n();
+  const t = dict.teacher.availability;
   const [state, formAction, pending] = useActionState(action, {});
 
   return (
@@ -80,29 +75,27 @@ export function AddBlockerForm({
       )}
       <div className="grid gap-4 sm:grid-cols-3">
         <Field>
-          <Label htmlFor="blockerDate">Date</Label>
+          <Label htmlFor="blockerDate">{t.formDate}</Label>
           <Input id="blockerDate" name="date" type="date" required />
         </Field>
         <Field>
           <Label htmlFor="blockerStartTime">
-            From{" "}
-            <span className="font-normal text-academy-slate">(optional)</span>
+            {t.formFrom}{" "}
+            <span className="font-normal text-academy-slate">{t.formOptional}</span>
           </Label>
           <Input id="blockerStartTime" name="startTime" type="time" />
         </Field>
         <Field>
           <Label htmlFor="blockerEndTime">
-            To{" "}
-            <span className="font-normal text-academy-slate">(optional)</span>
+            {t.formTo}{" "}
+            <span className="font-normal text-academy-slate">{t.formOptional}</span>
           </Label>
           <Input id="blockerEndTime" name="endTime" type="time" />
         </Field>
       </div>
-      <p className="text-[12px] text-academy-slate">
-        Leave start/end blank to block the entire day.
-      </p>
+      <p className="text-[12px] text-academy-slate">{t.formLeaveBlank}</p>
       <Button type="submit" variant="secondary" disabled={pending}>
-        {pending ? "Blocking…" : "Block"}
+        {pending ? t.formBlocking : t.formBlock}
       </Button>
     </form>
   );

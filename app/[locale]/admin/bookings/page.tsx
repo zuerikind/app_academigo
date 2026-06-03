@@ -120,7 +120,7 @@ export default async function AdminBookingsPage({ params, searchParams }: Props)
       key: "date",
       header: t.colDate,
       render: (row: BookingRow) =>
-        new Date(row.start_time).toLocaleDateString("de-CH"),
+        new Date(row.start_time).toLocaleDateString("de-CH", { timeZone: "UTC" }),
     },
     {
       key: "credits",
