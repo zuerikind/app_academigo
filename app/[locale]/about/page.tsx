@@ -1,12 +1,27 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { PublicLayout } from "@/components/layout/public-layout";
 import { PageHeader } from "@/components/ui/page-header";
 import { Section } from "@/components/ui/section";
 import { siteConfig } from "@/config/site";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
 type Props = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale: raw } = await params;
+  if (!isLocale(raw)) return {};
+  const dict = getDictionary(raw);
+  const seo = dict.seo.about;
+  return buildPageMetadata({
+    locale: raw,
+    path: "/about",
+    title: seo.title,
+    description: seo.description,
+  });
+}
 
 export default async function AboutPage({ params }: Props) {
   const { locale: raw } = await params;

@@ -9,11 +9,11 @@ import { createClient } from "@/lib/supabase/server";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { getStudentBillingInfo } from "@/lib/queries/student";
-import { createCheckoutSession, createPortalSession } from "@/lib/actions/payments";
+import { createCheckoutSession, createPortalSession, reactivateSubscription } from "@/lib/actions/payments";
 
 type Props = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ success?: string; cancelled?: string; session_id?: string }>;
+  searchParams: Promise<{ success?: string; cancelled?: string; session_id?: string; upgraded?: string }>;
 };
 
 export default async function StudentPackagesPage({ params, searchParams }: Props) {
@@ -26,19 +26,11 @@ export default async function StudentPackagesPage({ params, searchParams }: Prop
   const t = dict.student.packages;
   const sp = await searchParams;
 
-  const supabase = await createClient();
-  let availableCredits = 0;
-  try {
-    const { data } = await supabase.rpc("student_available_credits");
-    if (typeof data === "number") availableCredits = data;
-  } catch {
-    // Non-fatal: display 0 if RPC fails
-  }
-
   const billing = await getStudentBillingInfo(profile.id);
 
   const showSuccess = sp.success === "true";
   const showCancelled = sp.cancelled === "true";
+  const showUpgraded = sp.upgraded === "true";
 
   return (
     <DashboardLayout
@@ -54,7 +46,7 @@ export default async function StudentPackagesPage({ params, searchParams }: Prop
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <StatCard
             label={dict.student.dashboard.availableCredits}
-            value={availableCredits}
+            value={billing.availableCredits}
             icon="coins"
             tone="brand"
             hint={t.creditsHint}
@@ -62,6 +54,11 @@ export default async function StudentPackagesPage({ params, searchParams }: Prop
         </div>
 
         {/* Success / cancelled banners */}
+        {showUpgraded && (
+          <div className="rounded-xl border border-[color:var(--academy-success)]/30 bg-[color:var(--academy-success-soft)] px-4 py-3 text-[13px] font-medium text-[color:var(--academy-success)]">
+            {t.planUpgraded}
+          </div>
+        )}
         {showSuccess && (
           <div className="rounded-xl border border-[color:var(--academy-success)]/30 bg-[color:var(--academy-success-soft)] px-4 py-3 text-[13px] font-medium text-[color:var(--academy-success)]">
             {t.paymentSuccess}
@@ -79,6 +76,8 @@ export default async function StudentPackagesPage({ params, searchParams }: Prop
           paymentHistory={billing.paymentHistory}
           subscriptionRemaining={billing.subscriptionRemaining}
           extraRemaining={billing.extraRemaining}
+          cancelAtPeriodEnd={billing.cancelAtPeriodEnd}
+          cancelPeriodEnd={billing.cancelPeriodEnd}
           strings={{
             currentPlan: t.currentPlan,
             active: t.active,
@@ -92,12 +91,18 @@ export default async function StudentPackagesPage({ params, searchParams }: Prop
             extraCredits: t.extraCredits,
             creditsLabel: t.creditsLabel,
             manageSubscription: t.manageSubscription,
+            cancelledNotice: t.cancelledNotice,
+            reactivateSubscription: t.reactivateSubscription,
+            reactivating: t.reactivating,
           }}
           locale={raw}
           manageSubscriptionAction={
-            billing.activePlan?.isSubscription && billing.stripeCustomerId
+            billing.activePlan?.isSubscription && !billing.cancelAtPeriodEnd
               ? createPortalSession
               : undefined
+          }
+          reactivateAction={
+            billing.cancelAtPeriodEnd ? reactivateSubscription : undefined
           }
         />
 

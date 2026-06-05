@@ -5,6 +5,39 @@ export const de = {
     description:
       "Finde geprüfte Tutoren in 22 Schulfächern, buche Lektionen und erreiche deine Lernziele mit Academigo.",
   },
+  seo: {
+    home: {
+      title: "Academigo — Nachhilfe online & in Zürich",
+      description:
+        "Geprüfte Lehrpersonen in 22 Schulfächern. Flexible Pakete, Online-Unterricht oder vor Ort in Zürich — jetzt Lehrperson finden.",
+    },
+    teachers: {
+      title: "Lehrpersonen finden",
+      description:
+        "Durchsuche geprüfte Academigo-Tutorinnen und Tutoren in Mathematik, Sprachen, Naturwissenschaften und mehr.",
+    },
+    pricing: {
+      title: "Preise & Pakete",
+      description:
+        "Transparente CHF-Preise für Nachhilfe — Einzelstunden, Pakete und Monatsabos. Alle Preise in Schweizer Franken.",
+    },
+    subjects: {
+      title: "Schulfächer",
+      description:
+        "22 Schulfächer mit qualifizierter Nachhilfe — von Mathematik über Sprachen bis Geografie. Online und in Zürich.",
+    },
+    about: {
+      title: "Über Academigo",
+      description:
+        "Academigo verbindet Schweizer Lernende mit geprüften Lehrpersonen — strukturiert, persönlich und digital.",
+    },
+    teacherProfile: {
+      title: "{name} — Lehrperson",
+      description:
+        "{name} bietet Nachhilfe bei Academigo{subjects}. Profil ansehen und Lektion buchen.",
+      subjectsSuffix: " in {subjects}",
+    },
+  },
   common: {
     brand: "Academigo",
     signOut: "Abmelden",
@@ -430,6 +463,35 @@ export const de = {
       pack5: "5er-Paket",
       pack10: "10er-Paket",
     },
+    faq: {
+      title: "Häufige Fragen",
+      items: [
+        {
+          q: "Was ist ein Credit?",
+          a: "Ein Credit entspricht einer Lektion (50 Minuten). Du buchst eine Lektion und dein Credit wird bei Abschluss der Stunde abgezogen.",
+        },
+        {
+          q: "Verfallen meine Credits?",
+          a: "Credits aus Einzelpaketen (Essentials) verfallen nie. Credits aus Monatsabos (Plus & Excellence) werden jeden Monat zurückgesetzt — nicht verwendete Credits übertragen sich nicht auf den nächsten Monat.",
+        },
+        {
+          q: "Kann ich mein Abo jederzeit kündigen?",
+          a: "Ja. Du kannst dein Abo jederzeit über die Seite «Pakete» kündigen. Nach der Kündigung läuft das Abo bis zum Ende der bezahlten Periode weiter.",
+        },
+        {
+          q: "Was ist der Unterschied zwischen Essentials und einem Monatsabo?",
+          a: "Essentials sind flexible Einzelpakete ohne Laufzeit — ideal für punktuelle Unterstützung. Monatsabos (Plus & Excellence) bieten regelmässige Begleitung mit einem persönlichen Lernplan und werden monatlich erneuert.",
+        },
+        {
+          q: "Wie buche ich eine Lektion?",
+          a: "Nach dem Kauf kannst du dich einloggen, eine Lehrperson auswählen und direkt einen Termin in deren Kalender buchen. Die Lehrperson bestätigt die Buchung.",
+        },
+        {
+          q: "Welche Zahlungsmittel werden akzeptiert?",
+          a: "Wir akzeptieren alle gängigen Kredit- und Debitkarten (Visa, Mastercard, American Express) sowie TWINT — sicher verarbeitet über Stripe.",
+        },
+      ],
+    },
   },
   about: {
     title: "Über Academigo",
@@ -480,8 +542,8 @@ export const de = {
       subtitle: "Dein Überblick — Credits, Termine und passende Lehrpersonen.",
       availableCredits: "Verfügbare Credits",
       buyPackages: "Credits kaufen",
+      plannedLessons: "Geplante Lektionen",
       upcomingLessons: "Nächste Lektionen",
-      purchasedPackages: "Aktive Pakete",
       recommended: "Lehrpersonen",
       upcomingTitle: "Nächste Lektionen",
       noUpcoming:
@@ -540,6 +602,11 @@ export const de = {
       extraCredits: "Extra-Credits",
       creditsLabel: "Credits",
       manageSubscription: "Abo verwalten / kündigen",
+      planUpgraded: "Dein Abonnement wurde erfolgreich aktualisiert.",
+      alreadyOnPlan: "Du bist bereits auf diesem Plan eingeschrieben.",
+      cancelledNotice: "Dein Abo wird am {date} nicht verlängert. Du kannst es bis dahin weiter nutzen.",
+      reactivateSubscription: "Abo reaktivieren",
+      reactivating: "Wird reaktiviert…",
     },
     settings: {
       title: "Einstellungen",
@@ -614,6 +681,8 @@ export const de = {
       yourRating: "Deine Bewertung",
       noRatingYet: "—",
       reviewsCount: "{count} Bewertung(en)",
+      earningsThisMonth: "Einnahmen diesen Monat",
+      requestPayout: "Auszahlung beantragen",
       viewEarnings: "Einnahmen anzeigen →",
       levelTitle: "Deine Lehrpersonenstufe",
       levelJunior: "Junior-Lehrperson",
@@ -628,6 +697,16 @@ export const de = {
       status: "Status",
       earningsTitle: "Einnahmen",
       earningsNote: "Deine vollständige Einnahmenhistorie und Auszahlungen.",
+      completeProfile: "Profil vervollständigen →",
+      viewProfile: "Profil anzeigen →",
+      missingFieldsLabel: "Fehlend:",
+      profileFields: {
+        bio: "Biografie",
+        education: "Ausbildung",
+        experience: "Erfahrung",
+        teaching_style: "Unterrichtsstil",
+        payout_info_placeholder: "Auszahlungsinfo",
+      },
     },
     profile: {
       title: "Mein Profil",
@@ -728,6 +807,8 @@ export const de = {
       bookings: "Buchungen",
       promotions: "Stufenaufstiege",
       payouts: "Auszahlungen",
+      revenue: "Einnahmen",
+      analytics: "Lehrpersonen-Analyse",
       missingLinks: "Fehlende Meet-Links",
       sessions: "Stunden",
       settings: "Einstellungen",
@@ -852,6 +933,12 @@ export const de = {
       dialogNoSessions: "Keine verknüpften Lektionen gefunden.",
       confirmPayout: "Auszahlung bestätigen & E-Mail senden",
       confirmPayoutLoading: "Wird verarbeitet…",
+      dialogBankDetails: "Bankverbindung",
+      dialogPayoutName: "Kontoinhaber",
+      dialogPayoutIban: "IBAN",
+      dialogPayoutAddress: "Adresse",
+      dialogPayoutTwint: "TWINT",
+      dialogNoBankDetails: "Keine Bankdaten hinterlegt.",
     },
     missingLinks: {
       title: "Fehlende Meet-Links",
@@ -874,6 +961,50 @@ export const de = {
       noNotes: "—",
       noReview: "Noch kein Review",
       empty: "Noch keine abgeschlossenen Stunden.",
+    },
+    analytics: {
+      title: "Lehrpersonen-Analyse",
+      subtitle: "Umsatzzuordnung und Margenübersicht pro Lehrperson",
+      viewAnalytics: "Lehrpersonen-Analyse →",
+      periodLabel: "Zeitraum",
+      periodAll: "Gesamt",
+      periodThisMonth: "Dieser Monat",
+      periodLastMonth: "Letzter Monat",
+      periodLast30: "Letzte 30 Tage",
+      periodLast90: "Letzte 90 Tage",
+      periodYtd: "Laufendes Jahr",
+      statSessions: "Lektionen",
+      statRevenue: "Einnahmen Lernende CHF",
+      statPayout: "Auszahlungen Lehrpersonen CHF",
+      statMargin: "Plattform-Marge CHF",
+      wacNote: "Umsatz zugeordnet zum WAC von CHF {wac}/Credit (Gesamtdurchschnitt)",
+      colName: "Lehrperson",
+      colLevel: "Stufe",
+      colSessions: "Lektionen",
+      colRating: "Ø Bewertung",
+      colReviews: "Bewertungen",
+      colStudentRevenue: "Einnahmen Lernende",
+      colTeacherPayout: "Auszahlung LP",
+      colMargin: "Plattform-Marge",
+      colMarginPct: "Marge %",
+      noRating: "—",
+      empty: "Keine abgeschlossenen Lektionen in diesem Zeitraum.",
+      levelJunior: "Junior",
+      levelAcademigoTeacher: "Academigo",
+      levelVerified: "Verifiziert",
+    },
+    revenue: {
+      title: "Plattform-Einnahmen",
+      subtitle: "Brutto-Zahlungen der Lernenden abzüglich Auszahlungen an Lehrpersonen",
+      statGross: "Bruttoumsatz CHF",
+      statPayouts: "Lehrpersonen-Auszahlungen CHF",
+      statMargin: "Plattform-Marge CHF",
+      tableTitle: "Monatliche Übersicht",
+      colMonth: "Monat",
+      colRevenue: "Einnahmen Lernende",
+      colPayouts: "Auszahlungen Lehrpersonen",
+      colMargin: "Marge",
+      empty: "Noch keine Transaktionen.",
     },
     settings: {
       title: "Plattform-Einstellungen",
@@ -992,6 +1123,11 @@ export const de = {
     colAmount: "Betrag CHF",
     payoutPending: "Auszahlung ausstehend",
     payoutProcessed: "Auszahlung verarbeitet",
+    payoutHistory: "Auszahlungshistorie",
+    colPayoutDate: "Datum",
+    colPayoutAmount: "Betrag",
+    colPayoutStatus: "Status",
+    noPayouts: "Noch keine Auszahlungen.",
     noBankDetails: "Bankverbindung fehlt",
     noBankDetailsHint: "Bitte hinterlege deine Bankdaten in den Einstellungen, bevor du eine Auszahlung beantragen kannst.",
     goToSettings: "Zu den Einstellungen",

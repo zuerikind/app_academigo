@@ -116,6 +116,16 @@ export function getAdminNav(dict: Dictionary, locale: Locale): NavItem[] {
       icon: "coins",
     },
     {
+      label: dict.admin.nav.revenue,
+      href: localizedPath(locale, "/admin/revenue"),
+      icon: "trendingUp",
+    },
+    {
+      label: dict.admin.nav.analytics,
+      href: localizedPath(locale, "/admin/analytics"),
+      icon: "barChart",
+    },
+    {
       label: dict.admin.nav.missingLinks,
       href: localizedPath(locale, "/admin/missing-links"),
       icon: "alertTriangle",

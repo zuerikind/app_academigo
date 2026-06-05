@@ -41,7 +41,7 @@ export default async function StudentDashboardPage({ params }: Props) {
       title={formatMessage(t.greeting, { name })}
       subtitle={t.subtitle}
     >
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         <StatCard
           label={t.availableCredits}
           value={dashboard.availableCredits}
@@ -60,14 +60,9 @@ export default async function StudentDashboardPage({ params }: Props) {
           }
         />
         <StatCard
-          label={t.upcomingLessons}
+          label={t.plannedLessons}
           value={dashboard.upcomingBookings.length}
           icon="calendar"
-        />
-        <StatCard
-          label={t.purchasedPackages}
-          value={dashboard.purchasedPackages.length}
-          icon="package"
         />
         <StatCard
           label={t.recommended}

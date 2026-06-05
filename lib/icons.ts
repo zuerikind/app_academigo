@@ -16,4 +16,6 @@ export type IconName =
   | "settings"
   | "book"
   | "alertTriangle"
-  | "star";
+  | "star"
+  | "trendingUp"
+  | "barChart";

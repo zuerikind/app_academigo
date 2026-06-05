@@ -19,6 +19,7 @@ export async function getAdminStats() {
     { count: pendingTeachers },
     { count: pendingPromotions },
     { count: pendingPayouts },
+    { data: paymentsData },
   ] = await Promise.all([
     supabase.from("teachers").select("*", { count: "exact", head: true }),
     supabase.from("students").select("*", { count: "exact", head: true }),
@@ -36,7 +37,13 @@ export async function getAdminStats() {
       .from("payout_requests")
       .select("*", { count: "exact", head: true })
       .eq("status", "pending"),
+    supabase.from("payments").select("amount"),
   ]);
+
+  const totalRevenue = (paymentsData ?? []).reduce(
+    (sum, row) => sum + (Number(row.amount) || 0),
+    0,
+  );
 
   return {
     teacherCount: teacherCount ?? 0,
@@ -45,6 +52,7 @@ export async function getAdminStats() {
     pendingTeachers: pendingTeachers ?? 0,
     pendingPromotions: pendingPromotions ?? 0,
     pendingPayouts: pendingPayouts ?? 0,
+    totalRevenue,
   };
 }
 
@@ -157,7 +165,7 @@ export async function getAdminPayouts() {
       status,
       note,
       created_at,
-      teachers ( profiles ( full_name, email ) )
+      teachers ( payout_info_placeholder, profiles ( full_name, email ) )
     `,
     )
     .order("created_at", { ascending: false });
@@ -178,7 +186,7 @@ export async function getAdminPayoutsWithEarnings() {
       status,
       note,
       created_at,
-      teachers ( profiles ( full_name, email ) )
+      teachers ( payout_info_placeholder, profiles ( full_name, email ) )
     `,
     )
     .order("created_at", { ascending: false });
@@ -285,6 +293,190 @@ export async function getMissingMeetLinks() {
     .order("start_time", { ascending: true });
   if (error) throw error;
   return data ?? [];
+}
+
+export async function getTeacherPerformance(from?: string, to?: string) {
+  const supabase = await createClient();
+
+  // Query 1: completed bookings in period, with earnings, teacher info, and reviews
+  let bookingsQuery = supabase
+    .from("bookings")
+    .select(`
+      id,
+      start_time,
+      credits_reserved,
+      teacher_id,
+      teachers (
+        id,
+        teacher_level,
+        profiles ( full_name )
+      ),
+      teacher_earnings ( amount ),
+      reviews ( rating )
+    `)
+    .eq("status", "completed")
+    .order("start_time", { ascending: false });
+
+  if (from) bookingsQuery = bookingsQuery.gte("start_time", from);
+  if (to) bookingsQuery = bookingsQuery.lte("start_time", to);
+
+  // Query 2: all-time payments with package credits to compute WAC
+  // WAC (weighted average credit value) is intentionally global — a student
+  // may buy credits in month A and consume them in month B.
+  const paymentsQuery = supabase
+    .from("payments")
+    .select("amount, credit_packages ( credits )")
+    .in("status", ["completed", "pending"]);
+
+  const [{ data: bookings }, { data: payments }] = await Promise.all([
+    bookingsQuery,
+    paymentsQuery,
+  ]);
+
+  // Compute WAC: total CHF paid / total credits issued
+  let totalPaid = 0;
+  let totalCreditsIssued = 0;
+  for (const p of payments ?? []) {
+    totalPaid += Number(p.amount);
+    const pkg = Array.isArray(p.credit_packages) ? p.credit_packages[0] : p.credit_packages;
+    totalCreditsIssued += (pkg as { credits: number } | null)?.credits ?? 0;
+  }
+  const avgCreditValue = totalCreditsIssued > 0 ? totalPaid / totalCreditsIssued : 0;
+
+  // Aggregate per teacher
+  type TeacherAcc = {
+    id: string;
+    name: string;
+    level: "junior" | "academigo_teacher" | "verified";
+    sessions: number;
+    teacherPayout: number;
+    studentRevenue: number;
+    ratings: number[];
+  };
+  const teacherMap: Record<string, TeacherAcc> = {};
+
+  for (const b of bookings ?? []) {
+    const teacherRaw = Array.isArray(b.teachers) ? b.teachers[0] : b.teachers;
+    if (!teacherRaw || !b.teacher_id) continue;
+
+    if (!teacherMap[b.teacher_id]) {
+      const profilesRaw = Array.isArray(teacherRaw.profiles)
+        ? teacherRaw.profiles[0]
+        : teacherRaw.profiles;
+      teacherMap[b.teacher_id] = {
+        id: b.teacher_id,
+        name: (profilesRaw as { full_name: string | null } | null)?.full_name ?? "—",
+        level: teacherRaw.teacher_level as TeacherAcc["level"],
+        sessions: 0,
+        teacherPayout: 0,
+        studentRevenue: 0,
+        ratings: [],
+      };
+    }
+
+    const acc = teacherMap[b.teacher_id]!;
+    acc.sessions += 1;
+
+    // Teacher payout: sum of teacher_earnings for this booking
+    const earningsArr = Array.isArray(b.teacher_earnings)
+      ? b.teacher_earnings
+      : b.teacher_earnings
+        ? [b.teacher_earnings]
+        : [];
+    acc.teacherPayout += earningsArr.reduce(
+      (s: number, e: { amount: number }) => s + Number(e.amount),
+      0,
+    );
+
+    // Revenue: credits consumed × WAC
+    acc.studentRevenue += b.credits_reserved * avgCreditValue;
+
+    // Ratings
+    const reviewsArr = Array.isArray(b.reviews)
+      ? b.reviews
+      : b.reviews
+        ? [b.reviews]
+        : [];
+    for (const r of reviewsArr as { rating: number }[]) {
+      if (r?.rating) acc.ratings.push(r.rating);
+    }
+  }
+
+  const teacherRows = Object.values(teacherMap).map((t) => ({
+    id: t.id,
+    name: t.name,
+    level: t.level,
+    sessions: t.sessions,
+    teacherPayout: t.teacherPayout,
+    studentRevenue: t.studentRevenue,
+    platformMargin: t.studentRevenue - t.teacherPayout,
+    marginPct:
+      t.studentRevenue > 0
+        ? ((t.studentRevenue - t.teacherPayout) / t.studentRevenue) * 100
+        : 0,
+    avgRating:
+      t.ratings.length > 0
+        ? t.ratings.reduce((s, r) => s + r, 0) / t.ratings.length
+        : null,
+    reviewCount: t.ratings.length,
+  }));
+
+  const summary = {
+    sessions: teacherRows.reduce((s, t) => s + t.sessions, 0),
+    studentRevenue: teacherRows.reduce((s, t) => s + t.studentRevenue, 0),
+    teacherPayout: teacherRows.reduce((s, t) => s + t.teacherPayout, 0),
+    platformMargin: teacherRows.reduce((s, t) => s + t.platformMargin, 0),
+  };
+
+  return { teacherRows, summary, avgCreditValue };
+}
+
+export async function getPlatformRevenue() {
+  const supabase = await createClient();
+
+  const [{ data: paymentsData }, { data: payoutsData }] = await Promise.all([
+    supabase
+      .from("payments")
+      .select("amount, created_at")
+      .in("status", ["completed", "pending"]),
+    supabase
+      .from("payout_requests")
+      .select("amount_chf, created_at")
+      .in("status", ["processed", "paid"]),
+  ]);
+
+  const payments = paymentsData ?? [];
+  const payouts = payoutsData ?? [];
+
+  const grossRevenue = payments.reduce((sum, r) => sum + Number(r.amount), 0);
+  const totalPayouts = payouts.reduce((sum, r) => sum + Number(r.amount_chf), 0);
+  const platformMargin = grossRevenue - totalPayouts;
+
+  // Monthly breakdown grouped by YYYY-MM
+  const monthlyMap: Record<string, { revenue: number; payouts: number }> = {};
+
+  for (const p of payments) {
+    const month = p.created_at.slice(0, 7);
+    if (!monthlyMap[month]) monthlyMap[month] = { revenue: 0, payouts: 0 };
+    monthlyMap[month]!.revenue += Number(p.amount);
+  }
+  for (const p of payouts) {
+    const month = p.created_at.slice(0, 7);
+    if (!monthlyMap[month]) monthlyMap[month] = { revenue: 0, payouts: 0 };
+    monthlyMap[month]!.payouts += Number(p.amount_chf);
+  }
+
+  const monthly = Object.entries(monthlyMap)
+    .sort(([a], [b]) => b.localeCompare(a))
+    .map(([month, { revenue, payouts: p }]) => ({
+      id: month,
+      month,
+      revenue,
+      payouts: p,
+      margin: revenue - p,
+    }));
+
+  return { grossRevenue, totalPayouts, platformMargin, monthly };
 }
 
 export async function getPlatformSettings(): Promise<Record<string, string>> {

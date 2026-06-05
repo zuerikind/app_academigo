@@ -5,6 +5,11 @@ import { useActionState } from "react";
 import { markPayoutProcessed } from "@/lib/actions/admin";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  formatPayoutAddress,
+  hasPayoutInfo,
+  parsePayoutInfo,
+} from "@/lib/payout-info";
 
 type EarningRow = {
   id: string;
@@ -23,7 +28,10 @@ type PayoutRow = {
   status: string;
   note: string | null;
   created_at: string;
-  teachers: { profiles: { full_name: string; email: string } | Array<{ full_name: string; email: string }> } | Array<{ profiles: { full_name: string; email: string } | Array<{ full_name: string; email: string }> }> | null;
+  teachers:
+    | { payout_info_placeholder: string | null; profiles: { full_name: string; email: string } | Array<{ full_name: string; email: string }> }
+    | Array<{ payout_info_placeholder: string | null; profiles: { full_name: string; email: string } | Array<{ full_name: string; email: string }> }>
+    | null;
   teacher_earnings?: EarningRow[] | null;
 };
 
@@ -44,10 +52,20 @@ type Labels = {
   confirmPayoutLoading: string;
   statusProcessed: string;
   close: string;
+  dialogBankDetails: string;
+  dialogPayoutName: string;
+  dialogPayoutIban: string;
+  dialogPayoutAddress: string;
+  dialogPayoutTwint: string;
+  dialogNoBankDetails: string;
 };
 
+function getTeacher(payout: PayoutRow) {
+  return Array.isArray(payout.teachers) ? payout.teachers[0] : payout.teachers;
+}
+
 function getProfile(payout: PayoutRow) {
-  const tc = Array.isArray(payout.teachers) ? payout.teachers[0] : payout.teachers;
+  const tc = getTeacher(payout);
   const profiles = Array.isArray(tc?.profiles) ? tc?.profiles[0] : tc?.profiles;
   return profiles ?? null;
 }
@@ -73,6 +91,10 @@ export function PayoutDetailDialog({
   }, [state.success]);
 
   const profile = getProfile(payout);
+  const teacher = getTeacher(payout);
+  const bankDetails = parsePayoutInfo(teacher?.payout_info_placeholder);
+  const bankAddress = formatPayoutAddress(bankDetails);
+  const hasBankDetails = hasPayoutInfo(bankDetails);
   const earnings: EarningRow[] = payout.teacher_earnings ?? [];
   const isPendingPayout = payout.status === "pending";
 
@@ -133,6 +155,43 @@ export function PayoutDetailDialog({
                     {new Date(payout.created_at).toLocaleDateString("de-CH")}
                   </p>
                 </div>
+              </div>
+
+              {/* Bank details */}
+              <div>
+                <p className="text-meta mb-2">{labels.dialogBankDetails}</p>
+                {!hasBankDetails ? (
+                  <p className="text-sm text-academy-slate">{labels.dialogNoBankDetails}</p>
+                ) : (
+                  <div className="rounded-[10px] border border-academy-line bg-academy-mist/30 p-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                    {bankDetails.payoutName && (
+                      <div>
+                        <p className="text-meta mb-0.5">{labels.dialogPayoutName}</p>
+                        <p className="font-medium text-academy-navy">{bankDetails.payoutName}</p>
+                      </div>
+                    )}
+                    {bankDetails.payoutIban && (
+                      <div className="sm:col-span-2">
+                        <p className="text-meta mb-0.5">{labels.dialogPayoutIban}</p>
+                        <p className="font-mono text-[13px] text-academy-navy break-all">
+                          {bankDetails.payoutIban}
+                        </p>
+                      </div>
+                    )}
+                    {bankAddress && (
+                      <div className="sm:col-span-2">
+                        <p className="text-meta mb-0.5">{labels.dialogPayoutAddress}</p>
+                        <p className="text-academy-navy">{bankAddress}</p>
+                      </div>
+                    )}
+                    {bankDetails.payoutTwint && (
+                      <div>
+                        <p className="text-meta mb-0.5">{labels.dialogPayoutTwint}</p>
+                        <p className="text-academy-navy">{bankDetails.payoutTwint}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Sessions table */}

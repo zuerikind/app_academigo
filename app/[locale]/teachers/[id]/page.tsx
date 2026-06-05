@@ -1,22 +1,56 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { MapPin, Monitor } from "lucide-react";
 import { PublicLayout } from "@/components/layout/public-layout";
+import { JsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { formatMessage } from "@/lib/i18n/format";
 import { localizedPath } from "@/lib/i18n/path";
 import { translateSubjectName } from "@/lib/i18n/subjects";
 import { getTeacherProfileDetail } from "@/lib/queries/teachers";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { personJsonLd } from "@/lib/seo/schemas";
+import { absoluteUrl } from "@/lib/seo/site-url";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
 
-export async function generateMetadata({ params }: Props) {
-  const { id } = await params;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id, locale: raw } = await params;
+  if (!isLocale(raw)) return {};
+  const dict = getDictionary(raw);
   const teacher = await getTeacherProfileDetail(id);
-  return { title: teacher?.fullName ?? "Teacher" };
+  if (!teacher) return { title: dict.nav.teachers };
+
+  const subjectLabels = teacher.subjects
+    .map((s) => translateSubjectName(dict, s.slug, s.name))
+    .join(", ");
+
+  const subjectsPart = subjectLabels
+    ? formatMessage(dict.seo.teacherProfile.subjectsSuffix, {
+        subjects: subjectLabels,
+      })
+    : "";
+
+  const title = formatMessage(dict.seo.teacherProfile.title, {
+    name: teacher.fullName,
+  });
+  const description = formatMessage(dict.seo.teacherProfile.description, {
+    name: teacher.fullName,
+    subjects: subjectsPart,
+  });
+
+  return buildPageMetadata({
+    locale: raw,
+    path: `/teachers/${id}`,
+    title,
+    description,
+    ogImage: teacher.avatarUrl,
+  });
 }
 
 export default async function PublicTeacherProfilePage({ params }: Props) {
@@ -34,8 +68,32 @@ export default async function PublicTeacherProfilePage({ params }: Props) {
     .join("")
     .slice(0, 2);
 
+  const subjectLabels = teacher.subjects.map((s) =>
+    translateSubjectName(dict, s.slug, s.name),
+  );
+  const profileUrl = absoluteUrl(localizedPath(raw, `/teachers/${id}`));
+  const metaDescription =
+    teacher.bio?.slice(0, 160) ??
+    formatMessage(dict.seo.teacherProfile.description, {
+      name: teacher.fullName,
+      subjects: subjectLabels.length
+        ? formatMessage(dict.seo.teacherProfile.subjectsSuffix, {
+            subjects: subjectLabels.join(", "),
+          })
+        : "",
+    });
+
   return (
     <PublicLayout locale={raw}>
+      <JsonLd
+        data={personJsonLd({
+          name: teacher.fullName,
+          url: profileUrl,
+          description: metaDescription,
+          image: teacher.avatarUrl,
+          subjects: subjectLabels,
+        })}
+      />
       <Section pad="tight" width="wide" className="pt-12">
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-8">

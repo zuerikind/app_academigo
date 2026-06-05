@@ -134,14 +134,26 @@ describe("POST /api/webhooks/stripe", () => {
       data: {
         object: {
           id: "inv_test_new",
+          billing_reason: "subscription_cycle",
           subscription: "sub_test123",
           metadata: { student_id: "student-uuid", package_id: "pkg-sub-uuid" },
         },
       },
     });
-    mocks.supabase.from.mockReturnValue(
-      makeChainable({ data: null, error: null })
-    );
+    let fromCount = 0;
+    mocks.supabase.from.mockImplementation(() => {
+      fromCount++;
+      if (fromCount === 1) {
+        // idempotency check — not already processed
+        return makeChainable({ data: null, error: null });
+      }
+      if (fromCount === 2) {
+        // credit_packages lookup
+        return makeChainable({ data: { credits: 4, price_chf: 299 }, error: null });
+      }
+      // payments insert and subsequent calls
+      return makeChainable({ data: { id: "pay-uuid" }, error: null });
+    });
     mocks.supabase.rpc.mockResolvedValue({ data: null, error: null });
     const req = new Request("http://localhost/api/webhooks/stripe", {
       method: "POST",

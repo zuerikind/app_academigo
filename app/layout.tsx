@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Manrope } from "next/font/google";
 import { Toaster } from "sonner";
+import { siteConfig } from "@/config/site";
+import { getSiteUrl } from "@/lib/seo/site-url";
 import "./globals.css";
 
 const inter = Inter({
@@ -24,12 +26,11 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "Academigo — Premium Online Tutoring",
-    template: "%s | Academigo",
+    default: siteConfig.brand,
+    template: `%s | ${siteConfig.brand}`,
   },
-  description:
-    "Strukturierte Nachhilfe in Mathematik, Physik und Chemie — online und in Zürich.",
   icons: {
     icon: [{ url: "/brand/logo-icon.png", type: "image/png" }],
     apple: [{ url: "/brand/logo-icon.png", type: "image/png" }],
@@ -43,7 +44,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="de-CH"
       className={`${inter.variable} ${manrope.variable} h-full`}
       suppressHydrationWarning
     >

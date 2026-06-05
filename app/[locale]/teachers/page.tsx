@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { PublicLayout } from "@/components/layout/public-layout";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
@@ -9,8 +10,22 @@ import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { localizedPath } from "@/lib/i18n/path";
 import { getApprovedTeachers } from "@/lib/queries/teachers";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
 type Props = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale: raw } = await params;
+  if (!isLocale(raw)) return {};
+  const dict = getDictionary(raw);
+  const seo = dict.seo.teachers;
+  return buildPageMetadata({
+    locale: raw,
+    path: "/teachers",
+    title: seo.title,
+    description: seo.description,
+  });
+}
 
 export default async function TeachersPage({ params }: Props) {
   const { locale: raw } = await params;

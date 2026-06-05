@@ -61,10 +61,9 @@ export default async function AdminDashboardPage({ params }: Props) {
         />
         <StatCard
           label={d.statRevenue}
-          value={d.revenueStub}
+          value={`CHF ${stats.totalRevenue.toFixed(2)}`}
           icon="coins"
           tone="default"
-          hint={dict.admin.dashboard.revenueStub}
         />
       </div>
 

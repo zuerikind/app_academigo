@@ -38,6 +38,12 @@ export default async function AdminPayoutsPage({ params }: Props) {
     confirmPayoutLoading: t.confirmPayoutLoading,
     statusProcessed: t.statusProcessed,
     close: t.close,
+    dialogBankDetails: t.dialogBankDetails,
+    dialogPayoutName: t.dialogPayoutName,
+    dialogPayoutIban: t.dialogPayoutIban,
+    dialogPayoutAddress: t.dialogPayoutAddress,
+    dialogPayoutTwint: t.dialogPayoutTwint,
+    dialogNoBankDetails: t.dialogNoBankDetails,
   };
 
   const columns = [

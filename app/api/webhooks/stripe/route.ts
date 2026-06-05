@@ -85,6 +85,7 @@ async function handleCheckoutComplete(
     stripe_subscription_id: stripeSubscriptionId,
     package_id: packageId,
     amount: amountChf,
+    status: "completed",
   });
 
   if (insertError) {
@@ -152,6 +153,7 @@ async function handleInvoicePaid(invoice: Stripe.Invoice): Promise<void> {
     stripe_session_id: invoiceId,
     package_id: packageId,
     amount: amountChf,
+    status: "completed",
   });
 
   if (insertError) {

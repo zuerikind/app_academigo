@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Star } from "lucide-react";
+import { TeacherQuickStatsBar } from "@/components/teacher/teacher-quick-stats-bar";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeader } from "@/components/ui/page-header";
@@ -163,36 +163,69 @@ export default async function TeacherDashboardPage({ params }: Props) {
         </div>
       )}
 
-      <div className="mb-10 rounded-[14px] border border-academy-line bg-white px-5 py-5">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <p className="text-meta">{t.profileCompletion}</p>
-            <p className="mt-1.5 font-display text-[26px] font-semibold leading-none tracking-tight text-academy-navy text-numeric">
-              {data.profileCompletion}%
-            </p>
+      {data.profileCompletion < 100 && (
+        <Link
+          href={localizedPath(raw, "/teacher/profile")}
+          className="mb-6 block rounded-[14px] border border-academy-line bg-white px-5 py-5 transition-colors hover:border-[color:var(--brand)]/40"
+        >
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-meta">{t.profileCompletion}</p>
+              <p className="mt-1.5 font-display text-[26px] font-semibold leading-none tracking-tight text-academy-navy text-numeric">
+                {data.profileCompletion}%
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-1.5">
+              {data.isVerified ? (
+                <Badge variant="verified">{tc.verified}</Badge>
+              ) : (
+                <Badge variant="muted">{tc.standard}</Badge>
+              )}
+              {data.isApproved ? (
+                <Badge variant="verified">{tc.approved}</Badge>
+              ) : (
+                <Badge variant="warning">{tc.pending}</Badge>
+              )}
+            </div>
           </div>
-          <div className="flex flex-wrap items-center gap-1.5">
-            {data.isVerified ? (
-              <Badge variant="verified">{tc.verified}</Badge>
-            ) : (
-              <Badge variant="muted">{tc.standard}</Badge>
-            )}
-            {data.isApproved ? (
-              <Badge variant="verified">{tc.approved}</Badge>
-            ) : (
-              <Badge variant="warning">{tc.pending}</Badge>
-            )}
+          <div className="mt-5 h-1 overflow-hidden rounded-full bg-academy-mist-dark">
+            <div
+              className="h-full rounded-full bg-[color:var(--brand-deep)] transition-all duration-500"
+              style={{ width: `${data.profileCompletion}%` }}
+            />
           </div>
-        </div>
-        <div className="mt-5 h-1 overflow-hidden rounded-full bg-academy-mist-dark">
-          <div
-            className="h-full rounded-full bg-[color:var(--brand-deep)] transition-all duration-500"
-            style={{ width: `${data.profileCompletion}%` }}
-          />
-        </div>
-      </div>
+          {data.missingFields.length > 0 && (
+            <div className="mt-4 flex flex-wrap items-center gap-1.5">
+              <span className="text-[12px] text-academy-slate">{t.missingFieldsLabel}</span>
+              {data.missingFields.map((field) => (
+                <span
+                  key={field}
+                  className="inline-flex items-center rounded-full border border-[color:var(--academy-warning)]/30 bg-[color:var(--academy-warning-soft)] px-2 py-0.5 text-[11px] font-medium text-[color:var(--academy-warning)]"
+                >
+                  {t.profileFields[field]}
+                </span>
+              ))}
+            </div>
+          )}
+          <p className="mt-3 text-[12px] font-medium text-[color:var(--brand-deep)]">
+            {t.completeProfile}
+          </p>
+        </Link>
+      )}
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <TeacherQuickStatsBar
+        completedLessons={data.completedLessons}
+        averageRating={data.averageRating}
+        reviewCount={data.reviewCount}
+        completedLabel={t.completed}
+        ratingLabel={t.yourRating}
+        noRatingYet={t.noRatingYet}
+        reviewsCountLabel={formatMessage(t.reviewsCount, { count: String(data.reviewCount) })}
+        bookingsHref={localizedPath(raw, "/teacher/bookings")}
+        reviewsHref={`${localizedPath(raw, "/teacher/earnings")}#reviews`}
+      />
+
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard
           label={t.pendingRequests}
           value={data.pendingRequests}
@@ -207,18 +240,12 @@ export default async function TeacherDashboardPage({ params }: Props) {
           icon="calendar"
         />
         <StatCard
-          label={t.completed}
-          value={data.completedLessons}
-          icon="checkCircle"
+          label={t.earningsThisMonth}
+          value={`CHF ${data.monthlyEarnings.toFixed(2)}`}
+          icon="coins"
           tone="calm"
-        />
-        <StatCard
-          label={t.yourRating}
-          value={data.reviewCount > 0 ? `${data.averageRating} ★` : t.noRatingYet}
-          icon="star"
-          tone="brand"
-          href={localizedPath(raw, "/teacher/earnings")}
-          hrefLabel={formatMessage(t.reviewsCount, { count: String(data.reviewCount) })}
+          href={`${localizedPath(raw, "/teacher/earnings")}#payout`}
+          hrefLabel={t.requestPayout}
         />
       </div>
 

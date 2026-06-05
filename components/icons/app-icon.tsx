@@ -3,6 +3,7 @@
 import {
   AlertTriangle,
   Award,
+  BarChart2,
   BookOpen,
   Calendar,
   CheckCircle,
@@ -15,6 +16,7 @@ import {
   Package,
   Settings,
   Star,
+  TrendingUp,
   User,
   Users,
   type LucideProps,
@@ -39,6 +41,8 @@ const registry = {
   settings: Settings,
   book: BookOpen,
   star: Star,
+  trendingUp: TrendingUp,
+  barChart: BarChart2,
 } satisfies Record<IconName, React.ComponentType<LucideProps>>;
 
 export function AppIcon({

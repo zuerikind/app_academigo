@@ -1,9 +1,11 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { HomeHero } from "@/components/marketing/home-hero";
 import { HomeKeyFacts } from "@/components/marketing/home-key-facts";
 import { HomeRegistrationSteps } from "@/components/marketing/home-registration-steps";
 import { HomeSubjectsShowcase } from "@/components/marketing/home-subjects-showcase";
 import { PublicLayout } from "@/components/layout/public-layout";
+import { JsonLd } from "@/components/seo/json-ld";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
 import { SectionHeader } from "@/components/ui/page-header";
@@ -17,8 +19,23 @@ import {
   formatSubjectList,
 } from "@/lib/i18n/subject-catalog";
 import { getSubjects, getSubjectSlugsWithApprovedTeachers } from "@/lib/queries/subjects";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/seo/schemas";
 
 type Props = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale: raw } = await params;
+  if (!isLocale(raw)) return {};
+  const dict = getDictionary(raw);
+  const seo = dict.seo.home;
+  return buildPageMetadata({
+    locale: raw,
+    path: "/",
+    title: seo.title,
+    description: seo.description,
+  });
+}
 
 export default async function HomePage({ params }: Props) {
   const { locale: raw } = await params;
@@ -40,6 +57,12 @@ export default async function HomePage({ params }: Props) {
 
   return (
     <PublicLayout locale={raw} footerTagline={footerTagline}>
+      <JsonLd
+        data={[
+          organizationJsonLd(locale, dict),
+          websiteJsonLd(locale),
+        ]}
+      />
       <HomeHero subjectItems={subjectItems} />
 
       <Section width="wide" pad="default">

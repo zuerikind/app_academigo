@@ -19,6 +19,9 @@ type Strings = {
   extraCredits: string;
   creditsLabel: string;
   manageSubscription: string;
+  cancelledNotice: string;
+  reactivateSubscription: string;
+  reactivating: string;
 };
 
 type Props = {
@@ -31,9 +34,12 @@ type Props = {
   paymentHistory: PaymentHistoryItem[];
   subscriptionRemaining: number;
   extraRemaining: number;
+  cancelAtPeriodEnd?: boolean;
+  cancelPeriodEnd?: string | null;
   strings: Strings;
   locale: string;
   manageSubscriptionAction?: (prev: { error?: string }, formData: FormData) => Promise<{ error?: string }>;
+  reactivateAction?: (prev: { error?: string }, formData: FormData) => Promise<{ error?: string }>;
 };
 
 export function BillingSection({
@@ -41,13 +47,20 @@ export function BillingSection({
   paymentHistory,
   subscriptionRemaining,
   extraRemaining,
+  cancelAtPeriodEnd = false,
+  cancelPeriodEnd = null,
   strings,
   locale,
   manageSubscriptionAction,
+  reactivateAction,
 }: Props) {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [portalState, portalAction, portalPending] = useActionState<{ error?: string }, FormData>(
     manageSubscriptionAction ?? (async () => ({})),
+    {},
+  );
+  const [reactivateState, reactivateFormAction, reactivatePending] = useActionState<{ error?: string }, FormData>(
+    reactivateAction ?? (async () => ({})),
     {},
   );
   const dateFmt = locale === "de" ? "de-CH" : "en-CH";
@@ -86,23 +99,55 @@ export function BillingSection({
             <span className="inline-flex items-center rounded-full border border-green-200 bg-green-50 px-2.5 py-0.5 text-[11px] font-semibold text-green-700">
               {strings.active}
             </span>
-            <p className="text-[12px] text-academy-slate">
-              {activePlan.isSubscription && activePlan.nextRenewalAt
-                ? strings.renewsOn.replace("{date}", formatDate(activePlan.nextRenewalAt))
-                : activePlan.purchasedAt
-                  ? strings.purchasedOn.replace("{date}", formatDate(activePlan.purchasedAt))
-                  : strings.oneTimePurchase}
-            </p>
-            {activePlan.isSubscription && manageSubscriptionAction && (
-              <form action={portalAction}>
-                <button
-                  type="submit"
-                  disabled={portalPending}
-                  className="text-[11px] font-medium text-academy-slate-muted underline underline-offset-2 hover:text-academy-navy disabled:opacity-50"
-                >
-                  {portalPending ? "…" : strings.manageSubscription}
-                </button>
-              </form>
+            {!cancelAtPeriodEnd && (
+              <p className="text-[12px] text-academy-slate">
+                {activePlan.isSubscription && activePlan.nextRenewalAt
+                  ? strings.renewsOn.replace("{date}", formatDate(activePlan.nextRenewalAt))
+                  : activePlan.purchasedAt
+                    ? strings.purchasedOn.replace("{date}", formatDate(activePlan.purchasedAt))
+                    : strings.oneTimePurchase}
+              </p>
+            )}
+            {activePlan.isSubscription && cancelAtPeriodEnd ? (
+              <div className="flex flex-col items-end gap-1.5">
+                <p className="text-right text-[11px] text-[color:var(--academy-warning)]">
+                  {strings.cancelledNotice.replace(
+                    "{date}",
+                    cancelPeriodEnd
+                      ? new Date(cancelPeriodEnd).toLocaleDateString(
+                          locale === "de" ? "de-CH" : "en-CH",
+                          { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" },
+                        )
+                      : "—",
+                  )}
+                </p>
+                {reactivateAction && (
+                  <form action={reactivateFormAction}>
+                    <button
+                      type="submit"
+                      disabled={reactivatePending}
+                      className="text-[11px] font-medium text-[color:var(--brand-deep)] underline underline-offset-2 hover:text-academy-navy disabled:opacity-50"
+                    >
+                      {reactivatePending ? strings.reactivating : strings.reactivateSubscription}
+                    </button>
+                  </form>
+                )}
+                {reactivateState?.error && (
+                  <p className="text-[11px] text-red-500">{reactivateState.error}</p>
+                )}
+              </div>
+            ) : (
+              activePlan.isSubscription && manageSubscriptionAction && (
+                <form action={portalAction}>
+                  <button
+                    type="submit"
+                    disabled={portalPending}
+                    className="text-[11px] font-medium text-academy-slate-muted underline underline-offset-2 hover:text-academy-navy disabled:opacity-50"
+                  >
+                    {portalPending ? "…" : strings.manageSubscription}
+                  </button>
+                </form>
+              )
             )}
             {portalState?.error && (
               <p className="text-[11px] text-red-500">{portalState.error}</p>

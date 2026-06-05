@@ -1,5 +1,8 @@
+import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
 import type { Student } from "@/lib/types/index";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "sk_placeholder");
 
 export type PaymentHistoryItem = {
   id: string;
@@ -23,6 +26,9 @@ export type StudentBillingInfo = {
   extraRemaining: number;
   availableCredits: number;
   stripeCustomerId: string | null;
+  stripeSubscriptionId: string | null;
+  cancelAtPeriodEnd: boolean;
+  cancelPeriodEnd: string | null;
 };
 
 function computeNextRenewal(lastPaymentIso: string): string {
@@ -61,6 +67,9 @@ export async function getStudentBillingInfo(profileId: string): Promise<StudentB
     extraRemaining: 0,
     availableCredits: 0,
     stripeCustomerId: null,
+    stripeSubscriptionId: null,
+    cancelAtPeriodEnd: false,
+    cancelPeriodEnd: null,
   };
 
   if (!student) return empty;
@@ -74,7 +83,7 @@ export async function getStudentBillingInfo(profileId: string): Promise<StudentB
     supabase.rpc("student_available_credits"),
     supabase
       .from("payments")
-      .select("id, amount, created_at, credit_packages ( name, slug, is_subscription )")
+      .select("id, amount, created_at, stripe_subscription_id, credit_packages ( name, slug, is_subscription )")
       .eq("student_id", student.id)
       .order("created_at", { ascending: false }),
   ]);
@@ -99,19 +108,37 @@ export async function getStudentBillingInfo(profileId: string): Promise<StudentB
   }));
 
   const stripeCustomerId = student.stripe_customer_id ?? null;
+  const stripeSubscriptionId =
+    (payments ?? []).find((p: any) => p.credit_packages?.is_subscription && p.stripe_subscription_id)
+      ?.stripe_subscription_id ?? null;
 
-  if (history.length === 0) return { ...empty, availableCredits, subscriptionRemaining, extraRemaining, stripeCustomerId };
+  if (history.length === 0) return { ...empty, availableCredits, subscriptionRemaining, extraRemaining, stripeCustomerId, stripeSubscriptionId };
 
-  const latest = history[0];
+  // Prefer the most recent subscription over a more recent one-time purchase
+  const planBase = history.find((p) => p.isSubscription) ?? history[0];
   const activePlan = {
-    packageName: latest.packageName,
-    isSubscription: latest.isSubscription,
-    packageSlug: latest.packageSlug,
-    nextRenewalAt: latest.isSubscription ? computeNextRenewal(latest.paidAt) : null,
-    purchasedAt: latest.paidAt,
+    packageName: planBase.packageName,
+    isSubscription: planBase.isSubscription,
+    packageSlug: planBase.packageSlug,
+    nextRenewalAt: planBase.isSubscription ? computeNextRenewal(planBase.paidAt) : null,
+    purchasedAt: planBase.paidAt,
   };
 
-  return { activePlan, paymentHistory: history, availableCredits, subscriptionRemaining, extraRemaining, stripeCustomerId };
+  let cancelAtPeriodEnd = false;
+  let cancelPeriodEnd: string | null = null;
+  if (activePlan.isSubscription && stripeSubscriptionId) {
+    try {
+      const sub = await stripe.subscriptions.retrieve(stripeSubscriptionId);
+      cancelAtPeriodEnd = sub.cancel_at_period_end;
+      cancelPeriodEnd = sub.current_period_end
+        ? new Date(sub.current_period_end * 1000).toISOString()
+        : null;
+    } catch {
+      // non-fatal — portal flow will surface any real errors
+    }
+  }
+
+  return { activePlan, paymentHistory: history, availableCredits, subscriptionRemaining, extraRemaining, stripeCustomerId, stripeSubscriptionId, cancelAtPeriodEnd, cancelPeriodEnd };
 }
 
 export async function getStudentRecord(profileId: string): Promise<Student | null> {

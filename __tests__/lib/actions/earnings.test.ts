@@ -42,14 +42,19 @@ describe("requestPayout", () => {
 
   it("requestPayout inserts payout_requests row with full pending balance", async () => {
     const { requestPayout } = await import("@/lib/actions/earnings");
-    // First call: fetch pending balance
-    // Second call: insert payout request
+    // Call order: teachers → teacher_earnings → payout_requests (insert) → teacher_earnings (update)
     let callCount = 0;
     mocks.supabase.from.mockImplementation(() => {
       callCount++;
       if (callCount === 1) {
-        return makeChainable({ data: { pending_amount_chf: 150.0 }, error: null });
+        // teachers lookup
+        return makeChainable({ data: { id: "teacher-uuid", payout_info_placeholder: "IBAN CH12 3456 7890" }, error: null });
       }
+      if (callCount === 2) {
+        // teacher_earnings select (returns array)
+        return makeChainable({ data: [{ amount: 150.0 }], error: null });
+      }
+      // payout_requests insert + teacher_earnings update
       return makeChainable({ data: { id: "payout-uuid" }, error: null });
     });
     const fd = makeFormData({});

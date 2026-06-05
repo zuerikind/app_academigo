@@ -143,7 +143,7 @@ describe("markComplete", () => {
 
   it("markComplete calls complete_booking RPC", async () => {
     const { markComplete } = await import("@/lib/actions/bookings");
-    const fd = makeFormData({ bookingId: "booking-uuid" });
+    const fd = makeFormData({ bookingId: "booking-uuid", sessionRating: "4" });
     await markComplete({} as any, fd);
     expect(mocks.supabase.rpc).toHaveBeenCalledWith(
       "complete_booking",

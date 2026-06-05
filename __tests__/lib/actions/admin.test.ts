@@ -12,6 +12,9 @@ const mocks = {
 
 jest.mock("next/cache", () => ({ revalidatePath: (...args: unknown[]) => mocks.revalidatePath(...args) }));
 jest.mock("@/lib/auth/session", () => ({ requireRole: (...args: unknown[]) => mocks.requireRole(...args) }));
+jest.mock("@/lib/services/email", () => ({
+  sendPayoutProcessed: jest.fn().mockResolvedValue(undefined),
+}));
 jest.mock("@/lib/supabase/server", () => ({
   createClient: jest.fn().mockResolvedValue({
     from: jest.fn().mockReturnValue({
@@ -19,6 +22,14 @@ jest.mock("@/lib/supabase/server", () => ({
       eq: jest.fn().mockReturnThis(),
       select: jest.fn().mockReturnThis(),
       order: jest.fn().mockReturnThis(),
+      maybeSingle: jest.fn().mockResolvedValue({
+        data: {
+          id: "uuid-abc",
+          amount_chf: 100,
+          teachers: { profiles: { full_name: "Test Teacher", email: "teacher@test.com" } },
+        },
+        error: null,
+      }),
     }),
   }),
 }));
@@ -114,6 +125,6 @@ describe("markPayoutProcessed", () => {
 
   it("returns {} on success", async () => {
     const result = await markPayoutProcessed({}, makeFormData({ payoutId: "uuid-abc" }));
-    expect(result).toEqual({});
+    expect(result).toEqual({ success: true });
   });
 });

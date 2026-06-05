@@ -3,6 +3,9 @@ import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { isLocale } from "@/lib/i18n/config";
 import { getAdminNav } from "@/config/navigation";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
+import { noIndexMetadata } from "@/lib/seo/metadata";
+
+export const metadata = noIndexMetadata;
 
 export default async function AdminLayout({
   children,

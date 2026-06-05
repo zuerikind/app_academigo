@@ -8,7 +8,7 @@ import { requireRoleFromParams, getTeacherRecord } from "@/lib/auth/session";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { createClient } from "@/lib/supabase/server";
-import { getTeacherEarnings, getTeacherPendingBalance, getTeacherTotalEarned } from "@/lib/queries/earnings";
+import { getTeacherEarnings, getTeacherPendingBalance, getTeacherPayoutHistory, getTeacherTotalEarned } from "@/lib/queries/earnings";
 import { getTeacherReviews } from "@/lib/queries/reviews";
 import { Star } from "lucide-react";
 import { RequestPayoutForm } from "@/components/teacher/request-payout-form";
@@ -33,11 +33,12 @@ export default async function TeacherEarningsPage({ params }: Props) {
 
   const hasBankDetails = !!teacher.payout_info_placeholder?.trim();
 
-  const [earnings, pendingBalance, totalEarned, reviews] = await Promise.all([
+  const [earnings, pendingBalance, totalEarned, reviews, payouts] = await Promise.all([
     getTeacherEarnings(teacher.id),
     getTeacherPendingBalance(teacher.id),
     getTeacherTotalEarned(teacher.id),
     getTeacherReviews(teacher.id),
+    getTeacherPayoutHistory(teacher.id),
   ]);
 
   const { data: pendingPayout } = await supabase
@@ -53,6 +54,23 @@ export default async function TeacherEarningsPage({ params }: Props) {
     student: string;
     amount: string;
   };
+
+  type PayoutRow = {
+    id: string;
+    date: string;
+    amount: string;
+    status: string;
+  };
+
+  const payoutRows: PayoutRow[] = payouts.map((p) => ({
+    id: p.id,
+    date: new Date(p.created_at).toLocaleDateString(dateLocale),
+    amount: `CHF ${p.amount_chf.toFixed(2)}`,
+    status:
+      p.status === "processed" || p.status === "paid"
+        ? t.payoutProcessed
+        : t.payoutPending,
+  }));
 
   const earningRows: EarningRow[] = earnings.map((e) => ({
     id: e.id,
@@ -88,7 +106,7 @@ export default async function TeacherEarningsPage({ params }: Props) {
         </div>
 
         {/* Request Payout section */}
-        <div>
+        <div id="payout">
           {!hasBankDetails ? (
             <div className="rounded-[14px] border border-amber-200 bg-amber-50 p-5">
               <p className="text-sm font-medium text-amber-900">{t.noBankDetails}</p>
@@ -132,6 +150,38 @@ export default async function TeacherEarningsPage({ params }: Props) {
           )}
         </div>
 
+        {/* Payout history */}
+        <div>
+          <h2 className="mb-4 text-subheading text-academy-navy">{t.payoutHistory}</h2>
+          <Table<PayoutRow>
+            columns={[
+              {
+                key: "date",
+                header: t.colPayoutDate,
+                render: (row) => row.date,
+              },
+              {
+                key: "amount",
+                header: t.colPayoutAmount,
+                render: (row) => row.amount,
+              },
+              {
+                key: "status",
+                header: t.colPayoutStatus,
+                render: (row) => row.status,
+              },
+            ]}
+            rows={payoutRows}
+            emptyState={
+              <EmptyState
+                icon="coins"
+                title={t.noPayouts}
+                description={t.noPayouts}
+              />
+            }
+          />
+        </div>
+
         {/* Earnings history table */}
         <div>
           <h2 className="mb-4 text-subheading text-academy-navy">{t.earningsHistory}</h2>
@@ -165,7 +215,7 @@ export default async function TeacherEarningsPage({ params }: Props) {
         </div>
 
         {/* Student reviews */}
-        <div>
+        <div id="reviews">
           <h2 className="mb-4 text-subheading text-academy-navy">{t.reviewsTitle}</h2>
           {reviews.length === 0 ? (
             <div className="rounded-[14px] border border-academy-line bg-white px-6 py-9">

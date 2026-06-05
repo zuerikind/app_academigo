@@ -5,6 +5,9 @@ import { requestPasswordReset } from "@/lib/actions/auth";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { localizedPath } from "@/lib/i18n/path";
+import { noIndexMetadata } from "@/lib/seo/metadata";
+
+export const metadata = noIndexMetadata;
 
 type Props = {
   params: Promise<{ locale: string }>;

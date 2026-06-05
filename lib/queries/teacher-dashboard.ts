@@ -1,24 +1,33 @@
 import { createClient } from "@/lib/supabase/server";
-import { getTeacherTotalEarned } from "@/lib/queries/earnings";
+import { getTeacherMonthlyEarnings, getTeacherTotalEarned } from "@/lib/queries/earnings";
 import { getReviewAggregate } from "@/lib/queries/reviews";
 
-export function teacherProfileCompletion(teacher: {
+type TeacherFields = {
   bio: string | null;
   education: string | null;
   experience: string | null;
   teaching_style: string | null;
   payout_info_placeholder: string | null;
-} | null): number {
+};
+
+export type ProfileFieldKey = "bio" | "education" | "experience" | "teaching_style" | "payout_info_placeholder";
+
+export function teacherProfileCompletion(teacher: TeacherFields | null): number {
   if (!teacher) return 0;
-  const fields = [
-    teacher.bio,
-    teacher.education,
-    teacher.experience,
-    teacher.teaching_style,
-    teacher.payout_info_placeholder,
+  const fields = [teacher.bio, teacher.education, teacher.experience, teacher.teaching_style, teacher.payout_info_placeholder];
+  return Math.round((fields.filter((f) => f && f.trim().length > 0).length / fields.length) * 100);
+}
+
+export function teacherMissingFields(teacher: TeacherFields | null): ProfileFieldKey[] {
+  if (!teacher) return ["bio", "education", "experience", "teaching_style", "payout_info_placeholder"];
+  const checks: [ProfileFieldKey, string | null][] = [
+    ["bio", teacher.bio],
+    ["education", teacher.education],
+    ["experience", teacher.experience],
+    ["teaching_style", teacher.teaching_style],
+    ["payout_info_placeholder", teacher.payout_info_placeholder],
   ];
-  const filled = fields.filter((f) => f && f.trim().length > 0).length;
-  return Math.round((filled / fields.length) * 100);
+  return checks.filter(([, v]) => !v || !v.trim()).map(([k]) => k);
 }
 
 function mapBooking(b: any) {
@@ -52,19 +61,21 @@ export async function getTeacherDashboardData(profileId: string) {
       upcomingLessons: 0,
       completedLessons: 0,
       profileCompletion: 0,
+      missingFields: teacherMissingFields(null),
       isApproved: false,
       isVerified: false,
       teacherLevel: "junior" as string,
       averageRating: 0,
       reviewCount: 0,
       totalEarned: 0,
+      monthlyEarnings: 0,
       upcomingBookings: [] as ReturnType<typeof mapBooking>[],
     };
   }
 
   const now = new Date().toISOString();
 
-  const [pendingResult, upcomingResult, completedResult, bookingsResult, reviewStats, totalEarned] =
+  const [pendingResult, upcomingResult, completedResult, bookingsResult, reviewStats, totalEarned, monthlyEarnings] =
     await Promise.all([
       supabase.from("bookings").select("*", { count: "exact", head: true }).eq("teacher_id", teacher.id).eq("status", "pending"),
       supabase.from("bookings").select("*", { count: "exact", head: true }).eq("teacher_id", teacher.id).eq("status", "confirmed").gte("start_time", now),
@@ -72,6 +83,7 @@ export async function getTeacherDashboardData(profileId: string) {
       supabase.from("bookings").select(`id, start_time, end_time, meeting_link, topic_note, students ( id, profiles ( full_name ) ), booking_subjects ( subjects ( id, name, slug ) )`).eq("teacher_id", teacher.id).eq("status", "confirmed").gte("start_time", now).order("start_time", { ascending: true }).limit(5),
       getReviewAggregate(teacher.id),
       getTeacherTotalEarned(teacher.id),
+      getTeacherMonthlyEarnings(teacher.id),
     ]);
 
   const upcomingBookings = (bookingsResult.data ?? []).map(mapBooking);
@@ -81,12 +93,14 @@ export async function getTeacherDashboardData(profileId: string) {
     upcomingLessons: upcomingResult.count ?? 0,
     completedLessons: completedResult.count ?? 0,
     profileCompletion: teacherProfileCompletion(teacher),
+    missingFields: teacherMissingFields(teacher),
     isApproved: teacher.is_approved,
     isVerified: teacher.is_verified,
     teacherLevel: teacher.teacher_level as string,
     averageRating: reviewStats.averageRating,
     reviewCount: reviewStats.totalCount,
     totalEarned,
+    monthlyEarnings,
     upcomingBookings,
   };
 }

@@ -1,4 +1,7 @@
 import { requireRoleFromParams } from "@/lib/auth/session";
+import { noIndexMetadata } from "@/lib/seo/metadata";
+
+export const metadata = noIndexMetadata;
 
 export default async function TeacherLayout({
   children,

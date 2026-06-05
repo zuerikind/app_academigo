@@ -8,6 +8,39 @@ export const en: Dictionary = {
     description:
       "Find expert tutors across 22 school subjects, book lessons, and achieve your learning goals with Academigo.",
   },
+  seo: {
+    home: {
+      title: "Academigo — Online tutoring in Zurich",
+      description:
+        "Reviewed tutors across 22 school subjects. Flexible packages, online lessons or in-person in Zurich — find your tutor today.",
+    },
+    teachers: {
+      title: "Find tutors",
+      description:
+        "Browse reviewed Academigo tutors in mathematics, languages, sciences, and more.",
+    },
+    pricing: {
+      title: "Pricing & packages",
+      description:
+        "Transparent CHF pricing for tutoring — single lessons, bundles, and monthly plans. All prices in Swiss francs.",
+    },
+    subjects: {
+      title: "School subjects",
+      description:
+        "Expert tutoring across 22 school subjects — from mathematics and languages to geography. Online and in Zurich.",
+    },
+    about: {
+      title: "About Academigo",
+      description:
+        "Academigo connects Swiss students with reviewed tutors — structured, personal, and digital.",
+    },
+    teacherProfile: {
+      title: "{name} — Tutor",
+      description:
+        "{name} offers tutoring on Academigo{subjects}. View profile and book a lesson.",
+      subjectsSuffix: " in {subjects}",
+    },
+  },
   common: {
     brand: "Academigo",
     signOut: "Sign out",
@@ -430,6 +463,35 @@ export const en: Dictionary = {
       pack5: "5-lesson pack",
       pack10: "10-lesson pack",
     },
+    faq: {
+      title: "Frequently asked questions",
+      items: [
+        {
+          q: "What is a credit?",
+          a: "One credit equals one lesson (50 minutes). You book a session and the credit is deducted when the session is completed.",
+        },
+        {
+          q: "Do my credits expire?",
+          a: "Credits from lesson packs (Essentials) never expire. Credits from monthly plans (Plus & Excellence) reset each month — unused credits do not carry over.",
+        },
+        {
+          q: "Can I cancel my subscription at any time?",
+          a: "Yes. You can cancel your subscription at any time from the Packages page. After cancellation, the plan remains active until the end of the paid period.",
+        },
+        {
+          q: "What's the difference between Essentials and a monthly plan?",
+          a: "Essentials are flexible one-off packs with no commitment — ideal for occasional support. Monthly plans (Plus & Excellence) provide structured coaching with a personal learning plan and renew each month.",
+        },
+        {
+          q: "How do I book a lesson?",
+          a: "After purchasing, log in, choose a teacher, and book directly in their calendar. The teacher confirms the booking.",
+        },
+        {
+          q: "What payment methods are accepted?",
+          a: "We accept all major credit and debit cards (Visa, Mastercard, American Express) as well as TWINT — securely processed via Stripe.",
+        },
+      ],
+    },
   },
   about: {
     title: "About Academigo",
@@ -480,8 +542,8 @@ export const en: Dictionary = {
       subtitle: "Your overview — credits, sessions, and matching teachers.",
       availableCredits: "Available credits",
       buyPackages: "Buy credits",
+      plannedLessons: "Planned lessons",
       upcomingLessons: "Next lessons",
-      purchasedPackages: "Active packages",
       recommended: "Teachers",
       upcomingTitle: "Next lessons",
       noUpcoming:
@@ -539,6 +601,11 @@ export const en: Dictionary = {
       extraCredits: "Extra credits",
       creditsLabel: "Credits",
       manageSubscription: "Manage / cancel subscription",
+      planUpgraded: "Your subscription has been upgraded successfully.",
+      alreadyOnPlan: "You are already subscribed to this plan.",
+      cancelledNotice: "Your subscription will not be renewed on {date}. You can continue using it until then.",
+      reactivateSubscription: "Reactivate subscription",
+      reactivating: "Reactivating…",
     },
     settings: {
       title: "Settings",
@@ -613,6 +680,8 @@ export const en: Dictionary = {
       yourRating: "Your rating",
       noRatingYet: "—",
       reviewsCount: "{count} review(s)",
+      earningsThisMonth: "Earnings this month",
+      requestPayout: "Request payout",
       viewEarnings: "View earnings →",
       levelTitle: "Your teacher level",
       levelJunior: "Junior Teacher",
@@ -627,6 +696,16 @@ export const en: Dictionary = {
       status: "Status",
       earningsTitle: "Earnings",
       earningsNote: "View your full earnings history and request payouts.",
+      completeProfile: "Complete profile →",
+      viewProfile: "View profile →",
+      missingFieldsLabel: "Missing:",
+      profileFields: {
+        bio: "Bio",
+        education: "Education",
+        experience: "Experience",
+        teaching_style: "Teaching style",
+        payout_info_placeholder: "Payout info",
+      },
     },
     profile: {
       title: "My profile",
@@ -727,6 +806,8 @@ export const en: Dictionary = {
       bookings: "Bookings",
       promotions: "Promotions",
       payouts: "Payouts",
+      revenue: "Revenue",
+      analytics: "Teacher Analytics",
       missingLinks: "Missing Meet Links",
       sessions: "Sessions",
       settings: "Settings",
@@ -851,6 +932,12 @@ export const en: Dictionary = {
       dialogNoSessions: "No linked sessions found.",
       confirmPayout: "Confirm payout & send email",
       confirmPayoutLoading: "Processing…",
+      dialogBankDetails: "Bank details",
+      dialogPayoutName: "Account holder",
+      dialogPayoutIban: "IBAN",
+      dialogPayoutAddress: "Address",
+      dialogPayoutTwint: "TWINT",
+      dialogNoBankDetails: "No bank details on file.",
     },
     missingLinks: {
       title: "Missing Meet Links",
@@ -873,6 +960,50 @@ export const en: Dictionary = {
       noNotes: "—",
       noReview: "No review yet",
       empty: "No completed sessions yet.",
+    },
+    analytics: {
+      title: "Teacher Analytics",
+      subtitle: "Per-teacher revenue attribution and margin breakdown",
+      viewAnalytics: "Teacher analytics →",
+      periodLabel: "Period",
+      periodAll: "All time",
+      periodThisMonth: "This month",
+      periodLastMonth: "Last month",
+      periodLast30: "Last 30 days",
+      periodLast90: "Last 90 days",
+      periodYtd: "Year to date",
+      statSessions: "Sessions",
+      statRevenue: "Student revenue CHF",
+      statPayout: "Teacher payouts CHF",
+      statMargin: "Platform margin CHF",
+      wacNote: "Revenue attributed at WAC of CHF {wac}/credit (all-time avg)",
+      colName: "Teacher",
+      colLevel: "Level",
+      colSessions: "Sessions",
+      colRating: "Avg rating",
+      colReviews: "Reviews",
+      colStudentRevenue: "Student revenue",
+      colTeacherPayout: "Teacher payout",
+      colMargin: "Platform margin",
+      colMarginPct: "Margin %",
+      noRating: "—",
+      empty: "No completed sessions in this period.",
+      levelJunior: "Junior",
+      levelAcademigoTeacher: "Academigo",
+      levelVerified: "Verified",
+    },
+    revenue: {
+      title: "Platform Revenue",
+      subtitle: "Gross student payments minus teacher payouts",
+      statGross: "Gross revenue CHF",
+      statPayouts: "Teacher payouts CHF",
+      statMargin: "Platform margin CHF",
+      tableTitle: "Monthly breakdown",
+      colMonth: "Month",
+      colRevenue: "Student revenue",
+      colPayouts: "Teacher payouts",
+      colMargin: "Margin",
+      empty: "No transactions yet.",
     },
     settings: {
       title: "Platform Settings",
@@ -991,6 +1122,11 @@ export const en: Dictionary = {
     colAmount: "Amount CHF",
     payoutPending: "Payout pending",
     payoutProcessed: "Payout processed",
+    payoutHistory: "Payout history",
+    colPayoutDate: "Date",
+    colPayoutAmount: "Amount",
+    colPayoutStatus: "Status",
+    noPayouts: "No payouts yet.",
     noBankDetails: "Bank details missing",
     noBankDetailsHint: "Please add your bank details in Settings before requesting a payout.",
     goToSettings: "Go to settings",
