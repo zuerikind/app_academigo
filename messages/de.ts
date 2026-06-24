@@ -395,73 +395,51 @@ export const de = {
   pricing: {
     title: "Academigo Programme",
     subtitle:
-      "Alle Preise in CHF. Wähle flexible Einzelpakete oder monatliche Begleitung — online oder vor Ort.",
+      "Alle Preise in CHF. Einmaliger Kauf — keine Abos, keine Bindung.",
     mostPopular: "Beliebteste Wahl",
-    perMonth: "/ Monat",
     included: "Enthalten:",
-    buyButton: "Kaufen",
-    subscribeButton: "Abonnieren",
+    buyButton: "Jetzt kaufen",
+    perLesson: "pro Lektion",
     redirecting: "Weiterleitung…",
     tiers: {
-      essentials: {
+      starter: {
         kindLabel: "Flexibel",
-        name: "Academigo Essentials",
+        name: "Academigo Starter",
         tagline:
-          "Flexible Unterstützung für gezielte Fragen und kurzfristige Lernziele",
-        description:
-          "Ideal für Schülerinnen und Schüler, die punktuelle Unterstützung benötigen oder einzelne Themen gezielt vertiefen möchten.",
-        priceLabel: "Preisoptionen",
-        featuresLabel: "",
-        options: {
-          single: "Einzelstunde (50 Minuten)",
-          pack5: "5er-Paket",
-          pack10: "10er-Paket",
-        },
+          "Ideal für Schülerinnen und Schüler, die Unterstützung zu einem bestimmten Thema oder bei kurzfristiger Prüfungsvorbereitung benötigen.",
         features: [
-          "Individuelle Betreuung",
+          "1 Lektion-Credit",
+          "Zugang zur Academigo-Plattform",
           "Online oder vor Ort",
-          "Credits verfallen nie",
+          "Fortschrittsverfolgung",
         ],
       },
-      plus: {
-        kindLabel: "Monatsabo",
-        name: "Academigo Plus",
-        tagline: "Regelmässige Begleitung für nachhaltige Fortschritte",
-        description:
-          "Für Schülerinnen und Schüler, die kontinuierlich an ihren Leistungen arbeiten und Lernlücken systematisch schliessen möchten.",
+      focus: {
+        kindLabel: "Beliebteste Wahl",
+        name: "Academigo Focus",
+        tagline:
+          "Ideal für Schülerinnen und Schüler, die sich auf Prüfungen vorbereiten oder gezielt Lernlücken schliessen möchten.",
+        savings: "CHF 20 sparen",
         features: [
-          "4 Lektionen pro Monat",
-          "Persönlicher Lernplan",
-          "Zugang zur Academigo Lernplattform",
-          "Individuelle Übungen und Empfehlungen",
-          "Strukturierte Lernbegleitung",
-          "Laufende Anpassung der Lernziele",
-          "Nicht verwendete Credits verfallen am Monatsende",
+          "5 Lektion-Credits",
+          "Zugang zur Academigo-Plattform",
+          "Online oder vor Ort",
+          "Fortschrittsverfolgung",
         ],
       },
       excellence: {
-        kindLabel: "Premium",
+        kindLabel: "Bestes Preis-Leistungs-Verhältnis",
         name: "Academigo Excellence",
-        tagline: "Umfassende Förderung für ambitionierte Ziele",
-        description:
-          "Unser Premium-Programm für Schülerinnen und Schüler, die ihr volles Potenzial ausschöpfen und langfristig hervorragende Leistungen erzielen möchten.",
+        tagline:
+          "Ideal für langfristige schulische Begleitung und kontinuierliche Weiterentwicklung.",
+        savings: "CHF 100 sparen",
         features: [
-          "8 Lektionen pro Monat",
-          "Persönlicher Lernplan",
-          "Individuelle Förderung und Lernstrategie",
-          "Regelmässige Fortschrittsanalysen",
-          "Zugang zur Academigo Lernplattform",
-          "Priorisierte Terminvergabe",
-          "Individuelle Übungen und Lernmaterialien",
-          "Langfristige Zielplanung und akademische Begleitung",
-          "Nicht verwendete Credits verfallen am Monatsende",
+          "10 Lektion-Credits",
+          "Zugang zur Academigo-Plattform",
+          "Online oder vor Ort",
+          "Fortschrittsverfolgung",
         ],
       },
-    },
-    packages: {
-      single: "Einzelstunde (50 Minuten)",
-      pack5: "5er-Paket",
-      pack10: "10er-Paket",
     },
     faq: {
       title: "Häufige Fragen",
@@ -472,15 +450,7 @@ export const de = {
         },
         {
           q: "Verfallen meine Credits?",
-          a: "Credits aus Einzelpaketen (Essentials) verfallen nie. Credits aus Monatsabos (Plus & Excellence) werden jeden Monat zurückgesetzt — nicht verwendete Credits übertragen sich nicht auf den nächsten Monat.",
-        },
-        {
-          q: "Kann ich mein Abo jederzeit kündigen?",
-          a: "Ja. Du kannst dein Abo jederzeit über die Seite «Pakete» kündigen. Nach der Kündigung läuft das Abo bis zum Ende der bezahlten Periode weiter.",
-        },
-        {
-          q: "Was ist der Unterschied zwischen Essentials und einem Monatsabo?",
-          a: "Essentials sind flexible Einzelpakete ohne Laufzeit — ideal für punktuelle Unterstützung. Monatsabos (Plus & Excellence) bieten regelmässige Begleitung mit einem persönlichen Lernplan und werden monatlich erneuert.",
+          a: "Nein. Credits verfallen nie — nutze sie, wann immer es dir passt.",
         },
         {
           q: "Wie buche ich eine Lektion?",
@@ -489,6 +459,10 @@ export const de = {
         {
           q: "Welche Zahlungsmittel werden akzeptiert?",
           a: "Wir akzeptieren alle gängigen Kredit- und Debitkarten (Visa, Mastercard, American Express) sowie TWINT — sicher verarbeitet über Stripe.",
+        },
+        {
+          q: "Kann ich mehrere Pakete kaufen?",
+          a: "Ja. Deine Credits werden zusammengezählt und verfallen nie — du kannst jederzeit weitere Pakete kaufen.",
         },
       ],
     },
@@ -552,12 +526,9 @@ export const de = {
       recommendedTitle: "Lehrpersonen für dich",
       noTeachers:
         "Sobald Lehrpersonen freigegeben sind, erscheinen sie hier — gefiltert nach deinem Onboarding.",
-      activePlan: "Aktives Abo",
-      renewsOn: "Verlängert sich am {date}",
+      activePlan: "Aktives Paket",
       purchasedOn: "Gekauft am {date}",
-      viewPlan: "Abo verwalten",
-      creditHintMonthly: "monatlich",
-      creditHintExtra: "extra",
+      viewPlan: "Pakete ansehen",
     },
     teachers: {
       title: "Lehrpersonen finden",
@@ -574,7 +545,7 @@ export const de = {
         "Hier siehst du bestätigte Termine, sobald die Terminbuchung live ist.",
       emptyHint: "Bereite dich vor: Credits kaufen und eine Lehrperson auswählen.",
       findTeachers: "Lehrpersonen ansehen",
-      creditsHint: "Jede Stunde kostet 1 Credit",
+      creditsHint: "Jede Lektion (50 Min.) kostet 1 Credit",
       upcoming: "Kommend",
       pastSessions: "Vergangene Stunden",
       creditHistory: "Kredit-Verlauf",
@@ -592,21 +563,16 @@ export const de = {
       paymentCancelled: "Zahlung abgebrochen. Es wurden keine Gebühren erhoben.",
       currentPlan: "Dein Paket",
       active: "Aktiv",
-      renewsOn: "Verlängert sich am {date}",
       oneTimePurchase: "Einmalkauf",
       purchasedOn: "Gekauft am {date}",
       billingHistory: "Zahlungshistorie",
       hideBillingHistory: "Zahlungshistorie ausblenden",
       noPayments: "Noch keine Zahlungen vorhanden.",
-      subscriptionCredits: "Monatliche Credits",
-      extraCredits: "Extra-Credits",
       creditsLabel: "Credits",
-      manageSubscription: "Abo verwalten / kündigen",
-      planUpgraded: "Dein Abonnement wurde erfolgreich aktualisiert.",
-      alreadyOnPlan: "Du bist bereits auf diesem Plan eingeschrieben.",
-      cancelledNotice: "Dein Abo wird am {date} nicht verlängert. Du kannst es bis dahin weiter nutzen.",
-      reactivateSubscription: "Abo reaktivieren",
-      reactivating: "Wird reaktiviert…",
+      ledgerTitle: "Kreditverlauf",
+      ledgerEmpty: "Noch keine Kreditaktivität. Kaufe ein Paket, um zu starten.",
+      ledgerSessionWith: "Lektion mit {name}",
+      ledgerBalance: "Saldo",
     },
     settings: {
       title: "Einstellungen",

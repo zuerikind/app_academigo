@@ -7,17 +7,10 @@ import { useI18n } from "@/components/i18n/locale-provider";
 import { pricingTiers } from "@/config/pricing";
 import { cn, formatChf } from "@/lib/utils";
 
-/** Maps option IDs from config/pricing.ts to DB credit_packages slugs */
-const OPTION_TO_SLUG: Record<string, string> = {
-  single: "single",
-  pack5: "pack5",
-  pack10: "pack10",
-};
-
 /** Shared heights so tier cards align in the 3-column grid. */
 const TOP_BAR_H = "h-9";
-const HEADER_MIN_H = "lg:min-h-[12rem]";
-const PRICE_MIN_H = "lg:min-h-[10.5rem]";
+const HEADER_MIN_H = "lg:min-h-[11rem]";
+const PRICE_MIN_H = "lg:min-h-[9rem]";
 
 type BuyAction = (
   prev: { error?: string },
@@ -89,7 +82,6 @@ export function BuyPricingGrid({ action }: { action: BuyAction }) {
     <div className="grid gap-4 sm:gap-5 lg:grid-cols-3 lg:items-stretch lg:gap-5">
       {pricingTiers.map((tier) => {
         const copy = t.tiers[tier.id];
-        const isSubscription = "priceChf" in tier;
 
         return (
           <article
@@ -124,14 +116,9 @@ export function BuyPricingGrid({ action }: { action: BuyAction }) {
                 <h3 className="mt-1.5 font-display text-[18px] font-semibold leading-tight tracking-[-0.02em] text-academy-navy sm:text-[19px]">
                   {copy.name}
                 </h3>
-                <p className="mt-2 text-[13px] font-medium leading-snug text-academy-navy">
+                <p className="mt-2 text-[13px] leading-relaxed text-academy-slate">
                   {copy.tagline}
                 </p>
-                {"description" in copy && copy.description ? (
-                  <p className="mt-2 text-[13px] leading-relaxed text-academy-slate">
-                    {copy.description}
-                  </p>
-                ) : null}
               </header>
 
               <div
@@ -140,42 +127,28 @@ export function BuyPricingGrid({ action }: { action: BuyAction }) {
                   "mt-4 flex shrink-0 flex-col justify-center rounded-xl border border-academy-line/70 bg-academy-paper-soft px-3.5 py-3.5 sm:mt-5 sm:px-4 sm:py-4",
                 )}
               >
-                {tier.id === "essentials" && "options" in tier && (
-                  <ul className="divide-y divide-academy-line/60">
-                    {tier.options.map((option) => (
-                      <li
-                        key={option.id}
-                        className="flex flex-col gap-0.5 py-2.5 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
-                      >
-                        <span className="min-w-0 text-[13px] text-academy-navy">
-                          {t.tiers.essentials.options[option.id]}
-                        </span>
-                        <span className="shrink-0 font-display text-[15px] font-semibold text-academy-navy text-numeric sm:text-right">
-                          {formatChf(option.priceChf)}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
+                  <span className="font-display text-[30px] font-semibold leading-none tracking-tight text-academy-navy text-numeric sm:text-[36px]">
+                    {formatChf(tier.priceChf)}
+                  </span>
+                  <span className="text-[13px] text-academy-slate">
+                    · {tier.credits} {tier.credits === 1 ? "credit" : "credits"}
+                  </span>
+                </div>
+                {"pricePerLesson" in tier && (
+                  <p className="mt-1.5 text-[12px] text-academy-slate">
+                    {formatChf(tier.pricePerLesson)} {t.perLesson}
+                  </p>
                 )}
-
-                {isSubscription && (
-                  <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
-                    <span className="font-display text-[30px] font-semibold leading-none tracking-tight text-academy-navy text-numeric sm:text-[36px]">
-                      {formatChf(tier.priceChf)}
-                    </span>
-                    <span className="text-[13px] text-academy-slate">{t.perMonth}</span>
-                  </div>
+                {"savings" in copy && copy.savings && (
+                  <span className="mt-2 inline-flex w-fit items-center rounded-full bg-[color:var(--brand-tint)] px-2 py-0.5 text-[11px] font-semibold text-[color:var(--brand-deep)]">
+                    {copy.savings}
+                  </span>
                 )}
               </div>
 
               <div className="mt-4 flex flex-1 flex-col sm:mt-5">
-                <p
-                  className={cn(
-                    "mb-3 min-h-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-academy-slate-muted lg:min-h-[1rem]",
-                    !isSubscription && "hidden lg:invisible lg:block",
-                  )}
-                  aria-hidden={!isSubscription}
-                >
+                <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-academy-slate-muted">
                   {t.included}
                 </p>
                 <ul className="space-y-2.5 text-[13px] leading-snug text-academy-slate">
@@ -191,34 +164,18 @@ export function BuyPricingGrid({ action }: { action: BuyAction }) {
               </div>
             </div>
 
-            {/* Buy buttons per option (essentials) or single buy (subscriptions) */}
             <footer
               className={cn(
                 "mt-auto shrink-0 border-t border-academy-line/80 px-5 py-4 sm:px-6 sm:py-5 bg-white",
               )}
             >
-              {tier.id === "essentials" && "options" in tier ? (
-                <div className="flex flex-col gap-2">
-                  {tier.options.map((option) => (
-                    <BuyForm
-                      key={option.id}
-                      packageSlug={OPTION_TO_SLUG[option.id] ?? option.id}
-                      label={`${t.buyButton} — ${t.tiers.essentials.options[option.id]}`}
-                      pendingLabel={t.redirecting}
-                      highlight={false}
-                      action={action}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <BuyForm
-                  packageSlug={tier.id}
-                  label={`${t.subscribeButton} — ${formatChf((tier as { priceChf: number }).priceChf)}${t.perMonth}`}
-                  pendingLabel={t.redirecting}
-                  highlight={tier.highlight}
-                  action={action}
-                />
-              )}
+              <BuyForm
+                packageSlug={tier.id}
+                label={t.buyButton}
+                pendingLabel={t.redirecting}
+                highlight={tier.highlight}
+                action={action}
+              />
             </footer>
           </article>
         );

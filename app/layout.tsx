@@ -32,8 +32,12 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.brand}`,
   },
   icons: {
-    icon: [{ url: "/brand/logo-icon.png", type: "image/png" }],
+    icon: [
+      { url: "/brand/logo-icon.png", type: "image/png", sizes: "512x512" },
+      { url: "/brand/logo-icon.png", type: "image/png", sizes: "32x32" },
+    ],
     apple: [{ url: "/brand/logo-icon.png", type: "image/png" }],
+    shortcut: "/brand/logo-icon.png",
   },
 };
 

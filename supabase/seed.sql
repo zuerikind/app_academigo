@@ -26,9 +26,12 @@ INSERT INTO subjects (name, slug, is_active, is_coming_soon) VALUES
 ON CONFLICT (slug) DO NOTHING;
 
 INSERT INTO credit_packages (slug, name, credits, price_chf, is_active, is_subscription) VALUES
-  ('single', 'Academigo Essentials — Single', 1, 79, true, false),
-  ('pack5', 'Academigo Essentials — 5 Pack', 5, 375, true, false),
-  ('pack10', 'Academigo Essentials — 10 Pack', 10, 690, true, false),
-  ('plus', 'Academigo Plus', 4, 299, true, true),
-  ('excellence', 'Academigo Excellence', 8, 549, true, true)
-ON CONFLICT (slug) DO NOTHING;
+  ('starter',    'Academigo Starter',    1,  89,  true, false),
+  ('focus',      'Academigo Focus',      5,  425, true, false),
+  ('excellence', 'Academigo Excellence', 10, 790, true, false)
+ON CONFLICT (slug) DO UPDATE SET
+  name           = EXCLUDED.name,
+  credits        = EXCLUDED.credits,
+  price_chf      = EXCLUDED.price_chf,
+  is_active      = EXCLUDED.is_active,
+  is_subscription = EXCLUDED.is_subscription;

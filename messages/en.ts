@@ -395,73 +395,51 @@ export const en: Dictionary = {
   pricing: {
     title: "Academigo programmes",
     subtitle:
-      "All prices in CHF. Choose flexible lesson packs or monthly coaching — online or in person.",
+      "All prices in CHF. One-time purchases — no subscriptions, no commitments.",
     mostPopular: "Most popular",
-    perMonth: "/ month",
     included: "Includes:",
-    buyButton: "Buy",
-    subscribeButton: "Subscribe",
+    buyButton: "Buy now",
+    perLesson: "per lesson",
     redirecting: "Redirecting…",
     tiers: {
-      essentials: {
+      starter: {
         kindLabel: "Flexible",
-        name: "Academigo Essentials",
+        name: "Academigo Starter",
         tagline:
-          "Flexible support for targeted questions and short-term learning goals",
-        description:
-          "Ideal for students who need occasional support or want to deepen specific topics in a focused way.",
-        priceLabel: "Pricing options",
-        featuresLabel: "",
-        options: {
-          single: "Single lesson (50 minutes)",
-          pack5: "5-lesson pack",
-          pack10: "10-lesson pack",
-        },
+          "Ideal for students who need support with a specific topic or short-term exam preparation.",
         features: [
-          "Individual tutoring",
-          "Online or in person",
-          "Credits never expire",
+          "1 lesson credit",
+          "Access to the Academigo platform",
+          "Online or in-person lessons",
+          "Progress tracking",
         ],
       },
-      plus: {
-        kindLabel: "Monthly plan",
-        name: "Academigo Plus",
-        tagline: "Regular coaching for sustainable progress",
-        description:
-          "For students who work continuously on their performance and want to systematically close learning gaps.",
+      focus: {
+        kindLabel: "Most popular",
+        name: "Academigo Focus",
+        tagline:
+          "Ideal for students preparing for exams or systematically closing learning gaps.",
+        savings: "Save CHF 20",
         features: [
-          "4 lessons per month",
-          "Personal learning plan",
-          "Access to the Academigo learning platform",
-          "Individual exercises and recommendations",
-          "Structured learning support",
-          "Ongoing adjustment of learning goals",
-          "Credits reset each month — unused credits don't carry over",
+          "5 lesson credits",
+          "Access to the Academigo platform",
+          "Online or in-person lessons",
+          "Progress tracking",
         ],
       },
       excellence: {
-        kindLabel: "Premium",
+        kindLabel: "Best value",
         name: "Academigo Excellence",
-        tagline: "Comprehensive support for ambitious goals",
-        description:
-          "Our premium programme for students who want to reach their full potential and achieve outstanding results long term.",
+        tagline:
+          "Ideal for long-term academic support and continuous improvement.",
+        savings: "Save CHF 100",
         features: [
-          "8 lessons per month",
-          "Personal learning plan",
-          "Individual coaching and learning strategy",
-          "Regular progress reviews",
-          "Access to the Academigo learning platform",
-          "Priority scheduling",
-          "Individual exercises and learning materials",
-          "Long-term goal planning and academic mentoring",
-          "Credits reset each month — unused credits don't carry over",
+          "10 lesson credits",
+          "Access to the Academigo platform",
+          "Online or in-person lessons",
+          "Progress tracking",
         ],
       },
-    },
-    packages: {
-      single: "Single lesson (50 minutes)",
-      pack5: "5-lesson pack",
-      pack10: "10-lesson pack",
     },
     faq: {
       title: "Frequently asked questions",
@@ -472,15 +450,7 @@ export const en: Dictionary = {
         },
         {
           q: "Do my credits expire?",
-          a: "Credits from lesson packs (Essentials) never expire. Credits from monthly plans (Plus & Excellence) reset each month — unused credits do not carry over.",
-        },
-        {
-          q: "Can I cancel my subscription at any time?",
-          a: "Yes. You can cancel your subscription at any time from the Packages page. After cancellation, the plan remains active until the end of the paid period.",
-        },
-        {
-          q: "What's the difference between Essentials and a monthly plan?",
-          a: "Essentials are flexible one-off packs with no commitment — ideal for occasional support. Monthly plans (Plus & Excellence) provide structured coaching with a personal learning plan and renew each month.",
+          a: "No. Credits never expire — use them whenever it suits you.",
         },
         {
           q: "How do I book a lesson?",
@@ -489,6 +459,10 @@ export const en: Dictionary = {
         {
           q: "What payment methods are accepted?",
           a: "We accept all major credit and debit cards (Visa, Mastercard, American Express) as well as TWINT — securely processed via Stripe.",
+        },
+        {
+          q: "Can I buy multiple packages?",
+          a: "Yes. Your credits are pooled together and never expire, so you can buy additional packages at any time.",
         },
       ],
     },
@@ -553,11 +527,8 @@ export const en: Dictionary = {
       noTeachers:
         "Once teachers are approved, they appear here — based on your onboarding.",
       activePlan: "Active plan",
-      renewsOn: "Renews {date}",
       purchasedOn: "Purchased on {date}",
-      viewPlan: "Manage plan",
-      creditHintMonthly: "monthly",
-      creditHintExtra: "extra",
+      viewPlan: "View packages",
     },
     teachers: {
       title: "Find teachers",
@@ -573,7 +544,7 @@ export const en: Dictionary = {
         "Confirmed sessions will appear here once scheduling goes live.",
       emptyHint: "Get ready: buy credits and pick a teacher.",
       findTeachers: "View teachers",
-      creditsHint: "Each session costs 1 credit",
+      creditsHint: "Each session (50 min.) costs 1 credit",
       upcoming: "Upcoming",
       pastSessions: "Past Sessions",
       creditHistory: "Credit history",
@@ -591,21 +562,16 @@ export const en: Dictionary = {
       paymentCancelled: "Payment cancelled. No charges were made.",
       currentPlan: "Your plan",
       active: "Active",
-      renewsOn: "Renews on {date}",
       oneTimePurchase: "One-time purchase",
       purchasedOn: "Purchased on {date}",
       billingHistory: "Billing history",
       hideBillingHistory: "Hide billing history",
       noPayments: "No payment history yet.",
-      subscriptionCredits: "Monthly credits",
-      extraCredits: "Extra credits",
       creditsLabel: "Credits",
-      manageSubscription: "Manage / cancel subscription",
-      planUpgraded: "Your subscription has been upgraded successfully.",
-      alreadyOnPlan: "You are already subscribed to this plan.",
-      cancelledNotice: "Your subscription will not be renewed on {date}. You can continue using it until then.",
-      reactivateSubscription: "Reactivate subscription",
-      reactivating: "Reactivating…",
+      ledgerTitle: "Credit history",
+      ledgerEmpty: "No credit activity yet. Purchase a package to get started.",
+      ledgerSessionWith: "Session with {name}",
+      ledgerBalance: "Balance",
     },
     settings: {
       title: "Settings",

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { RefreshCw, ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { SectionHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
@@ -49,15 +49,6 @@ export default async function StudentDashboardPage({ params }: Props) {
           tone="ink"
           href={localizedPath(raw, "/student/packages")}
           hrefLabel={t.buyPackages}
-          hint={
-            dashboard.subscriptionRemaining > 0 && dashboard.extraRemaining > 0
-              ? `${dashboard.subscriptionRemaining} ${t.creditHintMonthly} · ${dashboard.extraRemaining} ${t.creditHintExtra}`
-              : dashboard.subscriptionRemaining > 0
-                ? `${dashboard.subscriptionRemaining} ${t.creditHintMonthly}`
-                : dashboard.extraRemaining > 0
-                  ? `${dashboard.extraRemaining} ${t.creditHintExtra}`
-                  : undefined
-          }
         />
         <StatCard
           label={t.plannedLessons}
@@ -75,26 +66,12 @@ export default async function StudentDashboardPage({ params }: Props) {
       {billing.activePlan && (
         <div className="mt-4 flex items-center justify-between gap-4 rounded-[14px] border border-[color:var(--brand)]/25 bg-[color:var(--brand-tint)] px-4 py-3">
           <div className="flex items-center gap-2.5">
-            {billing.activePlan.isSubscription ? (
-              <RefreshCw className="h-3.5 w-3.5 shrink-0 text-[color:var(--brand-deep)]" strokeWidth={2} />
-            ) : (
-              <ShoppingBag className="h-3.5 w-3.5 shrink-0 text-[color:var(--brand-deep)]" strokeWidth={2} />
-            )}
+            <ShoppingBag className="h-3.5 w-3.5 shrink-0 text-[color:var(--brand-deep)]" strokeWidth={2} />
             <div>
               <span className="text-[13px] font-semibold text-[color:var(--brand-deep)]">
                 {billing.activePlan.packageName}
               </span>
-              {billing.activePlan.isSubscription && billing.activePlan.nextRenewalAt ? (
-                <span className="ml-2 text-[12px] text-[color:var(--brand-deep)]/70">
-                  ·{" "}
-                  {formatMessage(t.renewsOn, {
-                    date: new Date(billing.activePlan.nextRenewalAt).toLocaleDateString(
-                      dateFmt,
-                      { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" },
-                    ),
-                  })}
-                </span>
-              ) : billing.activePlan.purchasedAt ? (
+              {billing.activePlan.purchasedAt && (
                 <span className="ml-2 text-[12px] text-[color:var(--brand-deep)]/70">
                   ·{" "}
                   {formatMessage(t.purchasedOn, {
@@ -104,14 +81,14 @@ export default async function StudentDashboardPage({ params }: Props) {
                     ),
                   })}
                 </span>
-              ) : null}
+              )}
             </div>
           </div>
           <Link
             href={localizedPath(raw, "/student/packages")}
             className="shrink-0 text-[12px] font-medium text-[color:var(--brand-deep)] hover:text-academy-navy"
           >
-            {billing.activePlan.isSubscription ? t.viewPlan : t.buyPackages} →
+            {t.viewPlan} →
           </Link>
         </div>
       )}
