@@ -41,6 +41,11 @@ export function getStudentNav(dict: Dictionary, locale: Locale): NavItem[] {
       icon: "package",
     },
     {
+      label: dict.nav.student.lessons,
+      href: localizedPath(locale, "/student/lessons"),
+      icon: "calendar",
+    },
+    {
       label: dict.nav.student.settings,
       href: localizedPath(locale, "/student/settings"),
       icon: "settings",
@@ -74,6 +79,11 @@ export function getTeacherNav(dict: Dictionary, locale: Locale): NavItem[] {
       label: dict.nav.teacher.earnings,
       href: localizedPath(locale, "/teacher/earnings"),
       icon: "coins",
+    },
+    {
+      label: dict.nav.teacher.lessons,
+      href: localizedPath(locale, "/teacher/lessons"),
+      icon: "calendar",
     },
     {
       label: dict.nav.teacher.settings,
