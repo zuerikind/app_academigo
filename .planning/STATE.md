@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-05-PLAN.md
-last_updated: "2026-06-25T10:47:27.494Z"
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-06-25T10:48:10.806Z"
 last_activity: 2026-05-29 — Plans 01-01, 01-02, 01-03 complete
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 34
-  completed_plans: 28
+  completed_plans: 30
   percent: 80
 ---
 
@@ -76,6 +76,7 @@ Progress: [████████░░] 80%
 | Phase 04-recurring-lessons P02 | 8 | 1 tasks | 5 files |
 | Phase 04-recurring-lessons P01 | 15 | 2 tasks | 2 files |
 | Phase 04-recurring-lessons P05 | 8 | 2 tasks | 2 files |
+| Phase 04-recurring-lessons P03 | 3 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -132,6 +133,8 @@ Recent decisions affecting current work:
 - [Phase 04-recurring-lessons]: student_available_credits RPCs updated to read from credit_wallets; Phase 4 04-01 migration applied with --include-all flag
 - [Phase 04-recurring-lessons]: cancelLesson uses requireProfile() (any auth role) not requireRole() — both students and teachers can cancel; direct UPDATE with zero credit change (CRED-03)
 - [Phase 04-recurring-lessons]: requestReschedule filters .in('status',['confirmed','reschedule_requested']) — Pitfall 3 guard allows student to update pending reschedule proposal
+- [Phase 04-recurring-lessons]: computeOccurrences uses UTC date methods (setUTCHours/getUTCDay) for timezone-safe weekday arithmetic
+- [Phase 04-recurring-lessons]: Window boundary: startTs > from AND startTs <= to ensures 6-week window yields exactly 6 weekday occurrences
 
 ### Pending Todos
 
@@ -145,6 +148,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-25T10:47:27.491Z
-Stopped at: Completed 04-05-PLAN.md
+Last session: 2026-06-25T10:48:10.803Z
+Stopped at: Completed 04-03-PLAN.md
 Resume file: None
