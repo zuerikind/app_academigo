@@ -5,6 +5,8 @@ import { TeacherReminderEmail } from "@/emails/teacher-reminder";
 import { TeacherBookingRequestEmail } from "@/emails/teacher-booking-request";
 import { PayoutProcessedEmail } from "@/emails/payout-processed";
 import { TeacherApprovedEmail } from "@/emails/teacher-approved";
+import { EmailConfirmationEmail } from "@/emails/email-confirmation";
+import { PasswordResetEmail } from "@/emails/password-reset";
 
 let _resend: Resend | null = null;
 function getResend(): Resend {
@@ -150,6 +152,48 @@ export async function sendTeacherBookingRequest(params: {
     }
   } catch (err) {
     console.error("[email] sendTeacherBookingRequest failed:", err);
+  }
+}
+
+export async function sendEmailConfirmation(params: {
+  to: string;
+  fullName?: string;
+  confirmationUrl: string;
+}): Promise<void> {
+  try {
+    const { error } = await getResend().emails.send({
+      from: FROM,
+      to: params.to,
+      subject: "E-Mail-Adresse bestätigen — Academigo",
+      react: EmailConfirmationEmail({
+        confirmationUrl: params.confirmationUrl,
+        fullName: params.fullName,
+      }),
+    });
+    if (error) console.error("[email] sendEmailConfirmation failed:", error);
+  } catch (err) {
+    console.error("[email] sendEmailConfirmation failed:", err);
+  }
+}
+
+export async function sendPasswordReset(params: {
+  to: string;
+  fullName?: string;
+  resetUrl: string;
+}): Promise<void> {
+  try {
+    const { error } = await getResend().emails.send({
+      from: FROM,
+      to: params.to,
+      subject: "Passwort zurücksetzen — Academigo",
+      react: PasswordResetEmail({
+        resetUrl: params.resetUrl,
+        fullName: params.fullName,
+      }),
+    });
+    if (error) console.error("[email] sendPasswordReset failed:", error);
+  } catch (err) {
+    console.error("[email] sendPasswordReset failed:", err);
   }
 }
 

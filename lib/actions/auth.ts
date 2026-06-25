@@ -5,6 +5,8 @@ import { getActionLocale } from "@/lib/actions/locale";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { localizedPath } from "@/lib/i18n/path";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
+import { sendEmailConfirmation, sendPasswordReset } from "@/lib/services/email";
 import type { UserRole } from "@/types/database";
 
 export type AuthState = { error?: string };
@@ -15,7 +17,6 @@ export async function signUp(
 ): Promise<AuthState> {
   const locale = await getActionLocale(formData);
   const dict = getDictionary(locale);
-  const supabase = await createClient();
 
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
@@ -30,21 +31,25 @@ export async function signUp(
     return { error: dict.auth.errors.invalidAccountType };
   }
 
-  const { error } = await supabase.auth.signUp({
+  const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?type=signup&next=${encodeURIComponent(
+    localizedPath(locale, role === "teacher" ? "/teacher/onboarding" : "/student/onboarding"),
+  )}`;
+
+  const admin = createServiceClient();
+  const { data, error } = await admin.auth.admin.generateLink({
+    type: "signup",
     email,
     password,
-    options: {
-      data: { role, full_name: fullName },
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?type=signup&next=${encodeURIComponent(
-        localizedPath(
-          locale,
-          role === "teacher" ? "/teacher/onboarding" : "/student/onboarding",
-        ),
-      )}`,
-    },
+    options: { data: { role, full_name: fullName }, redirectTo },
   });
 
   if (error) return { error: error.message };
+
+  await sendEmailConfirmation({
+    to: email,
+    fullName: fullName || undefined,
+    confirmationUrl: data.properties.action_link,
+  });
 
   redirect(localizedPath(locale, "/verify-email"));
 }
@@ -129,20 +134,36 @@ export async function requestPasswordReset(
   const email = String(formData.get("email") ?? "").trim();
   if (!email) return { error: dict.auth.errors.emailPasswordRequired };
 
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?type=recovery&next=${encodeURIComponent(
+  // AUTH-03 SECURITY REQUIREMENT: always return same empty response — never confirm/deny email exists
+  try {
+    const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?type=recovery&next=${encodeURIComponent(
       localizedPath(locale, "/update-password"),
-    )}`,
-  });
-
-  // AUTH-03 SECURITY REQUIREMENT: Return the SAME empty response on both success AND error.
-  // This intentionally does NOT confirm or deny whether the email address exists in the system.
-  if (error) {
-    console.error(error.message); // Log silently — never expose to user
-    return {}; // Intentional: same response as success (AUTH-03 neutral response)
+    )}`;
+    const admin = createServiceClient();
+    const { data, error } = await admin.auth.admin.generateLink({
+      type: "recovery",
+      email,
+      options: { redirectTo },
+    });
+    if (error) {
+      console.error("[auth] resetPassword generateLink failed:", error.message);
+    } else {
+      const profile = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("email", email)
+        .maybeSingle();
+      await sendPasswordReset({
+        to: email,
+        fullName: profile.data?.full_name ?? undefined,
+        resetUrl: data.properties.action_link,
+      });
+    }
+  } catch (err) {
+    console.error("[auth] resetPassword failed:", err);
   }
 
-  return {}; // Empty state = "check your email" — UI renders success message
+  return {};
 }
 
 export async function updatePassword(
