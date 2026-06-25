@@ -10,7 +10,7 @@ import {
   getSlotsByStatusForDay,
 } from "@/lib/queries/availability";
 
-export type AvailabilityActionState = { error?: string };
+export type AvailabilityActionState = { error?: string; saved?: boolean };
 
 const timePattern = /^([01]\d|2[0-3]):[0-5]\d$/;
 
@@ -111,6 +111,91 @@ export async function removeAvailabilityRange(
 
   revalidatePath("/", "layout");
   return {};
+}
+
+export async function saveWeeklySchedule(
+  _prev: AvailabilityActionState,
+  formData: FormData,
+): Promise<AvailabilityActionState> {
+  let profile: Awaited<ReturnType<typeof requireRole>>;
+  try {
+    profile = await requireRole("teacher");
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Not authenticated" };
+  }
+
+  const raw = (formData.get("schedule") as string)?.trim();
+  if (!raw) return { error: "No schedule data provided." };
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return { error: "Invalid schedule format." };
+  }
+
+  const scheduleSchema = z.array(
+    z.object({
+      day: z.number().int().min(0).max(6),
+      slots: z
+        .array(
+          z.object({
+            start: z.string().regex(timePattern, "Invalid start time"),
+            end: z.string().regex(timePattern, "Invalid end time"),
+          }),
+        )
+        .min(1),
+    }),
+  );
+
+  const result = scheduleSchema.safeParse(parsed);
+  if (!result.success) {
+    return { error: result.error.issues[0]?.message ?? "Invalid schedule." };
+  }
+
+  for (const entry of result.data) {
+    for (const slot of entry.slots) {
+      if (slot.end <= slot.start) {
+        return { error: `End time must be after start time (${slot.start} – ${slot.end}).` };
+      }
+    }
+  }
+
+  const supabase = await createClient();
+
+  const { data: teacher } = await supabase
+    .from("teachers")
+    .select("id")
+    .eq("profile_id", profile.id)
+    .maybeSingle();
+
+  if (!teacher) return { error: "Teacher record not found." };
+
+  const { error: deleteError } = await supabase
+    .from("teacher_availability_ranges")
+    .delete()
+    .eq("teacher_id", teacher.id);
+
+  if (deleteError) return { error: deleteError.message };
+
+  const rows = result.data.flatMap((entry) =>
+    entry.slots.map((slot) => ({
+      teacher_id: teacher.id,
+      day_of_week: entry.day,
+      start_time: slot.start,
+      end_time: slot.end,
+    })),
+  );
+
+  if (rows.length > 0) {
+    const { error: insertError } = await supabase
+      .from("teacher_availability_ranges")
+      .insert(rows);
+    if (insertError) return { error: insertError.message };
+  }
+
+  revalidatePath("/", "layout");
+  return { saved: true };
 }
 
 export async function setAvailabilityBlocker(

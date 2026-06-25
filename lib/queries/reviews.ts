@@ -41,15 +41,15 @@ export async function getTeacherReviews(teacherId: string): Promise<ReviewWithSt
 export async function getReviewAggregate(
   teacherId: string,
 ): Promise<{ averageRating: number; totalCount: number }> {
-  const reviews = await getTeacherReviews(teacherId);
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("reviews")
+    .select("rating")
+    .eq("teacher_id", teacherId);
 
-  if (reviews.length === 0) {
-    return { averageRating: 0, totalCount: 0 };
-  }
+  if (!data || data.length === 0) return { averageRating: 0, totalCount: 0 };
 
-  const totalCount = reviews.length;
-  const averageRating =
-    reviews.reduce((sum, r) => sum + r.rating, 0) / totalCount;
-
+  const totalCount = data.length;
+  const averageRating = data.reduce((sum, r) => sum + r.rating, 0) / totalCount;
   return { averageRating: Math.round(averageRating * 10) / 10, totalCount };
 }

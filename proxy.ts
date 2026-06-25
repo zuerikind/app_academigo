@@ -15,7 +15,8 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
     pathname.startsWith("/auth") ||
-    pathname.includes(".")
+    pathname.includes(".") ||
+    request.headers.has("next-action")
   ) {
     return NextResponse.next();
   }

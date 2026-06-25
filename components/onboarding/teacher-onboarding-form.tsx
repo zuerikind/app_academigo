@@ -7,8 +7,7 @@ import { Field, Input, Label, Textarea } from "@/components/ui/input";
 import { translateSubjectName } from "@/lib/i18n/subjects";
 import type { OnboardingState } from "@/lib/actions/onboarding";
 import type { Subject } from "@/lib/types";
-
-const FIXED_LANGUAGES = ["German", "English", "French", "Italian", "Spanish"] as const;
+import { FIXED_LANGUAGES } from "@/lib/constants/teacher";
 
 export function TeacherOnboardingForm({
   action,

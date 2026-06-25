@@ -141,6 +141,7 @@ export default async function TeacherDashboardPage({ params }: Props) {
     getTeacherDashboardData(profile.id),
     getPlatformSettings(),
   ]);
+  const pendingEvals = data.pendingEvals;
   const levelConfig = buildLevelConfig(platformSettings);
   const name = profile.full_name?.split(" ")[0] ?? "Teacher";
   const dateFmt = raw === "de" ? "de-CH" : "en-CH";
@@ -160,6 +161,20 @@ export default async function TeacherDashboardPage({ params }: Props) {
           <p className="text-[13.5px] leading-relaxed text-[color:var(--academy-warning)]">
             {t.reviewBanner}
           </p>
+        </div>
+      )}
+
+      {pendingEvals > 0 && (
+        <div className="mb-6 flex items-center justify-between gap-4 rounded-[14px] border border-red-200 bg-red-50 px-4 py-3">
+          <p className="text-[13px] text-red-800">
+            {t.pendingEvalBanner.replace("{count}", String(pendingEvals))}
+          </p>
+          <Link
+            href={localizedPath(raw, "/teacher/bookings")}
+            className="shrink-0 text-[12px] font-semibold text-red-900 hover:underline"
+          >
+            {t.pendingEvalAction}
+          </Link>
         </div>
       )}
 

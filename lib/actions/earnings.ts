@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export type EarningsActionState = { error?: string; success?: boolean };
 
@@ -60,7 +61,9 @@ export async function requestPayout(
 
   if (insertError || !insertData) return { error: insertError?.message ?? "Insert failed" };
 
-  await supabase
+  // teacher_earnings has no UPDATE RLS policy — use service role to link rows
+  const serviceClient = createServiceClient();
+  await serviceClient
     .from("teacher_earnings")
     .update({ payout_request_id: insertData.id })
     .eq("teacher_id", teacherId)

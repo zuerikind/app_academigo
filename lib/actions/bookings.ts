@@ -224,6 +224,7 @@ export async function markComplete(
 
   if (!bookingId) return { error: "Missing booking ID." };
   if (!sessionRating) return { error: "Please select a session rating." };
+  if (!teacherNotes) return { error: "Please add private notes about the session before completing." };
 
   const { error } = await supabase.rpc("complete_booking", {
     p_booking_id: bookingId,
@@ -284,6 +285,39 @@ export async function cancelBookingAsTeacher(
 
   revalidatePath("/", "layout");
   return {};
+}
+
+export async function updateBookingNotes(
+  _prev: BookingActionState,
+  formData: FormData,
+): Promise<BookingActionState> {
+  const profile = await requireRole("teacher");
+  const supabase = await createClient();
+
+  const bookingId = String(formData.get("bookingId") ?? "").trim();
+  const notes = (formData.get("teacherNotes") as string)?.trim() || null;
+
+  if (!bookingId) return { error: "Missing booking ID." };
+
+  const { data: teacher } = await supabase
+    .from("teachers")
+    .select("id")
+    .eq("profile_id", profile.id)
+    .maybeSingle();
+
+  if (!teacher) return { error: "Teacher record not found." };
+
+  const { error } = await supabase
+    .from("bookings")
+    .update({ teacher_private_notes: notes })
+    .eq("id", bookingId)
+    .eq("teacher_id", (teacher as any).id)
+    .eq("status", "completed");
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/", "layout");
+  return { success: true };
 }
 
 export async function updateBookingMeetLink(

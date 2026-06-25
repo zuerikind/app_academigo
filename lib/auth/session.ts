@@ -70,16 +70,6 @@ export async function requireRoleFromParams(
   return requireRole(role, rawLocale);
 }
 
-export async function getStudentRecord(profileId: string) {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("students")
-    .select("*")
-    .eq("profile_id", profileId)
-    .maybeSingle();
-  return data;
-}
-
 export async function getTeacherRecord(profileId: string) {
   const supabase = await createClient();
   const { data } = await supabase

@@ -15,6 +15,7 @@ import {
   markComplete,
   cancelBookingAsTeacher,
   updateBookingMeetLink,
+  updateBookingNotes,
 } from "@/lib/actions/bookings";
 import type { BookingWithRelations } from "@/lib/queries/bookings";
 
@@ -177,12 +178,13 @@ function CompleteSessionForm({ booking }: { booking: BookingWithRelations }) {
 
       <div>
         <label className="mb-1.5 block text-[12px] font-medium text-academy-navy">
-          {tb.teacherNotesLabel}{" "}
-          <span className="font-normal text-academy-slate-muted">(optional)</span>
+          {tb.sessionNotesForStudent}
+          <span className="ml-1 text-[color:var(--academy-danger)]">*</span>
         </label>
         <textarea
           name="teacherNotes"
-          rows={2}
+          rows={3}
+          required
           placeholder={tb.teacherNotesPlaceholder}
           className="w-full rounded-[8px] border border-academy-line bg-white px-3 py-2 text-[13px] text-academy-navy placeholder:text-academy-slate-muted focus:border-[color:var(--brand)]/60 focus:outline-none focus:ring-2 focus:ring-[color:var(--brand)]/15"
         />
@@ -327,15 +329,56 @@ function ConfirmedCard({ booking }: { booking: BookingWithRelations }) {
   );
 }
 
+function EditNotesForm({ booking, onCancel }: { booking: BookingWithRelations; onCancel: () => void }) {
+  const { dict } = useI18n();
+  const tb = dict.bookings;
+  const [state, action] = useActionState(updateBookingNotes, {});
+
+  return (
+    <form action={action} className="space-y-3">
+      <input type="hidden" name="bookingId" value={booking.id} />
+      <div>
+        <label className="mb-1.5 block text-[12px] font-medium text-academy-navy">
+          {tb.sessionNotesForStudent}
+        </label>
+        <textarea
+          name="teacherNotes"
+          rows={3}
+          defaultValue={booking.teacher_private_notes ?? ""}
+          placeholder={tb.teacherNotesPlaceholder}
+          className="w-full rounded-[8px] border border-academy-line bg-white px-3 py-2 text-[13px] text-academy-navy placeholder:text-academy-slate-muted focus:border-[color:var(--brand)]/60 focus:outline-none focus:ring-2 focus:ring-[color:var(--brand)]/15"
+        />
+      </div>
+      {state.error && (
+        <p className="text-[12px] text-[color:var(--academy-danger)]">{state.error}</p>
+      )}
+      {state.success && (
+        <p className="text-[12px] text-[color:var(--academy-success)]">{tb.notesSaved}</p>
+      )}
+      <div className="flex gap-2">
+        <SubmitButton label={tb.saveNotes} pendingLabel={tb.saving} variant="primary" />
+        <button
+          type="button"
+          onClick={onCancel}
+          className="text-[12px] text-academy-slate-muted hover:text-academy-navy"
+        >
+          {tb.backToActions}
+        </button>
+      </div>
+    </form>
+  );
+}
+
 function CompletedCard({ booking }: { booking: BookingWithRelations }) {
   const { dict, locale } = useI18n();
   const tb = dict.bookings;
+  const [editingNotes, setEditingNotes] = useState(false);
   const studentName = booking.student?.profiles.full_name ?? "Student";
   const start = formatDate(booking.start_time, locale);
   const end = formatDate(booking.end_time, locale);
 
   return (
-    <Card padding="compact" tone="muted" className="space-y-1">
+    <Card padding="compact" tone="muted" className="space-y-2">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-[13px] font-medium text-academy-navy">{studentName}</p>
@@ -365,6 +408,36 @@ function CompletedCard({ booking }: { booking: BookingWithRelations }) {
         </div>
         <Badge variant="verified">{tb.statusCompleted}</Badge>
       </div>
+
+      {editingNotes ? (
+        <div className="rounded-[10px] border border-academy-line bg-white p-4">
+          <EditNotesForm booking={booking} onCancel={() => setEditingNotes(false)} />
+        </div>
+      ) : (
+        <div className="rounded-[10px] border border-academy-line bg-white p-3">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-academy-slate-muted">
+                {tb.sessionNotesForStudent}
+              </p>
+              {booking.teacher_private_notes ? (
+                <p className="mt-1 text-[13px] text-academy-navy whitespace-pre-wrap">
+                  {booking.teacher_private_notes}
+                </p>
+              ) : (
+                <p className="mt-1 text-[12px] italic text-academy-slate-muted">—</p>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => setEditingNotes(true)}
+              className="shrink-0 text-[12px] font-medium text-[color:var(--brand-deep)] hover:underline"
+            >
+              {booking.teacher_private_notes ? tb.editNotes : tb.addNotes}
+            </button>
+          </div>
+        </div>
+      )}
     </Card>
   );
 }

@@ -1,10 +1,9 @@
 import { notFound } from "next/navigation";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
-import { AddAvailabilityRangeForm, AddBlockerForm } from "@/components/teacher/availability-form";
+import { AddBlockerForm } from "@/components/teacher/availability-form";
+import { WeeklyScheduleEditor } from "@/components/teacher/weekly-schedule-editor";
 import { getTeacherNav } from "@/config/navigation";
 import {
-  setAvailabilityRange,
-  removeAvailabilityRange,
   setAvailabilityBlocker,
   removeAvailabilityBlocker,
 } from "@/lib/actions/availability";
@@ -34,12 +33,6 @@ export default async function TeacherAvailabilityPage({ params }: Props) {
     getTeacherAvailabilityBlockers(teacher.id),
   ]);
 
-  // Plain (1-arg) wrappers for form action attribute (no useActionState needed for remove)
-  const removeRangeAction = async (formData: FormData) => {
-    "use server";
-    await removeAvailabilityRange({}, formData);
-  };
-
   const removeBlockerAction = async (formData: FormData) => {
     "use server";
     await removeAvailabilityBlocker({}, formData);
@@ -55,49 +48,13 @@ export default async function TeacherAvailabilityPage({ params }: Props) {
       subtitle={t.subtitle}
     >
       <div className="max-w-2xl space-y-8">
-        {/* Add availability range */}
+        {/* Weekly schedule editor */}
         <section className="rounded-lg border border-academy-line bg-white p-6">
           <h2 className="mb-1 text-[15px] font-semibold text-academy-navy">
-            {t.addTitle}
-          </h2>
-          <p className="mb-5 text-[13px] text-academy-slate">{t.addDesc}</p>
-          <AddAvailabilityRangeForm action={setAvailabilityRange} />
-        </section>
-
-        {/* Current availability */}
-        <section className="rounded-lg border border-academy-line bg-white p-6">
-          <h2 className="mb-4 text-[15px] font-semibold text-academy-navy">
             {t.currentTitle}
           </h2>
-          {ranges.length === 0 ? (
-            <p className="text-[13px] text-academy-slate">{t.noRanges}</p>
-          ) : (
-            <ul className="space-y-2">
-              {ranges.map((range) => (
-                <li
-                  key={range.id}
-                  className="flex items-center justify-between rounded-md border border-academy-line px-4 py-2.5"
-                >
-                  <span className="text-[13.5px] text-academy-navy">
-                    <span className="font-medium">
-                      {t.dayLabels[range.day_of_week]}
-                    </span>
-                    <span className="mx-2 text-academy-slate">·</span>
-                    {range.start_time} – {range.end_time}
-                  </span>
-                  <form action={removeRangeAction}>
-                    <input type="hidden" name="rangeId" value={range.id} />
-                    <button
-                      type="submit"
-                      className="text-[12.5px] text-[color:var(--academy-danger)] hover:underline"
-                    >
-                      {t.remove}
-                    </button>
-                  </form>
-                </li>
-              ))}
-            </ul>
-          )}
+          <p className="mb-6 text-[13px] text-academy-slate">{t.addDesc}</p>
+          <WeeklyScheduleEditor initialRanges={ranges} />
         </section>
 
         {/* Blocked dates */}

@@ -36,7 +36,7 @@ export function PayoutProcessedEmail({ teacherName, amountChf }: PayoutProcessed
           </Text>
           <Text>
             Bei Fragen stehen wir dir jederzeit unter{" "}
-            <a href="mailto:support@academigo.xyz">support@academigo.xyz</a> zur Verfügung.
+            <a href="mailto:omid@academigo.xyz">omid@academigo.xyz</a> zur Verfügung.
           </Text>
           <Hr />
           <Text style={{ fontSize: "12px", color: "#666" }}>

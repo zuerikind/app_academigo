@@ -12,6 +12,8 @@ export type BookingWithRelations = {
   credits_reserved: number;
   reminder_24h_sent_at: string | null;
   reminder_1h_sent_at: string | null;
+  teacher_private_notes: string | null;
+  session_rating: string | null;
   teacher?: { id: string; profiles: { full_name: string; avatar_url: string | null } };
   student?: { id: string; profiles: { full_name: string; avatar_url: string | null } };
   review?: { id: string; rating: number; comment: string | null } | null;
@@ -26,6 +28,7 @@ export async function getStudentBookings(studentId: string): Promise<BookingWith
     .select(`
       id, status, start_time, end_time, meeting_link, topic_note,
       credits_reserved, reminder_24h_sent_at, reminder_1h_sent_at,
+      teacher_private_notes,
       teachers ( id, profiles ( full_name, avatar_url ) ),
       reviews ( id, rating, comment ),
       booking_subjects ( subjects ( id, name, slug ) )
@@ -45,6 +48,8 @@ export async function getStudentBookings(studentId: string): Promise<BookingWith
     credits_reserved: b.credits_reserved,
     reminder_24h_sent_at: b.reminder_24h_sent_at,
     reminder_1h_sent_at: b.reminder_1h_sent_at,
+    teacher_private_notes: b.teacher_private_notes ?? null,
+    session_rating: null,
     teacher: b.teachers
       ? {
           id: b.teachers.id,
@@ -77,6 +82,7 @@ export async function getTeacherBookings(teacherId: string): Promise<BookingWith
     .select(`
       id, status, start_time, end_time, meeting_link, topic_note,
       credits_reserved, reminder_24h_sent_at, reminder_1h_sent_at,
+      teacher_private_notes, session_rating,
       students ( id, profiles ( full_name, avatar_url ) ),
       booking_subjects ( subjects ( id, name, slug ) )
     `)
@@ -95,6 +101,8 @@ export async function getTeacherBookings(teacherId: string): Promise<BookingWith
     credits_reserved: b.credits_reserved,
     reminder_24h_sent_at: b.reminder_24h_sent_at,
     reminder_1h_sent_at: b.reminder_1h_sent_at,
+    teacher_private_notes: b.teacher_private_notes ?? null,
+    session_rating: b.session_rating ?? null,
     student: b.students
       ? {
           id: b.students.id,
@@ -122,6 +130,7 @@ export async function getBookingById(bookingId: string): Promise<BookingWithRela
     .select(`
       id, status, start_time, end_time, meeting_link, topic_note,
       credits_reserved, reminder_24h_sent_at, reminder_1h_sent_at,
+      teacher_private_notes, session_rating,
       teachers ( id, profiles ( full_name, avatar_url ) ),
       students ( id, profiles ( full_name, avatar_url ) ),
       reviews ( id, rating, comment ),
@@ -143,6 +152,8 @@ export async function getBookingById(bookingId: string): Promise<BookingWithRela
     credits_reserved: b.credits_reserved,
     reminder_24h_sent_at: b.reminder_24h_sent_at,
     reminder_1h_sent_at: b.reminder_1h_sent_at,
+    teacher_private_notes: b.teacher_private_notes ?? null,
+    session_rating: b.session_rating ?? null,
     teacher: b.teachers
       ? {
           id: b.teachers.id,

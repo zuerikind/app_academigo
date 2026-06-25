@@ -137,17 +137,29 @@ export function StudentBookingCard({ booking }: StudentBookingCardProps) {
         )}
 
         {booking.status === "completed" && (
-          <div className="mt-2 rounded-[12px] border border-academy-line bg-academy-mist p-4">
-            <p className="mb-0.5 text-[13px] font-semibold text-academy-navy">
-              {dict.reviews.feedbackTitle}
-            </p>
-            <p className="mb-3 text-[12px] text-academy-slate-muted">
-              {dict.reviews.feedbackSubtitle}
-            </p>
-            <ReviewForm
-              bookingId={booking.id}
-              hasReview={booking.review !== null && booking.review !== undefined}
-            />
+          <div className="w-full space-y-3">
+            {booking.teacher_private_notes && (
+              <div className="rounded-[12px] border border-[color:var(--brand)]/20 bg-[color:var(--brand)]/5 p-4">
+                <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[color:var(--brand-deep)]/70">
+                  {tb.notesFromTeacher}
+                </p>
+                <p className="text-[13px] text-academy-navy whitespace-pre-wrap">
+                  {booking.teacher_private_notes}
+                </p>
+              </div>
+            )}
+            <div className="rounded-[12px] border border-academy-line bg-academy-mist p-4">
+              <p className="mb-0.5 text-[13px] font-semibold text-academy-navy">
+                {dict.reviews.feedbackTitle}
+              </p>
+              <p className="mb-3 text-[12px] text-academy-slate-muted">
+                {dict.reviews.feedbackSubtitle}
+              </p>
+              <ReviewForm
+                bookingId={booking.id}
+                hasReview={booking.review !== null && booking.review !== undefined}
+              />
+            </div>
           </div>
         )}
 

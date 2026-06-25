@@ -298,13 +298,12 @@ export async function getMissingMeetLinks() {
 export async function getTeacherPerformance(from?: string, to?: string) {
   const supabase = await createClient();
 
-  // Query 1: completed bookings in period, with earnings, teacher info, and reviews
   let bookingsQuery = supabase
     .from("bookings")
     .select(`
       id,
       start_time,
-      credits_reserved,
+      student_revenue_chf,
       teacher_id,
       teachers (
         id,
@@ -320,30 +319,8 @@ export async function getTeacherPerformance(from?: string, to?: string) {
   if (from) bookingsQuery = bookingsQuery.gte("start_time", from);
   if (to) bookingsQuery = bookingsQuery.lte("start_time", to);
 
-  // Query 2: all-time payments with package credits to compute WAC
-  // WAC (weighted average credit value) is intentionally global — a student
-  // may buy credits in month A and consume them in month B.
-  const paymentsQuery = supabase
-    .from("payments")
-    .select("amount, credit_packages ( credits )")
-    .in("status", ["completed", "pending"]);
+  const { data: bookings } = await bookingsQuery;
 
-  const [{ data: bookings }, { data: payments }] = await Promise.all([
-    bookingsQuery,
-    paymentsQuery,
-  ]);
-
-  // Compute WAC: total CHF paid / total credits issued
-  let totalPaid = 0;
-  let totalCreditsIssued = 0;
-  for (const p of payments ?? []) {
-    totalPaid += Number(p.amount);
-    const pkg = Array.isArray(p.credit_packages) ? p.credit_packages[0] : p.credit_packages;
-    totalCreditsIssued += (pkg as { credits: number } | null)?.credits ?? 0;
-  }
-  const avgCreditValue = totalCreditsIssued > 0 ? totalPaid / totalCreditsIssued : 0;
-
-  // Aggregate per teacher
   type TeacherAcc = {
     id: string;
     name: string;
@@ -377,7 +354,6 @@ export async function getTeacherPerformance(from?: string, to?: string) {
     const acc = teacherMap[b.teacher_id]!;
     acc.sessions += 1;
 
-    // Teacher payout: sum of teacher_earnings for this booking
     const earningsArr = Array.isArray(b.teacher_earnings)
       ? b.teacher_earnings
       : b.teacher_earnings
@@ -388,10 +364,8 @@ export async function getTeacherPerformance(from?: string, to?: string) {
       0,
     );
 
-    // Revenue: credits consumed × WAC
-    acc.studentRevenue += b.credits_reserved * avgCreditValue;
+    acc.studentRevenue += Number(b.student_revenue_chf ?? 0);
 
-    // Ratings
     const reviewsArr = Array.isArray(b.reviews)
       ? b.reviews
       : b.reviews
@@ -428,7 +402,7 @@ export async function getTeacherPerformance(from?: string, to?: string) {
     platformMargin: teacherRows.reduce((s, t) => s + t.platformMargin, 0),
   };
 
-  return { teacherRows, summary, avgCreditValue };
+  return { teacherRows, summary };
 }
 
 export async function getPlatformRevenue() {

@@ -174,6 +174,18 @@ export type UpcomingStudentBooking = {
   subjects: { id: string; name: string; slug: string }[];
 };
 
+export async function getStudentPendingReviewCount(studentId: string): Promise<number> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("bookings")
+    .select("id, reviews(id)")
+    .eq("student_id", studentId)
+    .eq("status", "completed");
+
+  if (!data) return 0;
+  return data.filter((b: any) => !b.reviews || b.reviews.length === 0).length;
+}
+
 export async function getStudentDashboardData(profileId: string) {
   const supabase = await createClient();
 

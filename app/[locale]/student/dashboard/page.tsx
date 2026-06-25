@@ -12,7 +12,7 @@ import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { formatMessage } from "@/lib/i18n/format";
 import { localizedPath } from "@/lib/i18n/path";
 import { translateSubjectName } from "@/lib/i18n/subjects";
-import { getStudentDashboardData, getStudentBillingInfo } from "@/lib/queries/student";
+import { getStudentDashboardData, getStudentBillingInfo, getStudentPendingReviewCount } from "@/lib/queries/student";
 import { getApprovedTeachers } from "@/lib/queries/teachers";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -29,6 +29,7 @@ export default async function StudentDashboardPage({ params }: Props) {
     getStudentBillingInfo(profile.id),
     getApprovedTeachers().then((t) => t.slice(0, 3)),
   ]);
+  const pendingReviews = dashboard.studentId ? await getStudentPendingReviewCount(dashboard.studentId) : 0;
   const name = profile.full_name?.split(" ")[0] ?? "Student";
   const dateFmt = raw === "de" ? "de-CH" : "en-CH";
 
@@ -41,7 +42,21 @@ export default async function StudentDashboardPage({ params }: Props) {
       title={formatMessage(t.greeting, { name })}
       subtitle={t.subtitle}
     >
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      {pendingReviews > 0 && (
+        <div className="mb-4 flex items-center justify-between gap-4 rounded-[14px] border border-amber-200 bg-amber-50 px-4 py-3">
+          <p className="text-[13px] text-amber-800">
+            {t.pendingReviewBanner.replace("{count}", String(pendingReviews))}
+          </p>
+          <Link
+            href={localizedPath(raw, "/student/bookings")}
+            className="shrink-0 text-[12px] font-semibold text-amber-900 hover:underline"
+          >
+            {t.pendingReviewAction}
+          </Link>
+        </div>
+      )}
+
+      <div className="grid gap-3 sm:grid-cols-2">
         <StatCard
           label={t.availableCredits}
           value={dashboard.availableCredits}
@@ -54,12 +69,6 @@ export default async function StudentDashboardPage({ params }: Props) {
           label={t.plannedLessons}
           value={dashboard.upcomingBookings.length}
           icon="calendar"
-        />
-        <StatCard
-          label={t.recommended}
-          value={teachers.length}
-          icon="users"
-          tone="brand"
         />
       </div>
 

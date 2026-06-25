@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { sendPayoutProcessed } from "@/lib/services/email";
+import { defaultPayoutRates } from "@/config/earnings";
 
 export type AdminActionState = { error?: string; success?: boolean };
 
@@ -57,6 +58,25 @@ export async function approvePromotion(
   const note = String(formData.get("note") ?? "").trim() || null;
 
   const supabase = await createClient();
+
+  const { data: request, error: fetchError } = await supabase
+    .from("level_promotion_requests")
+    .select("teacher_id, requested_level")
+    .eq("id", requestId)
+    .single();
+
+  if (fetchError || !request) return { error: fetchError?.message ?? "Request not found" };
+
+  const newLevel = request.requested_level as keyof typeof defaultPayoutRates;
+  const newRate = defaultPayoutRates[newLevel];
+
+  const { error: teacherError } = await supabase
+    .from("teachers")
+    .update({ teacher_level: newLevel, payout_rate: newRate })
+    .eq("id", request.teacher_id);
+
+  if (teacherError) return { error: teacherError.message };
+
   const { error } = await supabase
     .from("level_promotion_requests")
     .update({ status: "approved", note })

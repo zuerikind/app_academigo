@@ -1,6 +1,17 @@
 export const LESSON_DURATION_MINUTES = 50;
 export const SLOT_INCREMENT_MINUTES = 15;
 
+function timeToMinutes(time: string): number {
+  const [h, m] = time.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function minutesToTime(minutes: number): string {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
 /**
  * Returns all candidate slots from ranges, each tagged as blocked or not.
  * Blocked = overlaps with a booking, a time-ranged blocker, or a whole-day blocker.
@@ -19,17 +30,6 @@ export function generateAllSlots({
   durationMinutes?: number;
 }): { time: string; blocked: boolean }[] {
   if (ranges.length === 0) return [];
-
-  const timeToMinutes = (time: string): number => {
-    const [h, m] = time.split(":").map(Number);
-    return h * 60 + m;
-  };
-
-  const minutesToTime = (minutes: number): string => {
-    const h = Math.floor(minutes / 60);
-    const m = minutes % 60;
-    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
-  };
 
   const dateBlockers = blockers.filter((b) => b.date === date);
   const wholeDayBlocked = dateBlockers.some((b) => b.start_time === null || b.end_time === null);
@@ -82,24 +82,9 @@ export function generateSlots({
 }): string[] {
   const dateBlockers = blockers.filter((b) => b.date === date);
 
-  // If any blocker covers the whole day (null times), return no slots
   if (dateBlockers.some((b) => b.start_time === null || b.end_time === null)) return [];
-
-  // If no ranges defined, no slots available
   if (ranges.length === 0) return [];
 
-  const timeToMinutes = (time: string): number => {
-    const [h, m] = time.split(":").map(Number);
-    return h * 60 + m;
-  };
-
-  const minutesToTime = (minutes: number): string => {
-    const h = Math.floor(minutes / 60);
-    const m = minutes % 60;
-    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
-  };
-
-  // Convert booked slots + time-ranged blockers to minutes for overlap checking
   const bookedRanges = [
     ...bookedSlots.map((s) => ({
       start: timeToMinutes(s.start),
@@ -122,16 +107,10 @@ export function generateSlots({
     let candidate = rangeStart;
     while (candidate + durationMinutes <= rangeEnd) {
       const candidateEnd = candidate + durationMinutes;
-
-      // Check if candidate overlaps with any booked slot
       const overlaps = bookedRanges.some(
         (booked) => candidate < booked.end && candidateEnd > booked.start,
       );
-
-      if (!overlaps) {
-        slots.push(minutesToTime(candidate));
-      }
-
+      if (!overlaps) slots.push(minutesToTime(candidate));
       candidate += SLOT_INCREMENT_MINUTES;
     }
   }

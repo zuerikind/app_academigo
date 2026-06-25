@@ -70,12 +70,13 @@ export async function getTeacherDashboardData(profileId: string) {
       totalEarned: 0,
       monthlyEarnings: 0,
       upcomingBookings: [] as ReturnType<typeof mapBooking>[],
+      pendingEvals: 0,
     };
   }
 
   const now = new Date().toISOString();
 
-  const [pendingResult, upcomingResult, completedResult, bookingsResult, reviewStats, totalEarned, monthlyEarnings] =
+  const [pendingResult, upcomingResult, completedResult, bookingsResult, reviewStats, totalEarned, monthlyEarnings, pendingEvalResult] =
     await Promise.all([
       supabase.from("bookings").select("*", { count: "exact", head: true }).eq("teacher_id", teacher.id).eq("status", "pending"),
       supabase.from("bookings").select("*", { count: "exact", head: true }).eq("teacher_id", teacher.id).eq("status", "confirmed").gte("start_time", now),
@@ -84,6 +85,7 @@ export async function getTeacherDashboardData(profileId: string) {
       getReviewAggregate(teacher.id),
       getTeacherTotalEarned(teacher.id),
       getTeacherMonthlyEarnings(teacher.id),
+      supabase.from("bookings").select("*", { count: "exact", head: true }).eq("teacher_id", teacher.id).eq("status", "completed").is("teacher_private_notes", null),
     ]);
 
   const upcomingBookings = (bookingsResult.data ?? []).map(mapBooking);
@@ -102,5 +104,6 @@ export async function getTeacherDashboardData(profileId: string) {
     totalEarned,
     monthlyEarnings,
     upcomingBookings,
+    pendingEvals: pendingEvalResult.count ?? 0,
   };
 }

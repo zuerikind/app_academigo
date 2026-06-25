@@ -56,7 +56,7 @@ export default async function AdminAnalyticsPage({ params, searchParams }: Props
   const dict = getDictionary(raw);
   const t = dict.admin.analytics;
 
-  const { teacherRows, summary, avgCreditValue } = await getTeacherPerformance(from, to);
+  const { teacherRows, summary } = await getTeacherPerformance(from, to);
 
   const basePath = localizedPath(raw, "/admin/analytics");
 
@@ -105,13 +105,6 @@ export default async function AdminAnalyticsPage({ params, searchParams }: Props
         <StatCard label={t.statPayout} value={`CHF ${summary.teacherPayout.toFixed(2)}`} icon="coins" tone="default" />
         <StatCard label={t.statMargin} value={`CHF ${summary.platformMargin.toFixed(2)}`} icon="trendingUp" tone="default" />
       </div>
-
-      {/* WAC methodology note */}
-      {avgCreditValue > 0 && (
-        <p className="text-[12px] text-academy-slate">
-          {t.wacNote.replace("{wac}", avgCreditValue.toFixed(2))}
-        </p>
-      )}
 
       {/* Per-teacher breakdown */}
       <Card>
