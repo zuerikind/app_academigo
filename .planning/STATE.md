@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-04-PLAN.md
-last_updated: "2026-06-25T10:48:26.157Z"
+stopped_at: Completed 04-06-PLAN.md
+last_updated: "2026-06-25T10:51:51.744Z"
 last_activity: 2026-05-29 — Plans 01-01, 01-02, 01-03 complete
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 34
-  completed_plans: 30
+  completed_plans: 31
   percent: 80
 ---
 
@@ -78,6 +78,7 @@ Progress: [████████░░] 80%
 | Phase 04-recurring-lessons P05 | 8 | 2 tasks | 2 files |
 | Phase 04-recurring-lessons P03 | 3 | 2 tasks | 3 files |
 | Phase 04-recurring-lessons P04 | 3 | 2 tasks | 2 files |
+| Phase 04-recurring-lessons P06 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -138,6 +139,8 @@ Recent decisions affecting current work:
 - [Phase 04-recurring-lessons]: Window boundary: startTs > from AND startTs <= to ensures 6-week window yields exactly 6 weekday occurrences
 - [Phase 04-recurring-lessons]: createSchedule inserts with status=pending per CONTEXT.md teacher-approval flow
 - [Phase 04-recurring-lessons]: updateScheduleStatus uses requireRole('student') since test mock only stubs requireRole; RLS enforces real participant access
+- [Phase 04-recurring-lessons]: generate-lessons cron uses createServiceClient (not createClient) — no user session in cron context, RLS blocks INSERT without service role
+- [Phase 04-recurring-lessons]: INSERT idempotency via unique partial index on (schedule_id, start_time) — conflict = silent skip, generated counter only increments on new rows
 
 ### Pending Todos
 
@@ -151,6 +154,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-25T10:48:26.154Z
-Stopped at: Completed 04-04-PLAN.md
+Last session: 2026-06-25T10:51:51.739Z
+Stopped at: Completed 04-06-PLAN.md
 Resume file: None
