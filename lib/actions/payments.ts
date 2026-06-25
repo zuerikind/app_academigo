@@ -60,12 +60,11 @@ export async function createCheckoutSession(
         package_slug: pkg.slug,
       },
     });
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    return { error: `Checkout session creation failed: ${msg}` };
+  } catch {
+    return { error: "Checkout session creation failed." };
   }
 
-  if (!session.url) return { error: `No session URL. Session ID: ${session.id}, status: ${session.status}` };
+  if (!session.url) return { error: "Checkout session creation failed." };
 
   redirect(session.url);
 }
