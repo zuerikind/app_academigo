@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-06-25T10:43:45.402Z"
+stopped_at: Completed 04-05-PLAN.md
+last_updated: "2026-06-25T10:47:27.494Z"
 last_activity: 2026-05-29 — Plans 01-01, 01-02, 01-03 complete
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 34
-  completed_plans: 27
+  completed_plans: 28
   percent: 80
 ---
 
@@ -75,6 +75,7 @@ Progress: [████████░░] 80%
 | Phase 03-core-transaction P12 | 8 | 1 tasks | 7 files |
 | Phase 04-recurring-lessons P02 | 8 | 1 tasks | 5 files |
 | Phase 04-recurring-lessons P01 | 15 | 2 tasks | 2 files |
+| Phase 04-recurring-lessons P05 | 8 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -129,6 +130,8 @@ Recent decisions affecting current work:
 - [Phase 04-recurring-lessons]: Wallet seed uses total_credits - used_credits (not subtracting reserved) per RESEARCH.md Pitfall 4
 - [Phase 04-recurring-lessons]: credit_wallets is a parallel table; student_credits and all Phase 3 RPCs remain untouched
 - [Phase 04-recurring-lessons]: student_available_credits RPCs updated to read from credit_wallets; Phase 4 04-01 migration applied with --include-all flag
+- [Phase 04-recurring-lessons]: cancelLesson uses requireProfile() (any auth role) not requireRole() — both students and teachers can cancel; direct UPDATE with zero credit change (CRED-03)
+- [Phase 04-recurring-lessons]: requestReschedule filters .in('status',['confirmed','reschedule_requested']) — Pitfall 3 guard allows student to update pending reschedule proposal
 
 ### Pending Todos
 
@@ -142,6 +145,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-25T10:43:45.399Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-06-25T10:47:27.491Z
+Stopped at: Completed 04-05-PLAN.md
 Resume file: None
