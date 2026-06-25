@@ -6,6 +6,7 @@ import {
   Text,
   Link,
   Hr,
+  Preview,
 } from "@react-email/components";
 
 interface MeetLinkAddedEmailProps {
@@ -33,6 +34,7 @@ export function MeetLinkAddedEmail({
 
   return (
     <Html lang="en">
+      <Preview>Meeting link ready for your lesson with {teacherName} on {formattedDate}</Preview>
       <Body style={{ fontFamily: "sans-serif", backgroundColor: "#f9f9f9" }}>
         <Container
           style={{

@@ -4,6 +4,7 @@ import { MeetLinkAddedEmail } from "@/emails/meet-link-added";
 import { TeacherReminderEmail } from "@/emails/teacher-reminder";
 import { TeacherBookingRequestEmail } from "@/emails/teacher-booking-request";
 import { PayoutProcessedEmail } from "@/emails/payout-processed";
+import { TeacherApprovedEmail } from "@/emails/teacher-approved";
 
 let _resend: Resend | null = null;
 function getResend(): Resend {
@@ -11,7 +12,7 @@ function getResend(): Resend {
   return _resend;
 }
 const FROM =
-  process.env.RESEND_FROM_EMAIL ?? "Academigo <noreply@academigo.xyz>";
+  process.env.RESEND_FROM_EMAIL ?? "Academigo <hello@academigo.xyz>";
 
 export async function sendBookingConfirmation(params: {
   to: string;
@@ -149,5 +150,28 @@ export async function sendTeacherBookingRequest(params: {
     }
   } catch (err) {
     console.error("[email] sendTeacherBookingRequest failed:", err);
+  }
+}
+
+export async function sendTeacherApproved(params: {
+  to: string;
+  teacherName: string;
+  dashboardUrl: string;
+}): Promise<void> {
+  try {
+    const { error } = await getResend().emails.send({
+      from: FROM,
+      to: params.to,
+      subject: "Your Academigo teacher profile is live!",
+      react: TeacherApprovedEmail({
+        teacherName: params.teacherName,
+        dashboardUrl: params.dashboardUrl,
+      }),
+    });
+    if (error) {
+      console.error("[email] sendTeacherApproved failed:", error);
+    }
+  } catch (err) {
+    console.error("[email] sendTeacherApproved failed:", err);
   }
 }

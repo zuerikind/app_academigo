@@ -6,6 +6,7 @@ import {
   Text,
   Link,
   Hr,
+  Preview,
 } from "@react-email/components";
 
 interface TeacherReminderEmailProps {
@@ -39,6 +40,7 @@ export function TeacherReminderEmail({
 
   return (
     <Html lang="en">
+      <Preview>Lesson with {studentName} on {formattedDate} — {timeLabel}</Preview>
       <Body style={{ fontFamily: "sans-serif", backgroundColor: "#f9f9f9" }}>
         <Container
           style={{

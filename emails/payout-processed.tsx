@@ -5,6 +5,7 @@ import {
   Heading,
   Text,
   Hr,
+  Preview,
 } from "@react-email/components";
 
 interface PayoutProcessedEmailProps {
@@ -15,6 +16,7 @@ interface PayoutProcessedEmailProps {
 export function PayoutProcessedEmail({ teacherName, amountChf }: PayoutProcessedEmailProps) {
   return (
     <Html lang="de">
+      <Preview>Deine Auszahlung von CHF {amountChf.toFixed(2)} ist auf dem Weg</Preview>
       <Body style={{ fontFamily: "sans-serif", backgroundColor: "#f9f9f9" }}>
         <Container
           style={{

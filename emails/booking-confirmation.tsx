@@ -6,6 +6,7 @@ import {
   Text,
   Link,
   Hr,
+  Preview,
 } from "@react-email/components";
 
 interface BookingConfirmationEmailProps {
@@ -33,6 +34,7 @@ export function BookingConfirmationEmail({
 
   return (
     <Html lang="en">
+      <Preview>Your lesson with {teacherName} on {formattedDate} is confirmed</Preview>
       <Body style={{ fontFamily: "sans-serif", backgroundColor: "#f9f9f9" }}>
         <Container
           style={{

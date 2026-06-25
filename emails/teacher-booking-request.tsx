@@ -6,6 +6,7 @@ import {
   Text,
   Link,
   Hr,
+  Preview,
 } from "@react-email/components";
 
 interface TeacherBookingRequestEmailProps {
@@ -35,6 +36,7 @@ export function TeacherBookingRequestEmail({
 
   return (
     <Html lang="en">
+      <Preview>New lesson request from {studentName} on {formattedDate}</Preview>
       <Body style={{ fontFamily: "sans-serif", backgroundColor: "#f9f9f9" }}>
         <Container
           style={{

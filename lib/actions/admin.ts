@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
-import { sendPayoutProcessed } from "@/lib/services/email";
+import { sendPayoutProcessed, sendTeacherApproved } from "@/lib/services/email";
 import { defaultPayoutRates } from "@/config/earnings";
 
 export type AdminActionState = { error?: string; success?: boolean };
@@ -23,6 +23,21 @@ export async function approveTeacher(
     .eq("id", teacherId);
 
   if (error) return { error: error.message };
+
+  const { data: teacher } = await supabase
+    .from("teachers")
+    .select("profiles(email, full_name)")
+    .eq("id", teacherId)
+    .single();
+  const profile = Array.isArray(teacher?.profiles) ? teacher.profiles[0] : teacher?.profiles;
+  if (profile?.email) {
+    await sendTeacherApproved({
+      to: profile.email,
+      teacherName: profile.full_name ?? "Teacher",
+      dashboardUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/teacher/dashboard`,
+    });
+  }
+
   revalidatePath("/[locale]/admin/teachers", "layout");
   return {};
 }
