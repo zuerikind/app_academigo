@@ -65,7 +65,7 @@ export async function createCheckoutSession(
     return { error: `Checkout session creation failed: ${msg}` };
   }
 
-  if (!session.url) return { error: "Checkout session creation failed." };
+  if (!session.url) return { error: `No session URL. Session ID: ${session.id}, status: ${session.status}` };
 
   redirect(session.url);
 }
