@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useActionState } from "react";
 import { useI18n } from "@/components/i18n/locale-provider";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Label, Select } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { localizedPath } from "@/lib/i18n/path";
 import type { AuthState } from "@/lib/actions/auth";
 
@@ -44,10 +46,9 @@ export function LoginForm({
       </Field>
       <Field>
         <Label htmlFor="password">{t.password}</Label>
-        <Input
+        <PasswordInput
           id="password"
           name="password"
-          type="password"
           required
           autoComplete="current-password"
         />
@@ -77,9 +78,23 @@ export function SignUpForm({
   const { locale, dict } = useI18n();
   const t = dict.auth;
   const [state, formAction, pending] = useActionState(action, {});
+  const [pw, setPw] = useState("");
+  const [cpw, setCpw] = useState("");
+  const [mismatch, setMismatch] = useState(false);
 
   return (
-    <form action={formAction} className="space-y-5">
+    <form
+      action={formAction}
+      className="space-y-5"
+      onSubmit={(e) => {
+        if (pw !== cpw) {
+          e.preventDefault();
+          setMismatch(true);
+        } else {
+          setMismatch(false);
+        }
+      }}
+    >
       <input type="hidden" name="locale" value={locale} />
       {state.error && <ErrorMessage>{state.error}</ErrorMessage>}
       <Field>
@@ -99,13 +114,27 @@ export function SignUpForm({
       </Field>
       <Field>
         <Label htmlFor="password">{t.password}</Label>
-        <Input
+        <PasswordInput
           id="password"
           name="password"
-          type="password"
           required
           minLength={8}
+          value={pw}
+          onChange={(e) => { setPw(e.target.value); setMismatch(false); }}
+          autoComplete="new-password"
         />
+      </Field>
+      <Field>
+        <Label htmlFor="confirmPassword">{t.confirmPassword}</Label>
+        <PasswordInput
+          id="confirmPassword"
+          required
+          minLength={8}
+          value={cpw}
+          onChange={(e) => { setCpw(e.target.value); setMismatch(false); }}
+          autoComplete="new-password"
+        />
+        {mismatch && <p className="mt-1.5 text-[12px] text-[color:var(--academy-danger)]">{t.passwordMismatch}</p>}
       </Field>
       <Button type="submit" variant="primary" fullWidth disabled={pending}>
         {pending ? t.creatingAccount : t.createAccount}

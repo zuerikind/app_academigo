@@ -141,6 +141,8 @@ export const de = {
     signingIn: "Anmeldung…",
     signIn: "Anmelden",
     creatingAccount: "Konto wird erstellt…",
+    confirmPassword: "Passwort bestätigen",
+    passwordMismatch: "Die Passwörter stimmen nicht überein.",
     noAccount: "Noch kein Konto?",
     hasAccount: "Bereits ein Konto?",
     errors: {

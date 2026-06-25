@@ -143,6 +143,8 @@ export const en: Dictionary = {
     signingIn: "Signing in…",
     signIn: "Sign in",
     creatingAccount: "Creating account…",
+    confirmPassword: "Confirm password",
+    passwordMismatch: "Passwords do not match.",
     noAccount: "Don't have an account?",
     hasAccount: "Already have an account?",
     errors: {
