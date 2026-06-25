@@ -12,7 +12,7 @@ function getResend(): Resend {
   return _resend;
 }
 const FROM =
-  process.env.RESEND_FROM_EMAIL ?? "Academigo <hello@academigo.xyz>";
+  process.env.RESEND_FROM_EMAIL ?? "Academigo <omid@academigo.xyz>";
 
 export async function sendBookingConfirmation(params: {
   to: string;
