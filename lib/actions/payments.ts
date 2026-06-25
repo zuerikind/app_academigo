@@ -42,7 +42,7 @@ export async function createCheckoutSession(
     return { error: "Student record not found." };
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "";
   const packagesUrl = `${baseUrl}${localizedPath(locale, "/student/packages")}`;
   const successUrl = `${packagesUrl}?success=true&session_id={CHECKOUT_SESSION_ID}`;
   const cancelUrl = `${packagesUrl}?cancelled=true`;
