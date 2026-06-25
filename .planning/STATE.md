@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-06-25T10:42:31.069Z"
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-06-25T10:43:45.402Z"
 last_activity: 2026-05-29 — Plans 01-01, 01-02, 01-03 complete
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 34
-  completed_plans: 26
+  completed_plans: 27
   percent: 80
 ---
 
@@ -74,6 +74,7 @@ Progress: [████████░░] 80%
 | Phase 03-core-transaction P08 | 20 | 2 tasks | 8 files |
 | Phase 03-core-transaction P12 | 8 | 1 tasks | 7 files |
 | Phase 04-recurring-lessons P02 | 8 | 1 tasks | 5 files |
+| Phase 04-recurring-lessons P01 | 15 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -125,6 +126,9 @@ Recent decisions affecting current work:
 - [Phase 03-core-transaction]: Plan 03-12: getMissingMeetLinks uses createClient consistent with other admin queries; alertTriangle added to icon registry; nav label uses dict.admin.nav.missingLinks pattern
 - [Phase 04-recurring-lessons]: Cron tests mock @/lib/supabase/service (createServiceClient) — cron uses service role to bypass RLS for lesson INSERTs
 - [Phase 04-recurring-lessons]: requestReschedule test covers re-request case (Pitfall 3) — action accepts status='reschedule_requested' as starting state
+- [Phase 04-recurring-lessons]: Wallet seed uses total_credits - used_credits (not subtracting reserved) per RESEARCH.md Pitfall 4
+- [Phase 04-recurring-lessons]: credit_wallets is a parallel table; student_credits and all Phase 3 RPCs remain untouched
+- [Phase 04-recurring-lessons]: student_available_credits RPCs updated to read from credit_wallets; Phase 4 04-01 migration applied with --include-all flag
 
 ### Pending Todos
 
@@ -138,6 +142,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-25T10:42:31.066Z
-Stopped at: Completed 04-02-PLAN.md
+Last session: 2026-06-25T10:43:45.399Z
+Stopped at: Completed 04-01-PLAN.md
 Resume file: None
