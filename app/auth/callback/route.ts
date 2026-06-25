@@ -16,8 +16,16 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const { data: sessionData, error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      const role = sessionData.user?.user_metadata?.role;
+      if (role === "teacher") {
+        await supabase.auth.signOut();
+        const teacherNext = next && next.startsWith("/") ? next : localizedPath(locale, "/teacher/onboarding");
+        return NextResponse.redirect(
+          `${origin}${localizedPath(locale, "/login")}?redirect=${encodeURIComponent(teacherNext)}`,
+        );
+      }
       const path =
         next && next.startsWith("/") ? next : localizedPath(locale, "/student/dashboard");
       return NextResponse.redirect(`${origin}${path}`);
