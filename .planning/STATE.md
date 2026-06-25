@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-03-PLAN.md
-last_updated: "2026-06-25T10:48:10.806Z"
+stopped_at: Completed 04-04-PLAN.md
+last_updated: "2026-06-25T10:48:26.157Z"
 last_activity: 2026-05-29 — Plans 01-01, 01-02, 01-03 complete
 progress:
   total_phases: 5
@@ -77,6 +77,7 @@ Progress: [████████░░] 80%
 | Phase 04-recurring-lessons P01 | 15 | 2 tasks | 2 files |
 | Phase 04-recurring-lessons P05 | 8 | 2 tasks | 2 files |
 | Phase 04-recurring-lessons P03 | 3 | 2 tasks | 3 files |
+| Phase 04-recurring-lessons P04 | 3 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -135,6 +136,8 @@ Recent decisions affecting current work:
 - [Phase 04-recurring-lessons]: requestReschedule filters .in('status',['confirmed','reschedule_requested']) — Pitfall 3 guard allows student to update pending reschedule proposal
 - [Phase 04-recurring-lessons]: computeOccurrences uses UTC date methods (setUTCHours/getUTCDay) for timezone-safe weekday arithmetic
 - [Phase 04-recurring-lessons]: Window boundary: startTs > from AND startTs <= to ensures 6-week window yields exactly 6 weekday occurrences
+- [Phase 04-recurring-lessons]: createSchedule inserts with status=pending per CONTEXT.md teacher-approval flow
+- [Phase 04-recurring-lessons]: updateScheduleStatus uses requireRole('student') since test mock only stubs requireRole; RLS enforces real participant access
 
 ### Pending Todos
 
@@ -148,6 +151,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-25T10:48:10.803Z
-Stopped at: Completed 04-03-PLAN.md
+Last session: 2026-06-25T10:48:26.154Z
+Stopped at: Completed 04-04-PLAN.md
 Resume file: None
