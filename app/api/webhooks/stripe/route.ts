@@ -23,12 +23,17 @@ export async function POST(request: Request): Promise<Response> {
     return new Response("Webhook signature verification failed", { status: 400 });
   }
 
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object as Stripe.Checkout.Session;
-    await handleCheckoutComplete(session);
-  } else if (event.type === "invoice.paid") {
-    const invoice = event.data.object as Stripe.Invoice;
-    await handleInvoicePaid(invoice);
+  try {
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as Stripe.Checkout.Session;
+      await handleCheckoutComplete(session);
+    } else if (event.type === "invoice.paid") {
+      const invoice = event.data.object as Stripe.Invoice;
+      await handleInvoicePaid(invoice);
+    }
+  } catch (err) {
+    console.error("[webhook] handler failed:", err);
+    return new Response("Internal error", { status: 500 });
   }
 
   return Response.json({ received: true }, { status: 200 });
@@ -75,10 +80,7 @@ async function handleCheckoutComplete(
     status: "completed",
   });
 
-  if (insertError) {
-    console.error("[webhook] payments insert failed:", insertError.message);
-    return;
-  }
+  if (insertError) throw new Error(`payments insert failed: ${insertError.message}`);
 
   if (stripeCustomerId) {
     await supabase
@@ -92,9 +94,7 @@ async function handleCheckoutComplete(
     p_credits: credits,
   });
 
-  if (rpcError) {
-    console.error("[webhook] grant_credits failed:", rpcError.message);
-  }
+  if (rpcError) throw new Error(`grant_credits failed: ${rpcError.message}`);
 }
 
 async function handleInvoicePaid(invoice: Stripe.Invoice): Promise<void> {
@@ -133,17 +133,12 @@ async function handleInvoicePaid(invoice: Stripe.Invoice): Promise<void> {
     status: "completed",
   });
 
-  if (insertError) {
-    console.error("[webhook] invoice payments insert failed:", insertError.message);
-    return;
-  }
+  if (insertError) throw new Error(`invoice payments insert failed: ${insertError.message}`);
 
   const { error: rpcError } = await supabase.rpc("grant_subscription_credits", {
     p_student_id: studentId,
     p_credits: credits,
   });
 
-  if (rpcError) {
-    console.error("[webhook] grant_subscription_credits failed:", rpcError.message);
-  }
+  if (rpcError) throw new Error(`grant_subscription_credits failed: ${rpcError.message}`);
 }
