@@ -77,7 +77,7 @@
 ### Credit Wallet
 
 - [x] **CRED-01**: Student's credit wallet displays current available balance
-- [ ] **CRED-02**: Every credit change (purchase, completion deduction, cancellation refund) is recorded as a transaction with amount, type, and timestamp
+- [x] **CRED-02**: Every credit change (purchase, completion deduction, cancellation refund) is recorded as a transaction with amount, type, and timestamp
 - [x] **CRED-03**: Credits are deducted only when a lesson is marked completed — not on booking
 - [x] **CRED-04**: Credits do not expire; balance carries forward indefinitely
 
@@ -91,7 +91,7 @@
 
 - [x] **LES-01**: System auto-generates confirmed lessons for active schedules covering the next 6–8 weeks ahead
 - [x] **LES-02**: Duplicate lesson generation is prevented (idempotent — re-running the generator does not create lessons for already-covered slots)
-- [ ] **LES-03**: Lessons support statuses: pending, confirmed, completed, cancelled, reschedule_requested
+- [x] **LES-03**: Lessons support statuses: pending, confirmed, completed, cancelled, reschedule_requested
 
 ### Rescheduling
 
@@ -101,17 +101,17 @@
 
 ### Teacher Lesson Dashboard
 
-- [ ] **TDASH-01**: Teacher sees a list of active students with each student's remaining credit balance
-- [ ] **TDASH-02**: Teacher sees all recurring schedules (active, paused, cancelled) and can pause/cancel them
-- [ ] **TDASH-03**: Teacher sees upcoming lessons sorted by date
-- [ ] **TDASH-04**: Teacher sees open reschedule requests and can approve or reject them
+- [x] **TDASH-01**: Teacher sees a list of active students with each student's remaining credit balance
+- [x] **TDASH-02**: Teacher sees all recurring schedules (active, paused, cancelled) and can pause/cancel them
+- [x] **TDASH-03**: Teacher sees upcoming lessons sorted by date
+- [x] **TDASH-04**: Teacher sees open reschedule requests and can approve or reject them
 
 ### Student Lesson Dashboard
 
-- [ ] **SDASH-01**: Student sees their credit wallet balance prominently
-- [ ] **SDASH-02**: Student sees full credit transaction history (purchase, deduction, refund, date, description)
+- [x] **SDASH-01**: Student sees their credit wallet balance prominently
+- [x] **SDASH-02**: Student sees full credit transaction history (purchase, deduction, refund, date, description)
 - [ ] **SDASH-03**: Student sees all active recurring schedules and can pause or cancel them
-- [ ] **SDASH-04**: Student sees upcoming lessons and can request a reschedule on any upcoming confirmed lesson
+- [x] **SDASH-04**: Student sees upcoming lessons and can request a reschedule on any upcoming confirmed lesson
 
 ## v2 Requirements
 
@@ -196,7 +196,7 @@
 | EARN-04 | Phase 3 | Complete |
 | EARN-05 | Phase 3 | Complete |
 | CRED-01 | Phase 4 | Complete |
-| CRED-02 | Phase 4 | Pending |
+| CRED-02 | Phase 4 | Complete |
 | CRED-03 | Phase 4 | Complete |
 | CRED-04 | Phase 4 | Complete |
 | SCHED-01 | Phase 4 | Complete |
@@ -204,18 +204,18 @@
 | SCHED-03 | Phase 4 | Complete |
 | LES-01 | Phase 4 | Complete |
 | LES-02 | Phase 4 | Complete |
-| LES-03 | Phase 4 | Pending |
+| LES-03 | Phase 4 | Complete |
 | RESC-01 | Phase 4 | Complete |
 | RESC-02 | Phase 4 | Complete |
 | RESC-03 | Phase 4 | Complete |
-| TDASH-01 | Phase 4 | Pending |
-| TDASH-02 | Phase 4 | Pending |
-| TDASH-03 | Phase 4 | Pending |
-| TDASH-04 | Phase 4 | Pending |
-| SDASH-01 | Phase 4 | Pending |
-| SDASH-02 | Phase 4 | Pending |
+| TDASH-01 | Phase 4 | Complete |
+| TDASH-02 | Phase 4 | Complete |
+| TDASH-03 | Phase 4 | Complete |
+| TDASH-04 | Phase 4 | Complete |
+| SDASH-01 | Phase 4 | Complete |
+| SDASH-02 | Phase 4 | Complete |
 | SDASH-03 | Phase 4 | Pending |
-| SDASH-04 | Phase 4 | Pending |
+| SDASH-04 | Phase 4 | Complete |
 | TIER-02 | Phase 5 | Pending |
 | TIER-03 | Phase 5 | Pending |
 | TIER-04 | Phase 5 | Pending |

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-06-PLAN.md
-last_updated: "2026-06-25T10:51:51.744Z"
+stopped_at: Completed 04-07-PLAN.md
+last_updated: "2026-06-25T10:55:19.505Z"
 last_activity: 2026-05-29 — Plans 01-01, 01-02, 01-03 complete
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 34
-  completed_plans: 31
+  completed_plans: 32
   percent: 80
 ---
 
@@ -79,6 +79,7 @@ Progress: [████████░░] 80%
 | Phase 04-recurring-lessons P03 | 3 | 2 tasks | 3 files |
 | Phase 04-recurring-lessons P04 | 3 | 2 tasks | 2 files |
 | Phase 04-recurring-lessons P06 | 5 | 2 tasks | 2 files |
+| Phase 04-recurring-lessons P07 | 10 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -141,6 +142,7 @@ Recent decisions affecting current work:
 - [Phase 04-recurring-lessons]: updateScheduleStatus uses requireRole('student') since test mock only stubs requireRole; RLS enforces real participant access
 - [Phase 04-recurring-lessons]: generate-lessons cron uses createServiceClient (not createClient) — no user session in cron context, RLS blocks INSERT without service role
 - [Phase 04-recurring-lessons]: INSERT idempotency via unique partial index on (schedule_id, start_time) — conflict = silent skip, generated counter only increments on new rows
+- [Phase 04-recurring-lessons]: Inline 'use server' wrappers bridge two-arg action state signature to form action type — same pattern as availability page
 
 ### Pending Todos
 
@@ -154,6 +156,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-25T10:51:51.739Z
-Stopped at: Completed 04-06-PLAN.md
+Last session: 2026-06-25T10:55:19.499Z
+Stopped at: Completed 04-07-PLAN.md
 Resume file: None
