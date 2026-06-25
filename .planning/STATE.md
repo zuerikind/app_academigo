@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-12-PLAN.md
-last_updated: "2026-06-25T09:46:43.101Z"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-06-25T10:42:31.069Z"
 last_activity: 2026-05-29 — Plans 01-01, 01-02, 01-03 complete
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 34
-  completed_plans: 25
+  completed_plans: 26
   percent: 80
 ---
 
@@ -73,6 +73,7 @@ Progress: [████████░░] 80%
 | Phase 03-core-transaction P09 | 10 | 2 tasks | 3 files |
 | Phase 03-core-transaction P08 | 20 | 2 tasks | 8 files |
 | Phase 03-core-transaction P12 | 8 | 1 tasks | 7 files |
+| Phase 04-recurring-lessons P02 | 8 | 1 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -122,6 +123,8 @@ Recent decisions affecting current work:
 - [Phase 03-core-transaction]: Plan 03-08: Teacher profile BookingSection conditional on getSessionUser() — unauthenticated visitors see sign-up CTA instead of booking calendar
 - [Phase 03-core-transaction]: Plan 03-08: avg_rating computed via JavaScript post-fetch in getApprovedTeachers (teachers.ts) — avoids Supabase aggregate SQL limitations
 - [Phase 03-core-transaction]: Plan 03-12: getMissingMeetLinks uses createClient consistent with other admin queries; alertTriangle added to icon registry; nav label uses dict.admin.nav.missingLinks pattern
+- [Phase 04-recurring-lessons]: Cron tests mock @/lib/supabase/service (createServiceClient) — cron uses service role to bypass RLS for lesson INSERTs
+- [Phase 04-recurring-lessons]: requestReschedule test covers re-request case (Pitfall 3) — action accepts status='reschedule_requested' as starting state
 
 ### Pending Todos
 
@@ -135,6 +138,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-01T14:41:13.117Z
-Stopped at: Completed 03-12-PLAN.md
+Last session: 2026-06-25T10:42:31.066Z
+Stopped at: Completed 04-02-PLAN.md
 Resume file: None

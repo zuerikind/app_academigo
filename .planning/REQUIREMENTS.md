@@ -76,28 +76,28 @@
 
 ### Credit Wallet
 
-- [ ] **CRED-01**: Student's credit wallet displays current available balance
+- [x] **CRED-01**: Student's credit wallet displays current available balance
 - [ ] **CRED-02**: Every credit change (purchase, completion deduction, cancellation refund) is recorded as a transaction with amount, type, and timestamp
-- [ ] **CRED-03**: Credits are deducted only when a lesson is marked completed — not on booking
-- [ ] **CRED-04**: Credits do not expire; balance carries forward indefinitely
+- [x] **CRED-03**: Credits are deducted only when a lesson is marked completed — not on booking
+- [x] **CRED-04**: Credits do not expire; balance carries forward indefinitely
 
 ### Recurring Schedules
 
-- [ ] **SCHED-01**: Student can create a recurring schedule with a teacher specifying weekday, start time, and end time (e.g. Monday 16:00–16:50)
-- [ ] **SCHED-02**: A schedule can be paused, resumed, or cancelled by the student or teacher
-- [ ] **SCHED-03**: Pausing a schedule immediately stops new lesson generation; resuming restarts generation from the next occurrence
+- [x] **SCHED-01**: Student can create a recurring schedule with a teacher specifying weekday, start time, and end time (e.g. Monday 16:00–16:50)
+- [x] **SCHED-02**: A schedule can be paused, resumed, or cancelled by the student or teacher
+- [x] **SCHED-03**: Pausing a schedule immediately stops new lesson generation; resuming restarts generation from the next occurrence
 
 ### Lesson Generation
 
-- [ ] **LES-01**: System auto-generates confirmed lessons for active schedules covering the next 6–8 weeks ahead
-- [ ] **LES-02**: Duplicate lesson generation is prevented (idempotent — re-running the generator does not create lessons for already-covered slots)
+- [x] **LES-01**: System auto-generates confirmed lessons for active schedules covering the next 6–8 weeks ahead
+- [x] **LES-02**: Duplicate lesson generation is prevented (idempotent — re-running the generator does not create lessons for already-covered slots)
 - [ ] **LES-03**: Lessons support statuses: pending, confirmed, completed, cancelled, reschedule_requested
 
 ### Rescheduling
 
-- [ ] **RESC-01**: Student can request a reschedule by proposing a new date/time for an upcoming lesson
-- [ ] **RESC-02**: Teacher receives the reschedule request and can approve or reject it
-- [ ] **RESC-03**: On approval: original lesson is cancelled, new lesson is confirmed, no credits are lost
+- [x] **RESC-01**: Student can request a reschedule by proposing a new date/time for an upcoming lesson
+- [x] **RESC-02**: Teacher receives the reschedule request and can approve or reject it
+- [x] **RESC-03**: On approval: original lesson is cancelled, new lesson is confirmed, no credits are lost
 
 ### Teacher Lesson Dashboard
 
@@ -195,19 +195,19 @@
 | EARN-03 | Phase 3 | Complete |
 | EARN-04 | Phase 3 | Complete |
 | EARN-05 | Phase 3 | Complete |
-| CRED-01 | Phase 4 | Pending |
+| CRED-01 | Phase 4 | Complete |
 | CRED-02 | Phase 4 | Pending |
-| CRED-03 | Phase 4 | Pending |
-| CRED-04 | Phase 4 | Pending |
-| SCHED-01 | Phase 4 | Pending |
-| SCHED-02 | Phase 4 | Pending |
-| SCHED-03 | Phase 4 | Pending |
-| LES-01 | Phase 4 | Pending |
-| LES-02 | Phase 4 | Pending |
+| CRED-03 | Phase 4 | Complete |
+| CRED-04 | Phase 4 | Complete |
+| SCHED-01 | Phase 4 | Complete |
+| SCHED-02 | Phase 4 | Complete |
+| SCHED-03 | Phase 4 | Complete |
+| LES-01 | Phase 4 | Complete |
+| LES-02 | Phase 4 | Complete |
 | LES-03 | Phase 4 | Pending |
-| RESC-01 | Phase 4 | Pending |
-| RESC-02 | Phase 4 | Pending |
-| RESC-03 | Phase 4 | Pending |
+| RESC-01 | Phase 4 | Complete |
+| RESC-02 | Phase 4 | Complete |
+| RESC-03 | Phase 4 | Complete |
 | TDASH-01 | Phase 4 | Pending |
 | TDASH-02 | Phase 4 | Pending |
 | TDASH-03 | Phase 4 | Pending |
