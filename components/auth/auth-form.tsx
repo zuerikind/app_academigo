@@ -128,6 +128,7 @@ export function SignUpForm({
         <Label htmlFor="confirmPassword">{t.confirmPassword}</Label>
         <PasswordInput
           id="confirmPassword"
+          name="confirmPassword"
           required
           minLength={8}
           value={cpw}
