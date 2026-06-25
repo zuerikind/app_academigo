@@ -97,7 +97,7 @@ export default async function TeacherFaqPage({ params }: Props) {
             <LevelRow
               level="junior"
               label={isDE ? "Junior-Lehrperson" : "Junior Teacher"}
-              rate="CHF 35–40 / h"
+              rate="CHF 30 / h"
               badge={null}
               requirements={
                 isDE

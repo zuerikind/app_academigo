@@ -6,11 +6,14 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Section } from "@/components/ui/section";
 import { TeacherCard } from "@/components/teachers/teacher-card";
 import { TeacherOpeningsSection } from "@/components/teachers/teacher-openings-section";
+import { JsonLd } from "@/components/seo/json-ld";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { localizedPath } from "@/lib/i18n/path";
 import { getApprovedTeachers } from "@/lib/queries/teachers";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { breadcrumbListJsonLd } from "@/lib/seo/schemas";
+import { absoluteUrl } from "@/lib/seo/site-url";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -36,6 +39,10 @@ export default async function TeachersPage({ params }: Props) {
 
   return (
     <PublicLayout locale={raw}>
+      <JsonLd data={breadcrumbListJsonLd([
+        { name: raw === "de" ? "Startseite" : "Home", url: absoluteUrl(localizedPath(raw, "/")) },
+        { name: dict.nav.teachers, url: absoluteUrl(localizedPath(raw, "/teachers")) },
+      ])} />
       <Section pad="tight" width="wide" className="pt-12">
         <PageHeader
           eyebrow={dict.nav.teachers}

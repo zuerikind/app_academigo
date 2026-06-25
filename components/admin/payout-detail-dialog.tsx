@@ -14,11 +14,10 @@ import {
 type EarningRow = {
   id: string;
   amount: number;
-  created_at: string;
   bookings: {
     start_time: string;
     students: { profiles: { full_name: string } | Array<{ full_name: string }> } | null;
-    subjects: { name: string } | null;
+    booking_subjects: { subjects: { name: string } | null }[] | null;
   } | null;
 };
 
@@ -227,7 +226,7 @@ export function PayoutDetailDialog({
                               {getStudentName(e)}
                             </td>
                             <td className="px-4 py-2.5 text-academy-slate">
-                              {e.bookings?.subjects?.name ?? "—"}
+                              {e.bookings?.booking_subjects?.map(bs => bs.subjects?.name).filter(Boolean).join(", ") || "—"}
                             </td>
                             <td className="px-4 py-2.5 text-right font-medium text-academy-navy">
                               CHF {Number(e.amount).toFixed(2)}

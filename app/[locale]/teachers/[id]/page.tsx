@@ -14,7 +14,7 @@ import { localizedPath } from "@/lib/i18n/path";
 import { translateSubjectName } from "@/lib/i18n/subjects";
 import { getTeacherProfileDetail } from "@/lib/queries/teachers";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { personJsonLd } from "@/lib/seo/schemas";
+import { personJsonLd, breadcrumbListJsonLd } from "@/lib/seo/schemas";
 import { absoluteUrl } from "@/lib/seo/site-url";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
@@ -94,6 +94,11 @@ export default async function PublicTeacherProfilePage({ params }: Props) {
           subjects: subjectLabels,
         })}
       />
+      <JsonLd data={breadcrumbListJsonLd([
+        { name: raw === "de" ? "Startseite" : "Home", url: absoluteUrl(localizedPath(raw, "/")) },
+        { name: raw === "de" ? "Lehrpersonen" : "Teachers", url: absoluteUrl(localizedPath(raw, "/teachers")) },
+        { name: teacher.fullName, url: profileUrl },
+      ])} />
       <Section pad="tight" width="wide" className="pt-12">
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-8">

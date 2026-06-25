@@ -155,7 +155,16 @@ export default async function TeacherDashboardPage({ params }: Props) {
       title={formatMessage(t.greeting, { name })}
       subtitle={t.subtitle}
     >
-      {!data.isApproved && (
+      {!data.isActive && (
+        <div className="mb-6 flex items-start gap-3 rounded-[10px] border border-red-200 bg-red-50 px-4 py-3.5">
+          <span className="mt-[6px] h-1.5 w-1.5 shrink-0 rounded-full bg-red-500" />
+          <p className="text-[13.5px] leading-relaxed text-red-700">
+            {t.deactivatedBanner}
+          </p>
+        </div>
+      )}
+
+      {!data.isApproved && data.isActive && (
         <div className="mb-6 flex items-start gap-3 rounded-[10px] border border-[color:var(--academy-warning)]/25 bg-[color:var(--academy-warning-soft)] px-4 py-3.5">
           <span className="mt-[6px] h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--academy-warning)]" />
           <p className="text-[13.5px] leading-relaxed text-[color:var(--academy-warning)]">
@@ -164,7 +173,7 @@ export default async function TeacherDashboardPage({ params }: Props) {
         </div>
       )}
 
-      {pendingEvals > 0 && (
+      {data.isApproved && pendingEvals > 0 && (
         <div className="mb-6 flex items-center justify-between gap-4 rounded-[14px] border border-red-200 bg-red-50 px-4 py-3">
           <p className="text-[13px] text-red-800">
             {t.pendingEvalBanner.replace("{count}", String(pendingEvals))}
@@ -178,7 +187,7 @@ export default async function TeacherDashboardPage({ params }: Props) {
         </div>
       )}
 
-      {data.profileCompletion < 100 && (
+      {data.isApproved && data.profileCompletion < 100 && (
         <Link
           href={localizedPath(raw, "/teacher/profile")}
           className="mb-6 block rounded-[14px] border border-academy-line bg-white px-5 py-5 transition-colors hover:border-[color:var(--brand)]/40"
@@ -228,6 +237,7 @@ export default async function TeacherDashboardPage({ params }: Props) {
         </Link>
       )}
 
+      {data.isApproved && <>
       <TeacherQuickStatsBar
         completedLessons={data.completedLessons}
         averageRating={data.averageRating}
@@ -364,6 +374,7 @@ export default async function TeacherDashboardPage({ params }: Props) {
           </Link>
         </div>
       </div>
+      </>}
     </DashboardLayout>
   );
 }

@@ -208,7 +208,7 @@ export async function getAdminPayoutsWithEarnings() {
           bookings (
             start_time,
             students ( profiles ( full_name ) ),
-            subjects ( name )
+            booking_subjects ( subjects ( name ) )
           )
         `,
         )

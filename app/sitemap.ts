@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { locales } from "@/lib/i18n/config";
 import { localizedPath } from "@/lib/i18n/path";
 import { getSiteUrl } from "@/lib/seo/site-url";
-import { getApprovedTeachers } from "@/lib/queries/teachers";
+import { getTeachersForSitemap } from "@/lib/queries/teachers";
 
 const STATIC_PATHS = ["/", "/teachers", "/pricing", "/subjects", "/about"] as const;
 
@@ -22,12 +22,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  const teachers = await getApprovedTeachers();
+  const teachers = await getTeachersForSitemap();
   for (const locale of locales) {
     for (const teacher of teachers) {
       entries.push({
         url: `${base}${localizedPath(locale, `/teachers/${teacher.id}`)}`,
-        lastModified: now,
+        lastModified: new Date(teacher.updated_at),
         changeFrequency: "weekly",
         priority: 0.7,
       });

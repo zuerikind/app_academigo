@@ -110,7 +110,7 @@
 
 - [x] **SDASH-01**: Student sees their credit wallet balance prominently
 - [x] **SDASH-02**: Student sees full credit transaction history (purchase, deduction, refund, date, description)
-- [ ] **SDASH-03**: Student sees all active recurring schedules and can pause or cancel them
+- [x] **SDASH-03**: Student sees all active recurring schedules and can pause or cancel them
 - [x] **SDASH-04**: Student sees upcoming lessons and can request a reschedule on any upcoming confirmed lesson
 
 ## v2 Requirements
@@ -214,7 +214,7 @@
 | TDASH-04 | Phase 4 | Complete |
 | SDASH-01 | Phase 4 | Complete |
 | SDASH-02 | Phase 4 | Complete |
-| SDASH-03 | Phase 4 | Pending |
+| SDASH-03 | Phase 4 | Complete |
 | SDASH-04 | Phase 4 | Complete |
 | TIER-02 | Phase 5 | Pending |
 | TIER-03 | Phase 5 | Pending |

@@ -125,6 +125,16 @@ export type TeacherProfileDetail = TeacherListItem & {
   languages: string[];
 };
 
+export async function getTeachersForSitemap(): Promise<{ id: string; updated_at: string }[]> {
+  const supabase = createServiceClient();
+  const { data } = await supabase
+    .from("teachers")
+    .select("id, updated_at")
+    .eq("is_approved", true)
+    .eq("is_active", true);
+  return (data ?? []) as { id: string; updated_at: string }[];
+}
+
 export async function getTeacherProfileDetail(
   teacherId: string,
 ): Promise<TeacherProfileDetail | null> {

@@ -6,11 +6,12 @@ import type { Dictionary } from "@/messages/types";
 export function organizationJsonLd(locale: Locale, dict: Dictionary) {
   return {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": "EducationalOrganization",
     name: siteConfig.brand,
     url: absoluteUrl(`/${locale}`),
     logo: absoluteUrl(siteConfig.ogImage),
     description: dict.meta.description,
+    areaServed: { "@type": "Country", name: "Switzerland" },
     address: {
       "@type": "PostalAddress",
       addressLocality: "Zürich",
@@ -22,6 +23,21 @@ export function organizationJsonLd(locale: Locale, dict: Dictionary) {
       email: siteConfig.links.email.replace("mailto:", ""),
       availableLanguage: ["German", "English"],
     },
+  };
+}
+
+export function breadcrumbListJsonLd(
+  items: readonly { name: string; url: string }[],
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: item.url,
+    })),
   };
 }
 
