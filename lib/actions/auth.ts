@@ -11,6 +11,17 @@ import type { UserRole } from "@/types/database";
 
 export type AuthState = { error?: string };
 
+function siteUrl(): string {
+  const env = process.env.NEXT_PUBLIC_SITE_URL;
+  if (env && env.startsWith("http")) return env;
+  // Vercel auto-injects these — use as fallback so links never point to localhost in prod
+  const prod = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  if (prod) return `https://${prod}`;
+  const deploy = process.env.VERCEL_URL;
+  if (deploy) return `https://${deploy}`;
+  return "http://localhost:3000";
+}
+
 export async function signUp(
   _prev: AuthState,
   formData: FormData,
@@ -31,7 +42,7 @@ export async function signUp(
     return { error: dict.auth.errors.invalidAccountType };
   }
 
-  const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?type=signup&next=${encodeURIComponent(
+  const redirectTo = `${siteUrl()}/auth/callback?type=signup&next=${encodeURIComponent(
     localizedPath(locale, role === "teacher" ? "/teacher/onboarding" : "/student/onboarding"),
   )}`;
 
@@ -136,7 +147,7 @@ export async function requestPasswordReset(
 
   // AUTH-03 SECURITY REQUIREMENT: always return same empty response — never confirm/deny email exists
   try {
-    const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?type=recovery&next=${encodeURIComponent(
+    const redirectTo = `${siteUrl()}/auth/callback?type=recovery&next=${encodeURIComponent(
       localizedPath(locale, "/update-password"),
     )}`;
     const admin = createServiceClient();
