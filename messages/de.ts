@@ -663,6 +663,8 @@ export const de = {
       levelAcademigoTeacher: "Academigo-Lehrperson",
       levelVerified: "Verifizierte Lehrperson",
       nextLevelTitle: "Weg zur nächsten Stufe",
+      completedSessions: "Abgeschlossene Lektionen",
+      averageRating: "Durchschnittsbewertung",
       nextLevelRequirements: "Schliesse {sessions} Lektionen ab und halte einen Durchschnitt von {rating}★ aufrecht, um für die nächste Stufe zu beantragen. Melde dich bei uns, wenn du bereit bist.",
       alreadyTopLevel: "Du hast die höchste Lehrpersonenstufe erreicht. Vielen Dank für dein Engagement!",
       levelRate: "CHF {rate} / Lektion",

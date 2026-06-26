@@ -662,6 +662,8 @@ export const en: Dictionary = {
       levelAcademigoTeacher: "Academigo Teacher",
       levelVerified: "Verified Teacher",
       nextLevelTitle: "Path to next level",
+      completedSessions: "Completed sessions",
+      averageRating: "Average rating",
       nextLevelRequirements: "Complete {sessions} sessions and maintain a {rating}★ average to apply for the next level. Contact us when you are ready.",
       alreadyTopLevel: "You have reached the highest teacher level. Thank you for your commitment!",
       levelRate: "CHF {rate} / class",

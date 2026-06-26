@@ -78,7 +78,7 @@ function TeacherLevelCard({
           {/* Sessions progress */}
           <div>
             <div className="mb-1 flex justify-between text-[12px] text-academy-slate">
-              <span>Completed sessions</span>
+              <span>{t.completedSessions}</span>
               <span className="font-medium text-academy-navy">
                 {Math.min(completedLessons, next.sessions)}/{next.sessions}
               </span>
@@ -94,7 +94,7 @@ function TeacherLevelCard({
           {/* Rating requirement */}
           <div>
             <div className="mb-1 flex justify-between text-[12px] text-academy-slate">
-              <span>Average rating</span>
+              <span>{t.averageRating}</span>
               <span className={`font-medium ${reviewCount > 0 && averageRating >= next.rating ? "text-[color:var(--academy-success)]" : "text-academy-navy"}`}>
                 {reviewCount > 0 ? `${averageRating} ★` : "—"} / {next.rating}★ required
               </span>
