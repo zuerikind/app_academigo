@@ -268,6 +268,52 @@ export function TeacherOnboardingForm({
         </Field>
       </div>
 
+      {/* Motivation letter */}
+      <Field>
+        <Label htmlFor="motivationLetter">
+          {locale === "de"
+            ? "Motivationsschreiben"
+            : "Motivation letter"}{" "}
+          <span className="text-[color:var(--academy-danger)]">*</span>
+        </Label>
+        <p className="mb-2 text-[13px] text-academy-slate">
+          {locale === "de"
+            ? "Warum möchtest du bei Academigo unterrichten, und was erhoffst du dir von der Zusammenarbeit mit uns? (KI-generierte Antworten werden automatisch erkannt und sofort aussortiert.)"
+            : "Why do you want to teach with Academigo, and what do you expect from working with us? (AI-generated answers are automatically detected and will not be considered.)"}
+        </p>
+        <Textarea
+          id="motivationLetter"
+          name="motivationLetter"
+          rows={6}
+          required
+          minLength={100}
+          placeholder={
+            locale === "de"
+              ? "Schreibe hier dein persönliches Motivationsschreiben…"
+              : "Write your personal motivation letter here…"
+          }
+        />
+      </Field>
+
+      {/* CV upload */}
+      <Field>
+        <Label htmlFor="cv" hint={locale === "de" ? "Optional, aber empfohlen" : "Optional, but recommended"}>
+          {locale === "de" ? "Lebenslauf (CV)" : "Curriculum Vitae (CV)"}
+        </Label>
+        <p className="mb-2 text-[13px] text-academy-slate">
+          {locale === "de"
+            ? "Lade deinen Lebenslauf hoch (PDF oder Word, max. 5 MB). Ein CV beschleunigt den Genehmigungsprozess."
+            : "Upload your CV (PDF or Word, max. 5 MB). A CV speeds up the approval process."}
+        </p>
+        <Input
+          id="cv"
+          name="cv"
+          type="file"
+          accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          className="file:mr-3 file:rounded file:border-0 file:bg-academy-mist file:px-3 file:py-1.5 file:text-[12px] file:font-medium file:text-academy-navy"
+        />
+      </Field>
+
       <div className="pt-2">
         <Button type="submit" variant="primary" fullWidth disabled={pending}>
           {pending ? t.submitting : t.submit}

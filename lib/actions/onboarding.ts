@@ -8,7 +8,7 @@ import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { localizedPath } from "@/lib/i18n/path";
 import { requireProfile } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
-import { isValidAvatarFile, uploadAvatar } from "@/lib/storage/avatars";
+import { isValidAvatarFile, uploadAvatar, isValidCvFile, uploadCv } from "@/lib/storage/avatars";
 
 export type OnboardingState = { error?: string };
 
@@ -121,6 +121,7 @@ const teacherSchema = z.object({
     .url("Meet link must be a valid HTTPS URL")
     .optional()
     .or(z.literal("")),
+  motivationLetter: z.string().min(100, "Motivation letter must be at least 100 characters"),
 });
 
 export async function completeTeacherOnboarding(
@@ -156,6 +157,7 @@ export async function completeTeacherOnboarding(
     payoutTwint: formData.get("payoutTwint") as string || undefined,
     subjectIds,
     defaultMeetLink: (formData.get("defaultMeetLink") as string) || undefined,
+    motivationLetter: formData.get("motivationLetter") as string,
   });
 
   if (!parsed.success) {
@@ -192,6 +194,17 @@ export async function completeTeacherOnboarding(
     avatarUrl = url ?? profile.avatar_url;
   }
 
+  let cvUrl: string | null = null;
+  const cvFile = formData.get("cv");
+  if (isValidCvFile(cvFile)) {
+    const { url, error: uploadError } = await uploadCv(supabase, profile.user_id, cvFile);
+    if (uploadError) {
+      console.error("teacher CV upload failed:", uploadError);
+      return { error: "CV upload failed. Please try again or skip the CV for now." };
+    }
+    cvUrl = url ?? null;
+  }
+
   const { error: nameError } = await supabase
     .from("profiles")
     .update({ full_name: data.fullName, avatar_url: avatarUrl })
@@ -219,6 +232,8 @@ export async function completeTeacherOnboarding(
     location: data.offersInPerson ? data.location ?? null : null,
     languages,
     payout_info_placeholder: payoutInfo ?? null,
+    motivation_letter: data.motivationLetter,
+    cv_url: cvUrl,
     is_approved: false,
   };
 

@@ -954,6 +954,8 @@ export type Database = {
           profile_id: string
           teacher_level: string
           teaching_style: string | null
+          motivation_letter: string | null
+          cv_url: string | null
           updated_at: string
         }
         Insert: {
@@ -975,6 +977,8 @@ export type Database = {
           profile_id: string
           teacher_level?: string
           teaching_style?: string | null
+          motivation_letter?: string | null
+          cv_url?: string | null
           updated_at?: string
         }
         Update: {
