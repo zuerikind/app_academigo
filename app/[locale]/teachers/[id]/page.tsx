@@ -127,9 +127,6 @@ export default async function PublicTeacherProfilePage({ params }: Props) {
                     <Badge variant="verified">{tc.verified}</Badge>
                   )}
                 </div>
-                <p className="mt-2 text-[13px] text-academy-slate-muted">
-                  {tc.placeholderRating}
-                </p>
                 <div className="mt-4 flex flex-wrap gap-1.5">
                   {teacher.subjects.map((s) => (
                     <Badge key={s.id} variant="outline">

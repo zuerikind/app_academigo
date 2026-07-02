@@ -80,7 +80,7 @@ export default async function StudentTeacherProfilePage({ params }: Props) {
                 )}
               </div>
               {/* REV-03: Average rating + count */}
-              {reviewAggregate.totalCount > 0 ? (
+              {reviewAggregate.totalCount > 0 && (
                 <p className="mt-1 text-[13px] text-academy-slate">
                   <span className="text-academy-gold-deep">★</span>{" "}
                   <span className="font-medium">
@@ -89,10 +89,6 @@ export default async function StudentTeacherProfilePage({ params }: Props) {
                   <span className="text-academy-slate-muted">
                     ({reviewAggregate.totalCount} {tr.reviewsTitle.toLowerCase()})
                   </span>
-                </p>
-              ) : (
-                <p className="mt-1 text-[13px] text-academy-slate-muted">
-                  {tc.placeholderRating}
                 </p>
               )}
               <div className="mt-3 flex flex-wrap gap-1.5">
