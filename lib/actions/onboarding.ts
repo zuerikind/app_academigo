@@ -3,12 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { Resend } from "resend";
 import { getActionLocale } from "@/lib/actions/locale";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { localizedPath } from "@/lib/i18n/path";
 import { requireProfile } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { isValidAvatarFile, uploadAvatar, isValidCvFile, uploadCv } from "@/lib/storage/avatars";
+import { AdminTeacherApplicationEmail } from "@/emails/admin-teacher-application";
 
 export type OnboardingState = { error?: string };
 
@@ -294,6 +296,21 @@ export async function completeTeacherOnboarding(
   if (profileError) {
     console.error("teacher profile completion failed:", profileError.message);
     return { error: dict.teacher.onboarding.errors.saveFailed };
+  }
+
+  try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL ?? "Academigo <omid@academigo.xyz>",
+      to: process.env.ADMIN_EMAIL ?? "mathetogoxyz@gmail.com",
+      subject: `Neue Lehrerbewerbung: ${data.fullName}`,
+      react: AdminTeacherApplicationEmail({
+        teacherName: data.fullName,
+        reviewUrl: "https://app.academigo.xyz/de/admin/teachers",
+      }),
+    });
+  } catch (e) {
+    console.error("admin teacher application notification failed:", e);
   }
 
   revalidatePath("/", "layout");
