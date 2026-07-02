@@ -6,10 +6,10 @@
    Built on the real MatheToGo brand identity (mathetogo.xyz /
    platform.mathetogo.xyz):
 
-     • Brand navy        #2B5585   primary on-brand
-     • Brand deep        #1E3A5F   deeper brand (platform headers)
-     • Brand secondary   #2A4A70   midtone brand
-     • Brand sky         #3B82F6   accent / links (used sparingly)
+     • Brand sky         #0EA5E9   primary on-brand (sky-500)
+     • Brand deep        #0369A1   deeper brand (sky-700, platform headers)
+     • Brand secondary   #0284C7   midtone brand (sky-600)
+     • Brand accent      #38BDF8   accent / links (sky-400)
 
    Layered with an Apple-inspired surface and motion system: warm off-
    white paper, hairline borders, restrained elevation, calm motion.
@@ -23,7 +23,7 @@
 
   /* Ink — for primary type & strong UI */
   --academy-navy: #0F1F33;          /* page text / headings */
-  --academy-navy-light: #1E3A5F;    /* hovered / secondary ink (brand-deep) */
+  --academy-navy-light: #0369A1;    /* hovered / secondary ink (brand-deep) */
   --academy-graphite: #1F2937;
   --academy-slate: #475569;         /* body */
   --academy-slate-muted: #6B7280;   /* meta / captions */
@@ -40,14 +40,14 @@
   --academy-line-strong: #D9DDE3;
   --academy-line-soft: #EEF1F5;
 
-  /* Brand colors — the real MatheToGo palette */
-  --brand: #2B5585;                 /* primary brand (homepage navy) */
-  --brand-deep: #1E3A5F;            /* deep brand (platform headers) */
-  --brand-mid: #2A4A70;
-  --brand-tint: #E8EEF6;            /* very subtle brand-tinted surface */
-  --brand-tint-strong: #D7E0EE;
-  --accent-blue: #3B82F6;           /* system blue accent */
-  --accent-blue-soft: #DBEAFE;
+  /* Brand colors — sky blue palette */
+  --brand: #0EA5E9;                 /* primary brand (sky-500) */
+  --brand-deep: #0369A1;            /* deep brand (sky-700, platform headers) */
+  --brand-mid: #0284C7;             /* midtone brand (sky-600) */
+  --brand-tint: #E0F2FE;            /* very subtle brand-tinted surface (sky-100) */
+  --brand-tint-strong: #BAE6FD;     /* stronger tint (sky-200) */
+  --accent-blue: #38BDF8;           /* accent / links (sky-400) */
+  --accent-blue-soft: #E0F2FE;      /* soft accent surface (sky-100) */
 
   /* Back-compat: previous "academy-gold" tokens now point at the brand.
      Any existing `text-academy-gold*` classes become brand-blue. */

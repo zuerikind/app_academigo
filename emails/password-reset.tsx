@@ -11,7 +11,7 @@ import {
   Preview,
 } from "@react-email/components";
 
-const NAVY = "#2B5585";
+const NAVY = "#0EA5E9";
 const BG = "#EEF2F7";
 const WHITE = "#FFFFFF";
 const BODY_TEXT = "#374151";
