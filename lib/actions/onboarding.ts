@@ -299,6 +299,12 @@ export async function completeTeacherOnboarding(
   }
 
   try {
+    const { data: subjectRows } = await supabase
+      .from("subjects")
+      .select("name")
+      .in("id", data.subjectIds);
+    const subjectNames = (subjectRows ?? []).map((s) => s.name);
+
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL ?? "Academigo <omid@academigo.xyz>",
@@ -306,6 +312,16 @@ export async function completeTeacherOnboarding(
       subject: `Neue Lehrerbewerbung: ${data.fullName}`,
       react: AdminTeacherApplicationEmail({
         teacherName: data.fullName,
+        teacherEmail: profile.email ?? "",
+        subjects: subjectNames,
+        languages,
+        offersOnline: data.offersOnline,
+        offersInPerson: data.offersInPerson,
+        location: data.location,
+        education: data.education,
+        experience: data.experience,
+        bio: data.bio,
+        motivationLetter: data.motivationLetter,
         reviewUrl: "https://app.academigo.xyz/de/admin/teachers",
       }),
     });
