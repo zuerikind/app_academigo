@@ -48,6 +48,10 @@ describe("requestBooking", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mocks.requireRole.mockResolvedValue({ id: "student-uuid" });
+    // students lookup (and subsequent notification lookups) resolve a student record
+    mocks.supabase.from.mockReturnValue(
+      makeChainable({ data: { id: "student-record-uuid" }, error: null }),
+    );
     mocks.supabase.rpc.mockResolvedValue({ data: { booking_id: "booking-uuid" }, error: null });
   });
 

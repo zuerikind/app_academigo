@@ -12,6 +12,7 @@ const mocks = {
   },
   revalidatePath: jest.fn(),
   requireRole: jest.fn(),
+  requireProfile: jest.fn(),
 };
 
 // makeChainable factory for Supabase fluent API — consistent with Phase 1/2/3 pattern
@@ -24,7 +25,10 @@ function makeChainable(resolves: unknown) {
 }
 
 jest.mock("next/cache", () => ({ revalidatePath: (...args: unknown[]) => mocks.revalidatePath(...args) }));
-jest.mock("@/lib/auth/session", () => ({ requireRole: (...args: unknown[]) => mocks.requireRole(...args) }));
+jest.mock("@/lib/auth/session", () => ({
+  requireRole: (...args: unknown[]) => mocks.requireRole(...args),
+  requireProfile: (...args: unknown[]) => mocks.requireProfile(...args),
+}));
 jest.mock("@/lib/supabase/server", () => ({
   createClient: jest.fn(() => Promise.resolve(mocks.supabase)),
 }));
@@ -96,8 +100,8 @@ describe("createSchedule", () => {
 describe("updateScheduleStatus", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mocks.requireRole.mockResolvedValue({ id: "user-uuid" });
-    mocks.supabase.from.mockReturnValue(makeChainable({ data: null, error: null }));
+    mocks.requireProfile.mockResolvedValue({ id: "user-uuid" });
+    mocks.supabase.from.mockReturnValue(makeChainable({ data: [{ id: "sched-uuid" }], error: null }));
   });
 
   it("updates status to 'paused'", async () => {

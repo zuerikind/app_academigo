@@ -1,5 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import { generateAllSlots, generateSlots, LESSON_DURATION_MINUTES } from "@/lib/utils/slots";
+import { zurichNow } from "@/lib/utils/zurich";
+
+/** Slot times are Zurich wall-clock; hide slots already in the past for today. */
+function isPastSlot(dateStr: string, slotTime: string): boolean {
+  const now = zurichNow();
+  return dateStr < now.date || (dateStr === now.date && slotTime <= now.time);
+}
 
 export async function getTeacherAvailabilityRanges(teacherId: string) {
   const supabase = await createClient();
@@ -107,7 +114,7 @@ export async function getAvailableSlotsForDay(
     blockers,
     bookedSlots,
     durationMinutes: LESSON_DURATION_MINUTES,
-  });
+  }).filter((slot) => !isPastSlot(dateStr, slot));
 }
 
 /**
@@ -175,8 +182,12 @@ export async function getSlotsByStatusForDay(
   });
 
   return {
-    available: allSlots.filter((s) => !s.blocked).map((s) => s.time),
-    unavailable: allSlots.filter((s) => s.blocked).map((s) => s.time),
+    available: allSlots
+      .filter((s) => !s.blocked && !isPastSlot(dateStr, s.time))
+      .map((s) => s.time),
+    unavailable: allSlots
+      .filter((s) => s.blocked || (!s.blocked && isPastSlot(dateStr, s.time)))
+      .map((s) => s.time),
   };
 }
 
@@ -190,30 +201,73 @@ export async function getAvailableDaysForMonth(
 ): Promise<number[]> {
   const supabase = await createClient();
 
-  // Fetch all ranges to know which day-of-weeks have coverage
-  const { data: rangesRaw } = await supabase
-    .from("teacher_availability_ranges")
-    .select("day_of_week")
-    .eq("teacher_id", teacherId);
-
-  const coveredDows = new Set(
-    (rangesRaw ?? []).map((r) => r.day_of_week as number),
-  );
-
-  if (coveredDows.size === 0) return [];
-
   const daysInMonth = new Date(year, month, 0).getDate();
+  const mm = String(month).padStart(2, "0");
+  const monthStart = `${year}-${mm}-01T00:00:00.000Z`;
+  const monthEnd = `${year}-${mm}-${String(daysInMonth).padStart(2, "0")}T23:59:59.999Z`;
+
+  // Three queries for the whole month instead of ~3 per day
+  const [{ data: rangesRaw }, { data: blockersRaw }, { data: bookingsRaw }] = await Promise.all([
+    supabase
+      .from("teacher_availability_ranges")
+      .select("day_of_week, start_time, end_time")
+      .eq("teacher_id", teacherId),
+    supabase
+      .from("teacher_availability_blockers")
+      .select("blocked_date, start_time, end_time")
+      .eq("teacher_id", teacherId),
+    supabase
+      .from("bookings")
+      .select("start_time, end_time")
+      .eq("teacher_id", teacherId)
+      .in("status", ["confirmed", "pending"])
+      .gte("start_time", monthStart)
+      .lte("start_time", monthEnd),
+  ]);
+
+  const rangesByDow = new Map<number, Array<{ start: string; end: string }>>();
+  for (const r of rangesRaw ?? []) {
+    const dow = r.day_of_week as number;
+    if (!rangesByDow.has(dow)) rangesByDow.set(dow, []);
+    rangesByDow.get(dow)!.push({ start: r.start_time as string, end: r.end_time as string });
+  }
+  if (rangesByDow.size === 0) return [];
+
+  const blockers = (blockersRaw ?? []).map((b) => ({
+    date: b.blocked_date as string,
+    start_time: b.start_time as string | null,
+    end_time: b.end_time as string | null,
+  }));
+
+  const bookedByDate = new Map<string, Array<{ start: string; end: string }>>();
+  for (const b of bookingsRaw ?? []) {
+    const start = new Date(b.start_time as string);
+    const end = new Date(b.end_time as string);
+    const dateKey = (b.start_time as string).slice(0, 10);
+    if (!bookedByDate.has(dateKey)) bookedByDate.set(dateKey, []);
+    bookedByDate.get(dateKey)!.push({
+      start: `${String(start.getUTCHours()).padStart(2, "0")}:${String(start.getUTCMinutes()).padStart(2, "0")}`,
+      end: `${String(end.getUTCHours()).padStart(2, "0")}:${String(end.getUTCMinutes()).padStart(2, "0")}`,
+    });
+  }
+
   const availableDays: number[] = [];
 
   for (let d = 1; d <= daysInMonth; d++) {
-    const dateStr = `${year}-${String(month).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    const dateStr = `${year}-${mm}-${String(d).padStart(2, "0")}`;
     const dow = new Date(`${dateStr}T00:00:00Z`).getUTCDay();
-    if (coveredDows.has(dow)) {
-      const slots = await getAvailableSlotsForDay(teacherId, dateStr);
-      if (slots.length > 0) {
-        availableDays.push(d);
-      }
-    }
+    const ranges = rangesByDow.get(dow);
+    if (!ranges) continue;
+
+    const slots = generateSlots({
+      date: dateStr,
+      ranges,
+      blockers,
+      bookedSlots: bookedByDate.get(dateStr) ?? [],
+      durationMinutes: LESSON_DURATION_MINUTES,
+    }).filter((slot) => !isPastSlot(dateStr, slot));
+
+    if (slots.length > 0) availableDays.push(d);
   }
 
   return availableDays;

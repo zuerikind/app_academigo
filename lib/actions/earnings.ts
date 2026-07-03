@@ -31,6 +31,19 @@ export async function requestPayout(
 
   const teacherId = teacherRecord.id;
 
+  // One open request at a time — otherwise the same 'available' earnings get
+  // summed into a second request and paid twice.
+  const { data: openRequest } = await supabase
+    .from("payout_requests")
+    .select("id")
+    .eq("teacher_id", teacherId)
+    .eq("status", "pending")
+    .maybeSingle();
+
+  if (openRequest) {
+    return { error: "You already have a pending payout request." };
+  }
+
   // Sum all available (unpaid) earnings
   const { data: earningsData, error: earningsError } = await supabase
     .from("teacher_earnings")
@@ -61,11 +74,13 @@ export async function requestPayout(
 
   if (insertError || !insertData) return { error: insertError?.message ?? "Insert failed" };
 
-  // teacher_earnings has no UPDATE RLS policy — use service role to link rows
+  // Link rows to this request AND flip them out of 'available' so they can't
+  // be summed into a future request. Teachers have no UPDATE RLS policy on
+  // teacher_earnings — service role required.
   const serviceClient = createServiceClient();
   await serviceClient
     .from("teacher_earnings")
-    .update({ payout_request_id: insertData.id })
+    .update({ payout_request_id: insertData.id, status: "requested" })
     .eq("teacher_id", teacherId)
     .eq("status", "available");
 

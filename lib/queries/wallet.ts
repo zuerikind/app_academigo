@@ -12,16 +12,14 @@ export interface CreditTransaction {
   created_at: string;
 }
 
-export async function getWalletBalance(studentId: string): Promise<number> {
+// Reads the real credit ledger (student_credits) for the logged-in student.
+// credit_wallets was only seeded once and never credited by purchases — do not use it.
+export async function getWalletBalance(): Promise<number> {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("credit_wallets")
-    .select("available_balance")
-    .eq("student_id", studentId)
-    .maybeSingle();
+  const { data, error } = await supabase.rpc("student_available_credits");
 
-  if (error || !data) return 0;
-  return data.available_balance ?? 0;
+  if (error || data == null) return 0;
+  return data as number;
 }
 
 export async function getCreditTransactions(studentId: string): Promise<CreditTransaction[]> {

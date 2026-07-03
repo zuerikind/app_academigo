@@ -127,7 +127,7 @@ describe("POST /api/webhooks/stripe", () => {
     );
   });
 
-  it("calls grant_subscription_credits RPC on invoice.paid for subscription package", async () => {
+  it("ignores invoice.paid (handler removed — no subscription checkout exists)", async () => {
     const { POST } = await import("@/app/api/webhooks/stripe/route");
     mocks.constructEvent.mockReturnValue({
       type: "invoice.paid",
@@ -140,20 +140,6 @@ describe("POST /api/webhooks/stripe", () => {
         },
       },
     });
-    let fromCount = 0;
-    mocks.supabase.from.mockImplementation(() => {
-      fromCount++;
-      if (fromCount === 1) {
-        // idempotency check — not already processed
-        return makeChainable({ data: null, error: null });
-      }
-      if (fromCount === 2) {
-        // credit_packages lookup
-        return makeChainable({ data: { credits: 4, price_chf: 299 }, error: null });
-      }
-      // payments insert and subsequent calls
-      return makeChainable({ data: { id: "pay-uuid" }, error: null });
-    });
     mocks.supabase.rpc.mockResolvedValue({ data: null, error: null });
     const req = new Request("http://localhost/api/webhooks/stripe", {
       method: "POST",
@@ -162,9 +148,6 @@ describe("POST /api/webhooks/stripe", () => {
     });
     const response = await POST(req);
     expect(response.status).toBe(200);
-    expect(mocks.supabase.rpc).toHaveBeenCalledWith(
-      "grant_subscription_credits",
-      expect.any(Object)
-    );
+    expect(mocks.supabase.rpc).not.toHaveBeenCalled();
   });
 });

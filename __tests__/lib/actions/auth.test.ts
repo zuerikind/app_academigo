@@ -20,6 +20,7 @@ jest.mock("@/lib/supabase/server", () => ({
       signUp: (...args: unknown[]) => mocks.signUp(...args),
       resetPasswordForEmail: (...args: unknown[]) => mocks.resetPasswordForEmail(...args),
       updateUser: (...args: unknown[]) => mocks.updateUser(...args),
+      signOut: jest.fn().mockResolvedValue({ error: null }),
       getUser: jest.fn(),
     },
   }),

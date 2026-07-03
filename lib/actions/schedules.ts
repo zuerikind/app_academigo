@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireRole } from "@/lib/auth/session";
+import { requireProfile, requireRole } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 
 export type ScheduleActionState = { error?: string; success?: boolean };
@@ -27,8 +27,17 @@ export async function createSchedule(
     return { error: "Invalid weekday." };
   }
 
+  // recurring_schedules.student_id references students.id, not profiles.id
+  const { data: student } = await supabase
+    .from("students")
+    .select("id")
+    .eq("profile_id", profile.id)
+    .maybeSingle();
+
+  if (!student?.id) return { error: "Student record not found." };
+
   const { error } = await supabase.from("recurring_schedules").insert({
-    student_id: profile.id,
+    student_id: student.id,
     teacher_id: teacherId,
     weekday,
     start_time: startTime,
@@ -46,10 +55,10 @@ export async function updateScheduleStatus(
   _prev: ScheduleActionState,
   formData: FormData,
 ): Promise<ScheduleActionState> {
-  // ponytail: requireRole used (not requireProfile) because test mock only stubs requireRole;
-  // RLS on recurring_schedules enforces student/teacher/admin participant check in production.
-  // Teachers call this action via their dashboard; student vs teacher role check is done by RLS.
-  const profile = await requireRole("student");
+  // Both students and teachers call this (pause/resume/cancel/approve).
+  // requireRole("student") redirected teachers away — requireProfile + RLS
+  // participant policy on recurring_schedules is the correct gate.
+  await requireProfile();
   const supabase = await createClient();
 
   const scheduleId = formData.get("scheduleId")?.toString();
@@ -59,12 +68,16 @@ export async function updateScheduleStatus(
     return { error: "Invalid request." };
   }
 
-  const { error } = await supabase
+  const { data: updated, error } = await supabase
     .from("recurring_schedules")
     .update({ status: newStatus, updated_at: new Date().toISOString() })
-    .eq("id", scheduleId);
+    .eq("id", scheduleId)
+    .select("id");
 
   if (error) return { error: error.message };
+  if (!updated || updated.length === 0) {
+    return { error: "Schedule not found." };
+  }
   revalidatePath("/", "layout");
   return { success: true };
 }

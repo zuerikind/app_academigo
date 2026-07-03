@@ -22,8 +22,9 @@ function makeChainable(resolves: unknown) {
   return chain;
 }
 
-jest.mock("@/lib/supabase/server", () => ({
-  createClient: jest.fn(() => Promise.resolve(mocks.supabase)),
+// Route uses the service client — cron has no user session, RLS would block the anon client
+jest.mock("@/lib/supabase/service", () => ({
+  createServiceClient: jest.fn(() => mocks.supabase),
 }));
 jest.mock("@/lib/services/email", () => ({
   sendTeacherReminder: (...args: unknown[]) => mocks.sendTeacherReminder(...args),

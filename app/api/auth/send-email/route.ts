@@ -7,12 +7,16 @@ const resend = new Resend(process.env.RESEND_API_KEY ?? "re_placeholder");
 const FROM = process.env.RESEND_FROM_EMAIL ?? "Academigo <omid@academigo.xyz>";
 
 export async function POST(req: NextRequest) {
+  // Fail closed: without the shared secret this endpoint would be an open
+  // mail relay through our Resend account.
   const secret = process.env.SUPABASE_AUTH_HOOK_SECRET;
-  if (secret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  if (!secret) {
+    console.error("[send-email] SUPABASE_AUTH_HOOK_SECRET not configured — refusing to send");
+    return NextResponse.json({ error: "Not configured" }, { status: 500 });
+  }
+  const auth = req.headers.get("authorization");
+  if (auth !== `Bearer ${secret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const body = await req.json();

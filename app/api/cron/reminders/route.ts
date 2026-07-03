@@ -1,8 +1,10 @@
 import type { NextRequest } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { sendTeacherReminder } from "@/lib/services/email";
+import { zurichOffsetMs } from "@/lib/utils/zurich";
 
-// Uses service role via createClient — cron has no user session (cookies are empty)
+// Service client required — cron has no user session, RLS on bookings would
+// silently return zero rows with the anon client.
 export async function GET(request: NextRequest): Promise<Response> {
   // Auth guard: Vercel Cron sends Authorization: Bearer <CRON_SECRET>
   const authHeader = request.headers.get("authorization");
@@ -11,13 +13,17 @@ export async function GET(request: NextRequest): Promise<Response> {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const supabase = await createClient();
+  const supabase = createServiceClient();
 
+  // start_time is Zurich wall-clock stored as UTC, so shift the real-time
+  // windows by the current Zurich offset before comparing.
   const now = new Date();
-  const window24hStart = new Date(now.getTime() + 23 * 60 * 60 * 1000);
-  const window24hEnd = new Date(now.getTime() + 25 * 60 * 60 * 1000);
-  const window1hStart = new Date(now.getTime() + 55 * 60 * 1000);
-  const window1hEnd = new Date(now.getTime() + 65 * 60 * 1000);
+  const offset24h = zurichOffsetMs(new Date(now.getTime() + 24 * 60 * 60 * 1000));
+  const offset1h = zurichOffsetMs(new Date(now.getTime() + 60 * 60 * 1000));
+  const window24hStart = new Date(now.getTime() + 23 * 60 * 60 * 1000 + offset24h);
+  const window24hEnd = new Date(now.getTime() + 25 * 60 * 60 * 1000 + offset24h);
+  const window1hStart = new Date(now.getTime() + 55 * 60 * 1000 + offset1h);
+  const window1hEnd = new Date(now.getTime() + 65 * 60 * 1000 + offset1h);
 
   // --- 24h reminders ---
   const { data: bookings24h } = await supabase

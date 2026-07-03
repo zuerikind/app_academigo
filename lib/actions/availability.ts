@@ -171,12 +171,11 @@ export async function saveWeeklySchedule(
 
   if (!teacher) return { error: "Teacher record not found." };
 
-  const { error: deleteError } = await supabase
+  // Insert first, delete old rows after — a failed insert must not wipe the schedule
+  const { data: oldRows } = await supabase
     .from("teacher_availability_ranges")
-    .delete()
+    .select("id")
     .eq("teacher_id", teacher.id);
-
-  if (deleteError) return { error: deleteError.message };
 
   const rows = result.data.flatMap((entry) =>
     entry.slots.map((slot) => ({
@@ -192,6 +191,15 @@ export async function saveWeeklySchedule(
       .from("teacher_availability_ranges")
       .insert(rows);
     if (insertError) return { error: insertError.message };
+  }
+
+  const oldIds = (oldRows ?? []).map((r) => r.id);
+  if (oldIds.length > 0) {
+    const { error: deleteError } = await supabase
+      .from("teacher_availability_ranges")
+      .delete()
+      .in("id", oldIds);
+    if (deleteError) return { error: deleteError.message };
   }
 
   revalidatePath("/", "layout");

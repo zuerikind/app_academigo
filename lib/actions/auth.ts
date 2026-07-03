@@ -81,7 +81,8 @@ export async function signIn(
   if (error) return { error: error.message };
 
   const redirectTo = String(formData.get("redirect") ?? "");
-  if (redirectTo.startsWith("/")) {
+  // "//evil.com" is protocol-relative — only allow same-origin paths
+  if (redirectTo.startsWith("/") && !redirectTo.startsWith("//")) {
     redirect(redirectTo);
   }
 
@@ -193,5 +194,7 @@ export async function updatePassword(
   const { error } = await supabase.auth.updateUser({ password });
   if (error) return { error: error.message };
 
+  // End the recovery session — otherwise middleware bounces /login to the dashboard
+  await supabase.auth.signOut();
   redirect(localizedPath(locale, "/login"));
 }

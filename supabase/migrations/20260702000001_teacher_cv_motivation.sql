@@ -10,6 +10,7 @@ ON CONFLICT (id) DO NOTHING;
 
 DROP POLICY IF EXISTS "documents_upload_own" ON storage.objects;
 DROP POLICY IF EXISTS "documents_read_service" ON storage.objects;
+DROP POLICY IF EXISTS "documents_read_own" ON storage.objects;
 
 -- Only the owner can upload their own CV
 CREATE POLICY "documents_upload_own"

@@ -177,10 +177,16 @@ export async function markPayoutProcessed(
 
   if (error) return { error: error.message };
 
-  await supabase
+  // Requires the teacher_earnings_admin_update RLS policy — without it this
+  // silently updated 0 rows and earnings stayed re-payable.
+  const { error: earningsError } = await supabase
     .from("teacher_earnings")
     .update({ status: "paid" })
     .eq("payout_request_id", payoutId);
+
+  if (earningsError) {
+    console.error("[admin] markPayoutProcessed: earnings update failed:", earningsError.message);
+  }
 
   const tc = Array.isArray(payout.teachers) ? payout.teachers[0] : payout.teachers;
   const profile = Array.isArray(tc?.profiles) ? tc?.profiles[0] : tc?.profiles;

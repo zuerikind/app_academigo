@@ -7,6 +7,14 @@ import { sendBookingConfirmation, sendMeetLinkAdded, sendTeacherBookingRequest }
 
 export type BookingActionState = { error?: string; success?: boolean };
 
+function rpcErrorMessage(message: string | undefined): string {
+  if (message?.includes("not_authorized")) return "You are not allowed to modify this booking.";
+  if (message?.includes("booking_not_found")) return "Booking not found.";
+  if (message?.includes("booking_not_cancellable")) return "This booking can no longer be cancelled.";
+  if (message?.includes("invalid_booking_status")) return "Booking is not in a completable state.";
+  return message ?? "Something went wrong.";
+}
+
 export async function requestBooking(
   _prev: BookingActionState,
   formData: FormData,
@@ -23,19 +31,20 @@ export async function requestBooking(
   if (!teacherId || !startTime || !endTime) {
     return { error: "Missing required fields." };
   }
-
-  // Try to get the student record ID — fall back to profile.id if lookup fails
-  let studentId = profile.id;
-  try {
-    const { data: student } = await supabase
-      .from("students")
-      .select("id")
-      .eq("profile_id", profile.id)
-      .maybeSingle();
-    if (student?.id) studentId = student.id;
-  } catch {
-    // Use profile.id as fallback (matches test behavior)
+  if (new Date(startTime) >= new Date(endTime)) {
+    return { error: "Invalid time range." };
   }
+
+  const { data: student } = await supabase
+    .from("students")
+    .select("id")
+    .eq("profile_id", profile.id)
+    .maybeSingle();
+
+  if (!student?.id) {
+    return { error: "Student record not found. Please complete onboarding first." };
+  }
+  const studentId = student.id;
 
   const primarySubjectId = subjectIds[0] ?? null;
 
@@ -53,14 +62,20 @@ export async function requestBooking(
     if (error.message?.includes("insufficient_credits")) {
       return { error: "You don't have enough credits for this booking." };
     }
-    return { error: error.message };
+    if (error.message?.includes("bookings_no_overlap")) {
+      return { error: "This time slot was just booked by someone else. Please pick another." };
+    }
+    return { error: rpcErrorMessage(error.message) };
   }
 
   // Insert all selected subjects into booking_subjects junction table
   if (bookingId && subjectIds.length > 0) {
-    await supabase.from("booking_subjects").insert(
+    const { error: subjectsError } = await supabase.from("booking_subjects").insert(
       subjectIds.map((sid) => ({ booking_id: bookingId, subject_id: sid })),
     );
+    if (subjectsError) {
+      console.error("[bookings] requestBooking: booking_subjects insert failed:", subjectsError.message);
+    }
   }
 
   // Notify the teacher of the new booking request (non-blocking)
@@ -205,7 +220,7 @@ export async function declineBooking(
     p_booking_id: bookingId,
   });
 
-  if (error) return { error: error.message };
+  if (error) return { error: rpcErrorMessage(error.message) };
 
   revalidatePath("/", "layout");
   return {};
@@ -232,7 +247,7 @@ export async function markComplete(
     p_teacher_notes: teacherNotes,
   });
 
-  if (error) return { error: error.message };
+  if (error) return { error: rpcErrorMessage(error.message) };
 
   revalidatePath("/", "layout");
   return {};
@@ -252,7 +267,7 @@ export async function cancelBooking(
     p_booking_id: bookingId,
   });
 
-  if (error) return { error: error.message };
+  if (error) return { error: rpcErrorMessage(error.message) };
 
   revalidatePath("/", "layout");
   return {};
@@ -281,7 +296,7 @@ export async function cancelBookingAsTeacher(
     p_booking_id: bookingId,
   });
 
-  if (error) return { error: error.message };
+  if (error) return { error: rpcErrorMessage(error.message) };
 
   revalidatePath("/", "layout");
   return {};
@@ -314,7 +329,7 @@ export async function updateBookingNotes(
     .eq("teacher_id", (teacher as any).id)
     .eq("status", "completed");
 
-  if (error) return { error: error.message };
+  if (error) return { error: rpcErrorMessage(error.message) };
 
   revalidatePath("/", "layout");
   return { success: true };

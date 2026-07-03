@@ -1,9 +1,16 @@
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 
-function formatIcsDate(isoString: string): string {
-  // Convert ISO 8601 to ICS format: YYYYMMDDTHHMMSSZ
-  return isoString.replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+// Booking times are Zurich wall-clock stored as UTC — emit them as local
+// time with TZID so calendars show the intended Swiss time.
+// "2026-07-02T14:00:00+00:00" → "20260702T140000"
+function formatIcsLocal(isoString: string): string {
+  return isoString.slice(0, 19).replace(/[-:]/g, "");
+}
+
+// Real UTC instant for DTSTAMP: "20260703T101500Z"
+function formatIcsUtc(date: Date): string {
+  return date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
 }
 
 export async function GET(
@@ -80,12 +87,12 @@ export async function GET(
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
     `UID:${id}@academigo.xyz`,
-    `DTSTART:${formatIcsDate(booking.start_time)}`,
-    `DTEND:${formatIcsDate(booking.end_time)}`,
+    `DTSTART;TZID=Europe/Zurich:${formatIcsLocal(booking.start_time)}`,
+    `DTEND;TZID=Europe/Zurich:${formatIcsLocal(booking.end_time)}`,
     "SUMMARY:Academigo lesson",
     `DESCRIPTION:${booking.meeting_link ?? "Meeting link will be provided by your teacher."}`,
     booking.meeting_link ? `URL:${booking.meeting_link}` : "",
-    `DTSTAMP:${formatIcsDate(new Date().toISOString())}`,
+    `DTSTAMP:${formatIcsUtc(new Date())}`,
     "END:VEVENT",
     "END:VCALENDAR",
   ]

@@ -37,12 +37,19 @@ export async function cancelLesson(
   const lessonId = formData.get("lessonId")?.toString();
   if (!lessonId) return { error: "Missing lesson ID." };
 
-  const { error } = await supabase
+  // Only cancellable states — completed/cancelled lessons must stay untouched.
+  // RLS (lessons_update participant policy) enforces ownership.
+  const { data: updated, error } = await supabase
     .from("lessons")
     .update({ status: "cancelled", updated_at: new Date().toISOString() })
-    .eq("id", lessonId);
+    .eq("id", lessonId)
+    .in("status", ["pending", "confirmed", "reschedule_requested"])
+    .select("id");
 
   if (error) return { error: error.message };
+  if (!updated || updated.length === 0) {
+    return { error: "Lesson not found or cannot be cancelled in its current state." };
+  }
   revalidatePath("/", "layout");
   return { success: true };
 }

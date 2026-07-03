@@ -53,7 +53,7 @@ export default async function StudentLessonsPage({ params }: Props) {
   const rescheduleAction = async (fd: FormData) => { await requestReschedule({}, fd); };
 
   const [walletBalance, transactions, schedules, upcomingLessons] = await Promise.all([
-    studentId ? getWalletBalance(studentId) : Promise.resolve(0),
+    studentId ? getWalletBalance() : Promise.resolve(0),
     studentId ? getCreditTransactions(studentId) : Promise.resolve([]),
     studentId ? getStudentSchedules(studentId) : Promise.resolve([]),
     studentId ? getStudentUpcomingLessons(studentId) : Promise.resolve([]),
