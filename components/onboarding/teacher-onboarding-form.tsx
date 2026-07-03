@@ -9,6 +9,9 @@ import type { OnboardingState } from "@/lib/actions/onboarding";
 import type { Subject } from "@/lib/types";
 import { FIXED_LANGUAGES } from "@/lib/constants/teacher";
 
+const MAX_CV_MB = 5;
+const MAX_CV_BYTES = MAX_CV_MB * 1024 * 1024;
+
 export function TeacherOnboardingForm({
   action,
   subjects,
@@ -22,9 +25,24 @@ export function TeacherOnboardingForm({
   const t = dict.teacher.onboarding;
   const [state, formAction, pending] = useActionState(action, {});
   const [showOtherLang, setShowOtherLang] = useState(false);
+  const [cvError, setCvError] = useState<string | null>(null);
+  const [subjectError, setSubjectError] = useState(false);
+  const [languageError, setLanguageError] = useState(false);
+  const [selectedSubjects, setSelectedSubjects] = useState<Set<string>>(new Set());
+  const [selectedLanguages, setSelectedLanguages] = useState<Set<string>>(new Set());
 
   return (
-    <form action={formAction} encType="multipart/form-data" className="space-y-6">
+    <form
+      action={formAction}
+      encType="multipart/form-data"
+      className="space-y-6"
+      onSubmit={(e) => {
+        let block = false;
+        if (selectedSubjects.size === 0) { setSubjectError(true); block = true; }
+        if (selectedLanguages.size === 0 && !showOtherLang) { setLanguageError(true); block = true; }
+        if (block) e.preventDefault();
+      }}
+    >
       <input type="hidden" name="locale" value={locale} />
       {state.error && (
         <p className="rounded-md border border-[color:var(--academy-danger)]/25 bg-[color:var(--academy-danger-soft)] px-3.5 py-2.5 text-[13px] text-[color:var(--academy-danger)]">
@@ -54,7 +72,7 @@ export function TeacherOnboardingForm({
 
       {/* Subjects */}
       <Field>
-        <Label>{t.subjectsTeach}</Label>
+        <Label>{t.subjectsTeach} <span className="text-[color:var(--academy-danger)]">*</span></Label>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {subjects.map((s) => (
             <label
@@ -66,11 +84,18 @@ export function TeacherOnboardingForm({
                 name="subjectIds"
                 value={s.id}
                 className="h-3.5 w-3.5 rounded border-academy-line accent-academy-navy"
+                onChange={(e) => {
+                  const next = new Set(selectedSubjects);
+                  e.target.checked ? next.add(s.id) : next.delete(s.id);
+                  setSelectedSubjects(next);
+                  setSubjectError(false);
+                }}
               />
               <span>{translateSubjectName(dict, s.slug, s.name)}</span>
             </label>
           ))}
         </div>
+        {subjectError && <p className="mt-1.5 text-[12px] text-[color:var(--academy-danger)]">{locale === "de" ? "Bitte wähle mindestens ein Fach aus." : "Please select at least one subject."}</p>}
       </Field>
 
       {/* Education + Experience */}
@@ -145,7 +170,7 @@ export function TeacherOnboardingForm({
 
       {/* Languages */}
       <Field>
-        <Label>{t.languages}</Label>
+        <Label>{t.languages} <span className="text-[color:var(--academy-danger)]">*</span></Label>
         <div className="flex flex-wrap gap-2">
           {FIXED_LANGUAGES.map((lang) => (
             <label
@@ -157,6 +182,12 @@ export function TeacherOnboardingForm({
                 name="languageChecked"
                 value={lang}
                 className="h-3.5 w-3.5 rounded border-academy-line accent-academy-navy"
+                onChange={(e) => {
+                  const next = new Set(selectedLanguages);
+                  e.target.checked ? next.add(lang) : next.delete(lang);
+                  setSelectedLanguages(next);
+                  setLanguageError(false);
+                }}
               />
               <span>{lang}</span>
             </label>
@@ -165,7 +196,7 @@ export function TeacherOnboardingForm({
             <input
               type="checkbox"
               checked={showOtherLang}
-              onChange={(e) => setShowOtherLang(e.target.checked)}
+              onChange={(e) => { setShowOtherLang(e.target.checked); setLanguageError(false); }}
               className="h-3.5 w-3.5 rounded border-academy-line accent-academy-navy"
             />
             <span>{locale === "de" ? "Andere" : "Other"}</span>
@@ -178,6 +209,7 @@ export function TeacherOnboardingForm({
             className="mt-2"
           />
         )}
+        {languageError && <p className="mt-1.5 text-[12px] text-[color:var(--academy-danger)]">{locale === "de" ? "Bitte wähle mindestens eine Sprache aus." : "Please select at least one language."}</p>}
       </Field>
 
       {/* Format */}
@@ -297,13 +329,16 @@ export function TeacherOnboardingForm({
 
       {/* CV upload */}
       <Field>
-        <Label htmlFor="cv" hint={locale === "de" ? "Optional, aber empfohlen" : "Optional, but recommended"}>
+        <Label htmlFor="cv" hint={locale === "de" ? "Optional" : "Optional"}>
           {locale === "de" ? "Lebenslauf (CV)" : "Curriculum Vitae (CV)"}
         </Label>
-        <p className="mb-2 text-[13px] text-academy-slate">
+        <p className="mb-2 text-[13px] font-medium text-[color:var(--brand-deep)]">
           {locale === "de"
-            ? "Lade deinen Lebenslauf hoch (PDF oder Word, max. 5 MB). Ein CV beschleunigt den Genehmigungsprozess."
-            : "Upload your CV (PDF or Word, max. 5 MB). A CV speeds up the approval process."}
+            ? "Mit einem Lebenslauf steigen deine Chancen, angenommen zu werden, erheblich."
+            : "Uploading a CV significantly increases your chances of being accepted."}
+        </p>
+        <p className="mb-2 text-[12px] text-academy-slate">
+          {locale === "de" ? "PDF oder Word, max. 5 MB." : "PDF or Word, max. 5 MB."}
         </p>
         <Input
           id="cv"
@@ -311,7 +346,17 @@ export function TeacherOnboardingForm({
           type="file"
           accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           className="file:mr-3 file:rounded file:border-0 file:bg-academy-mist file:px-3 file:py-1.5 file:text-[12px] file:font-medium file:text-academy-navy"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file && file.size > MAX_CV_BYTES) {
+              setCvError(locale === "de" ? `Die Datei ist zu gross. Maximum: ${MAX_CV_MB} MB.` : `File too large. Maximum: ${MAX_CV_MB} MB.`);
+              e.target.value = "";
+            } else {
+              setCvError(null);
+            }
+          }}
         />
+        {cvError && <p className="mt-1.5 text-[12px] text-[color:var(--academy-danger)]">{cvError}</p>}
       </Field>
 
       <div className="pt-2">
