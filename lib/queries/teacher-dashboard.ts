@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getTeacherMonthlyEarnings, getTeacherTotalEarned } from "@/lib/queries/earnings";
 import { getReviewAggregate } from "@/lib/queries/reviews";
+import { nowAsStoredIso } from "@/lib/utils/zurich";
 
 type TeacherFields = {
   bio: string | null;
@@ -49,11 +50,19 @@ function mapBooking(b: any) {
 export async function getTeacherDashboardData(profileId: string) {
   const supabase = await createClient();
 
-  const { data: teacher } = await supabase
+  const { data: teacherRaw } = await supabase
     .from("teachers")
-    .select("*")
+    .select("*, teacher_private ( payout_info_placeholder )")
     .eq("profile_id", profileId)
     .maybeSingle();
+
+  // Flatten teacher_private (payout info feeds profile-completion checks)
+  const teacher = (() => {
+    if (!teacherRaw) return null;
+    const { teacher_private: priv, ...rest } = teacherRaw as Record<string, any>;
+    const p = Array.isArray(priv) ? priv[0] : priv;
+    return { ...rest, ...(p ?? {}) };
+  })();
 
   if (!teacher) {
     return {
@@ -75,7 +84,7 @@ export async function getTeacherDashboardData(profileId: string) {
     };
   }
 
-  const now = new Date().toISOString();
+  const now = nowAsStoredIso();
 
   const [pendingResult, upcomingResult, completedResult, bookingsResult, reviewStats, totalEarned, monthlyEarnings, pendingEvalResult] =
     await Promise.all([

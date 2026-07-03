@@ -116,10 +116,21 @@ export async function updateTeacherSettings(
     return { error: "Meet link must be a valid HTTPS URL (must start with https://)." };
   }
 
-  const { error: teacherError } = await supabase
+  const { data: teacherRow } = await supabase
     .from("teachers")
-    .update({ payout_info_placeholder: payoutInfo, default_meet_link: defaultMeetLink })
-    .eq("profile_id", profile.id);
+    .select("id")
+    .eq("profile_id", profile.id)
+    .maybeSingle();
+  if (!teacherRow) return { error: "Teacher record not found." };
+
+  const { error: teacherError } = await supabase
+    .from("teacher_private")
+    .upsert({
+      teacher_id: teacherRow.id,
+      payout_info_placeholder: payoutInfo,
+      default_meet_link: defaultMeetLink,
+      updated_at: new Date().toISOString(),
+    });
   if (teacherError) return { error: teacherError.message };
 
   revalidatePath("/", "layout");

@@ -47,8 +47,11 @@ describe("requestPayout", () => {
     mocks.supabase.from.mockImplementation(() => {
       callCount++;
       if (callCount === 1) {
-        // teachers lookup
-        return makeChainable({ data: { id: "teacher-uuid", payout_info_placeholder: "IBAN CH12 3456 7890" }, error: null });
+        // teachers lookup (bank details now live in the teacher_private join)
+        return makeChainable({
+          data: { id: "teacher-uuid", teacher_private: { payout_info_placeholder: "IBAN CH12 3456 7890" } },
+          error: null,
+        });
       }
       if (callCount === 2) {
         // teacher_earnings select (returns array)

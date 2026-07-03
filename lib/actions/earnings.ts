@@ -14,10 +14,10 @@ export async function requestPayout(
   const profile = await requireRole("teacher");
   const supabase = await createClient();
 
-  // Resolve teachers.id and check bank details from profile_id
+  // Resolve teachers.id and check bank details (teacher_private) from profile_id
   const { data: teacherRecord, error: teacherError } = await supabase
     .from("teachers")
-    .select("id, payout_info_placeholder")
+    .select("id, teacher_private ( payout_info_placeholder )")
     .eq("profile_id", profile.id)
     .maybeSingle();
 
@@ -25,7 +25,9 @@ export async function requestPayout(
     return { error: "Teacher record not found." };
   }
 
-  if (!teacherRecord.payout_info_placeholder?.trim()) {
+  const privRaw = (teacherRecord as any).teacher_private;
+  const priv = Array.isArray(privRaw) ? privRaw[0] : privRaw;
+  if (!priv?.payout_info_placeholder?.trim()) {
     return { error: "Please save your bank details in Settings before requesting a payout." };
   }
 

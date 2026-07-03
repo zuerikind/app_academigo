@@ -30,7 +30,7 @@ export async function GET(request: NextRequest): Promise<Response> {
     .from("bookings")
     .select(
       `id, start_time, meeting_link,
-       teachers ( id, default_meet_link, profiles ( email, full_name ) ),
+       teachers ( id, profiles ( email, full_name ) ),
        students ( profiles ( full_name ) )`,
     )
     .eq("status", "confirmed")
@@ -73,7 +73,7 @@ export async function GET(request: NextRequest): Promise<Response> {
     .from("bookings")
     .select(
       `id, start_time, meeting_link,
-       teachers ( id, default_meet_link, profiles ( email, full_name ) ),
+       teachers ( id, profiles ( email, full_name ) ),
        students ( profiles ( full_name ) )`,
     )
     .eq("status", "confirmed")

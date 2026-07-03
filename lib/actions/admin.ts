@@ -83,7 +83,21 @@ export async function approvePromotion(
   if (fetchError || !request) return { error: fetchError?.message ?? "Request not found" };
 
   const newLevel = request.requested_level as keyof typeof defaultPayoutRates;
-  const newRate = defaultPayoutRates[newLevel];
+
+  // Rate comes from admin-configured platform_settings (shown on teacher
+  // dashboards); config defaults are only the fallback.
+  const settingsKeyByLevel: Record<keyof typeof defaultPayoutRates, string> = {
+    junior: "tier_junior_rate_chf",
+    academigo_teacher: "tier_mid_rate_chf",
+    verified: "tier_top_rate_chf",
+  };
+  const { data: rateSetting } = await supabase
+    .from("platform_settings")
+    .select("value")
+    .eq("key", settingsKeyByLevel[newLevel])
+    .maybeSingle();
+  const parsedRate = rateSetting ? parseFloat(rateSetting.value) : NaN;
+  const newRate = Number.isFinite(parsedRate) ? parsedRate : defaultPayoutRates[newLevel];
 
   const { error: teacherError } = await supabase
     .from("teachers")

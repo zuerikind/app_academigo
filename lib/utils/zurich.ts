@@ -9,6 +9,12 @@ export function zurichOffsetMs(at: Date): number {
   return wall.getTime() - utc.getTime();
 }
 
+/** Current instant expressed in the stored representation (Zurich wall-clock as UTC ISO). Use for gte/lte filters on start_time/end_time. */
+export function nowAsStoredIso(): string {
+  const now = new Date();
+  return new Date(now.getTime() + zurichOffsetMs(now)).toISOString();
+}
+
 /** Current date ("YYYY-MM-DD") and time ("HH:MM") on the wall clock in Zurich. */
 export function zurichNow(): { date: string; time: string } {
   const parts = new Intl.DateTimeFormat("en-CA", {

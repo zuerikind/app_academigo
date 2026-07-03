@@ -58,7 +58,7 @@ export async function updateScheduleStatus(
   // Both students and teachers call this (pause/resume/cancel/approve).
   // requireRole("student") redirected teachers away — requireProfile + RLS
   // participant policy on recurring_schedules is the correct gate.
-  await requireProfile();
+  const profile = await requireProfile();
   const supabase = await createClient();
 
   const scheduleId = formData.get("scheduleId")?.toString();
@@ -66,6 +66,12 @@ export async function updateScheduleStatus(
 
   if (!scheduleId || !newStatus || !["active", "paused", "cancelled"].includes(newStatus)) {
     return { error: "Invalid request." };
+  }
+
+  // Only the teacher (or admin) can activate — 'active' is the approval that
+  // makes the cron generate lessons; students may pause/cancel.
+  if (newStatus === "active" && profile.role === "student") {
+    return { error: "Only the teacher can approve or activate a schedule." };
   }
 
   const { data: updated, error } = await supabase

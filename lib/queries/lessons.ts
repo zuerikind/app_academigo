@@ -1,6 +1,8 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
+import { nowAsStoredIso } from "@/lib/utils/zurich";
 
 export interface LessonWithRelations {
   id: string;
@@ -51,7 +53,7 @@ export async function getStudentUpcomingLessons(studentId: string): Promise<Less
     `)
     .eq("student_id", studentId)
     .in("status", ["confirmed", "reschedule_requested"])
-    .gte("start_time", new Date().toISOString())
+    .gte("start_time", nowAsStoredIso())
     .order("start_time", { ascending: true });
 
   if (error || !data) return [];
@@ -90,7 +92,7 @@ export async function getTeacherUpcomingLessons(teacherId: string): Promise<Less
     `)
     .eq("teacher_id", teacherId)
     .in("status", ["confirmed", "reschedule_requested"])
-    .gte("start_time", new Date().toISOString())
+    .gte("start_time", nowAsStoredIso())
     .order("start_time", { ascending: true });
 
   if (error || !data) return [];
@@ -123,7 +125,7 @@ export async function getTeacherActiveStudents(teacherId: string): Promise<Activ
     .from("recurring_schedules")
     .select(`
       student_id,
-      students ( id, profiles ( full_name ), credit_wallets ( available_balance ) )
+      students ( id, profiles ( full_name ) )
     `)
     .eq("teacher_id", teacherId)
     .eq("status", "active");
@@ -143,15 +145,33 @@ export async function getTeacherActiveStudents(teacherId: string): Promise<Activ
       ? studentData.profiles[0]?.full_name ?? ""
       : studentData?.profiles?.full_name ?? "";
 
-    const walletEntry = Array.isArray(studentData?.credit_wallets)
-      ? studentData.credit_wallets[0]
-      : studentData?.credit_wallets;
-
     result.push({
       studentId: row.student_id,
       studentName: profileName,
-      availableCredits: walletEntry?.available_balance ?? 0,
+      availableCredits: 0,
     });
+  }
+
+  // Balances come from the real ledger (student_credits); RLS hides it from
+  // teachers, so read via service role — rows are already scoped to this
+  // teacher's own active schedules above.
+  if (result.length > 0) {
+    const service = createServiceClient();
+    const { data: creditRows } = await service
+      .from("student_credits")
+      .select("student_id, subscription_credits, extra_credits, used_credits, reserved_credits")
+      .in("student_id", result.map((r) => r.studentId));
+
+    const balanceById = new Map<string, number>();
+    for (const c of (creditRows ?? []) as any[]) {
+      balanceById.set(
+        c.student_id,
+        Math.max(0, (c.subscription_credits ?? 0) + (c.extra_credits ?? 0) - (c.used_credits ?? 0) - (c.reserved_credits ?? 0)),
+      );
+    }
+    for (const r of result) {
+      r.availableCredits = balanceById.get(r.studentId) ?? 0;
+    }
   }
 
   return result;
@@ -231,7 +251,7 @@ export async function getRescheduleRequests(teacherId: string): Promise<LessonWi
     `)
     .eq("teacher_id", teacherId)
     .eq("status", "reschedule_requested")
-    .gte("start_time", new Date().toISOString())
+    .gte("start_time", nowAsStoredIso())
     .order("start_time", { ascending: true });
 
   if (error || !data) return [];

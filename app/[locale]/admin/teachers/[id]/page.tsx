@@ -8,6 +8,7 @@ import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { getAdminTeacherDetail } from "@/lib/queries/admin";
 import { localizedPath } from "@/lib/i18n/path";
+import { createServiceClient } from "@/lib/supabase/service";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
 
@@ -22,6 +23,16 @@ export default async function AdminTeacherDetailPage({ params }: Props) {
 
   const teacher = await getAdminTeacherDetail(id);
   if (!teacher) notFound();
+
+  // CV lives in the private "documents" bucket — generate a short-lived signed URL.
+  // Admin access is enforced by the admin layout/middleware before we get here.
+  let cvSignedUrl: string | null = null;
+  if (teacher.cv_url) {
+    const { data: signed } = await createServiceClient()
+      .storage.from("documents")
+      .createSignedUrl(teacher.cv_url, 60 * 60);
+    cvSignedUrl = signed?.signedUrl ?? null;
+  }
 
   const profile = teacher.profiles as unknown as {
     full_name: string | null;
@@ -124,6 +135,28 @@ export default async function AdminTeacherDetailPage({ params }: Props) {
                 <span className="text-academy-slate">{td.noPayoutInfo}</span>
               )}
             </p>
+          </Section>
+
+          {/* ponytail: German-only labels — admin UI, matches the notification email language */}
+          <Section label="Motivationsschreiben">
+            <p className="whitespace-pre-wrap text-[13.5px] leading-relaxed text-academy-navy">
+              {teacher.motivation_letter ?? <span className="text-academy-slate">{td.notProvided}</span>}
+            </p>
+          </Section>
+
+          <Section label="Lebenslauf (CV)">
+            {cvSignedUrl ? (
+              <a
+                href={cvSignedUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-md border border-academy-line bg-white px-3 py-1.5 text-[13px] font-medium text-academy-navy hover:border-[color:var(--brand)]/40"
+              >
+                CV herunterladen ↗
+              </a>
+            ) : (
+              <p className="text-[13px] text-academy-slate">{td.notProvided}</p>
+            )}
           </Section>
         </div>
 

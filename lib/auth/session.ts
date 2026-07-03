@@ -74,8 +74,12 @@ export async function getTeacherRecord(profileId: string) {
   const supabase = await createClient();
   const { data } = await supabase
     .from("teachers")
-    .select("*")
+    .select("*, teacher_private ( payout_info_placeholder, motivation_letter, cv_url, default_meet_link )")
     .eq("profile_id", profileId)
     .maybeSingle();
-  return data as Teacher | null;
+  if (!data) return null;
+  // Flatten teacher_private so callers keep reading teacher.payout_info_placeholder etc.
+  const { teacher_private: priv, ...teacher } = data as Record<string, unknown>;
+  const p = Array.isArray(priv) ? priv[0] : priv;
+  return { ...teacher, ...((p as object) ?? {}) } as Teacher;
 }

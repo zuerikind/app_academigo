@@ -41,3 +41,11 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# Local tooling / editor configs (may contain secrets)
+.claude/settings.local.json
+.kiro/
+.cursor/
+.agents/
+skills-lock.json
+supabase/.temp/

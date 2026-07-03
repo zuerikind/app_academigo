@@ -12,6 +12,8 @@ function rpcErrorMessage(message: string | undefined): string {
   if (message?.includes("booking_not_found")) return "Booking not found.";
   if (message?.includes("booking_not_cancellable")) return "This booking can no longer be cancelled.";
   if (message?.includes("invalid_booking_status")) return "Booking is not in a completable state.";
+  if (message?.includes("booking_not_finished")) return "This lesson has not ended yet — you can mark it complete after the scheduled end time.";
+  if (message?.includes("cancellation_window_passed")) return "Confirmed lessons can only be cancelled up to 24 hours before they start.";
   return message ?? "Something went wrong.";
 }
 
@@ -137,16 +139,18 @@ export async function confirmBooking(
 
   if (!bookingId) return { error: "Missing booking ID." };
 
-  // Get teacher record with default_meet_link
+  // Get teacher record with default_meet_link (now in teacher_private)
   const { data: teacher } = await supabase
     .from("teachers")
-    .select("id, default_meet_link, profiles ( email, full_name )")
+    .select("id, teacher_private ( default_meet_link ), profiles ( email, full_name )")
     .eq("profile_id", profile.id)
     .maybeSingle();
 
   if (!teacher) return { error: "Teacher record not found." };
 
-  const finalLink = meetLinkOverride ?? (teacher as any).default_meet_link ?? null;
+  const teacherPriv = (teacher as any).teacher_private;
+  const defaultMeetLink = (Array.isArray(teacherPriv) ? teacherPriv[0] : teacherPriv)?.default_meet_link ?? null;
+  const finalLink = meetLinkOverride ?? defaultMeetLink;
 
   // Update booking to confirmed with meeting_link
   const { data: updatedBookings, error: updateError } = await supabase

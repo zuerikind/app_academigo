@@ -11,31 +11,23 @@ export type ReviewWithStudent = {
 export async function getTeacherReviews(teacherId: string): Promise<ReviewWithStudent[]> {
   const supabase = await createClient();
 
+  // reviewer_name is snapshotted at insert time — RLS hides other students'
+  // profiles, so a live join would render every name as "Student".
   const { data, error } = await supabase
     .from("reviews")
-    .select(`
-      id, rating, comment, created_at,
-      students ( id, profiles ( full_name ) )
-    `)
+    .select("id, rating, comment, created_at, reviewer_name")
     .eq("teacher_id", teacherId)
     .order("created_at", { ascending: false });
 
   if (error || !data) return [];
 
-  return data.map((r: any) => {
-    const studentProfiles = r.students?.profiles;
-    const fullName = Array.isArray(studentProfiles)
-      ? studentProfiles[0]?.full_name ?? "Student"
-      : studentProfiles?.full_name ?? "Student";
-
-    return {
-      id: r.id,
-      rating: r.rating,
-      comment: r.comment,
-      created_at: r.created_at,
-      student: { profiles: { full_name: fullName } },
-    };
-  });
+  return data.map((r: any) => ({
+    id: r.id,
+    rating: r.rating,
+    comment: r.comment,
+    created_at: r.created_at,
+    student: { profiles: { full_name: r.reviewer_name ?? "Student" } },
+  }));
 }
 
 export async function getReviewAggregate(

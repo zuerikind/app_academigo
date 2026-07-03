@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { nowAsStoredIso } from "@/lib/utils/zurich";
 import type { Student } from "@/lib/types/index";
 
 export type LedgerEntry = {
@@ -29,7 +30,7 @@ export async function getStudentCreditLedger(profileId: string): Promise<LedgerE
       .eq("status", "completed"),
     supabase
       .from("bookings")
-      .select("id, end_time, teachers ( profiles ( full_name ) )")
+      .select("id, end_time, credits_reserved, teachers ( profiles ( full_name ) )")
       .eq("student_id", student.id)
       .eq("status", "completed"),
   ]);
@@ -59,7 +60,7 @@ export async function getStudentCreditLedger(profileId: string): Promise<LedgerE
       id: `session-${b.id}`,
       type: "session",
       label: name ?? "Teacher",
-      delta: -1,
+      delta: -((b as any).credits_reserved ?? 1),
       date: b.end_time,
     });
   }
@@ -130,8 +131,11 @@ export async function getStudentBillingInfo(profileId: string): Promise<StudentB
 
   const extra = credits?.extra_credits ?? 0;
   const used = credits?.used_credits ?? 0;
-  const availableCredits = typeof rpcTotal === "number" ? rpcTotal : Math.max(0, extra - used);
-  const creditsRemaining = Math.max(0, extra - used);
+  const reserved = credits?.reserved_credits ?? 0;
+  const availableCredits =
+    typeof rpcTotal === "number" ? rpcTotal : Math.max(0, extra - used - reserved);
+  // One number everywhere: what the student can actually spend (reserved subtracted)
+  const creditsRemaining = availableCredits;
 
   const history: PaymentHistoryItem[] = (payments ?? []).map((p: any) => ({
     id: p.id,
@@ -225,7 +229,7 @@ export async function getStudentDashboardData(profileId: string) {
     `)
     .eq("student_id", student.id)
     .in("status", ["pending", "confirmed"])
-    .gte("start_time", new Date().toISOString())
+    .gte("start_time", nowAsStoredIso())
     .order("start_time", { ascending: true })
     .limit(5);
 

@@ -233,9 +233,6 @@ export async function completeTeacherOnboarding(
     offers_in_person: data.offersInPerson,
     location: data.offersInPerson ? data.location ?? null : null,
     languages,
-    payout_info_placeholder: payoutInfo ?? null,
-    motivation_letter: data.motivationLetter,
-    cv_url: cvUrl,
     is_approved: false,
   };
 
@@ -262,14 +259,18 @@ export async function completeTeacherOnboarding(
     teacherId = created.id;
   }
 
-  if (data.defaultMeetLink) {
-    const { error: meetLinkError } = await supabase
-      .from("teachers")
-      .update({ default_meet_link: data.defaultMeetLink })
-      .eq("id", teacherId);
-    if (meetLinkError) {
-      console.error("teacher default_meet_link update failed:", meetLinkError.message);
-    }
+  // Sensitive fields live in teacher_private (own-or-admin RLS)
+  const { error: privError } = await supabase.from("teacher_private").upsert({
+    teacher_id: teacherId!,
+    payout_info_placeholder: payoutInfo ?? null,
+    motivation_letter: data.motivationLetter,
+    cv_url: cvUrl,
+    default_meet_link: data.defaultMeetLink || null,
+    updated_at: new Date().toISOString(),
+  });
+  if (privError) {
+    console.error("teacher_private upsert failed:", privError.message);
+    return { error: dict.teacher.onboarding.errors.saveFailed };
   }
 
   const { error: subjectsDeleteError } = await supabase

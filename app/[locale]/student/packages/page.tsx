@@ -9,6 +9,7 @@ import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { getStudentBillingInfo, getStudentCreditLedger } from "@/lib/queries/student";
 import { createCheckoutSession } from "@/lib/actions/payments";
+import { reconcileCheckoutSession } from "@/lib/services/fulfillment";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -24,6 +25,12 @@ export default async function StudentPackagesPage({ params, searchParams }: Prop
   const dict = getDictionary(raw);
   const t = dict.student.packages;
   const sp = await searchParams;
+
+  // If the user beat the webhook back from Stripe, fulfill the session now so
+  // the balance below is already correct (idempotent — no double grant).
+  if (sp.success === "true" && sp.session_id) {
+    await reconcileCheckoutSession(sp.session_id);
+  }
 
   const [billing, ledger] = await Promise.all([
     getStudentBillingInfo(profile.id),

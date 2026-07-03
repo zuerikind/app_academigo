@@ -58,6 +58,7 @@ export async function submitReview(
       teacher_id: booking.teacher_id,
       rating: ratingRaw,
       comment,
+      reviewer_name: profile.full_name ?? "Student",
     });
 
   if (insertError) {

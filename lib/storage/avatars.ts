@@ -34,6 +34,7 @@ export function isValidAvatarFile(file: FormDataEntryValue | null): file is File
   return (
     file instanceof File &&
     file.size > 0 &&
+    file.size <= 5 * 1024 * 1024 && // 5 MB max, same cap as CV
     file.type.startsWith("image/")
   );
 }

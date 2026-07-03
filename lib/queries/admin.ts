@@ -1,5 +1,16 @@
 import { createClient } from "@/lib/supabase/server";
+import { nowAsStoredIso } from "@/lib/utils/zurich";
 import type { BookingStatus } from "@/types/database";
+
+// Flatten the teacher_private join back onto the teachers object so
+// consumers keep reading teachers.payout_info_placeholder etc.
+function flattenTeacherPrivate<T extends { teachers?: unknown }>(row: T): T {
+  const teachers = Array.isArray(row.teachers) ? row.teachers[0] : row.teachers;
+  if (!teachers || typeof teachers !== "object") return row;
+  const { teacher_private: priv, ...rest } = teachers as Record<string, unknown>;
+  const p = Array.isArray(priv) ? priv[0] : priv;
+  return { ...row, teachers: { ...rest, ...((p as object) ?? {}) } };
+}
 
 const VALID_BOOKING_STATUSES: BookingStatus[] = [
   "pending",
@@ -37,7 +48,7 @@ export async function getAdminStats() {
       .from("payout_requests")
       .select("*", { count: "exact", head: true })
       .eq("status", "pending"),
-    supabase.from("payments").select("amount"),
+    supabase.from("payments").select("amount").eq("status", "completed"),
   ]);
 
   const totalRevenue = (paymentsData ?? []).reduce(
@@ -96,17 +107,24 @@ export async function getAdminTeacherDetail(teacherId: string) {
       languages,
       offers_online,
       offers_in_person,
-      payout_info_placeholder,
       created_at,
       profiles ( full_name, email, avatar_url ),
-      teacher_subjects ( subjects ( id, name, slug ) )
+      teacher_subjects ( subjects ( id, name, slug ) ),
+      teacher_private ( payout_info_placeholder, motivation_letter, cv_url )
     `,
     )
     .eq("id", teacherId)
     .maybeSingle();
 
   if (error || !data) return null;
-  return data;
+
+  const { teacher_private: priv, ...teacher } = data as Record<string, any>;
+  const p = Array.isArray(priv) ? priv[0] : priv;
+  return { ...teacher, ...(p ?? {}) } as typeof data & {
+    payout_info_placeholder: string | null;
+    motivation_letter: string | null;
+    cv_url: string | null;
+  };
 }
 
 export async function getAdminStudents() {
@@ -165,13 +183,13 @@ export async function getAdminPayouts() {
       status,
       note,
       created_at,
-      teachers ( payout_info_placeholder, profiles ( full_name, email ) )
+      teachers ( teacher_private ( payout_info_placeholder ), profiles ( full_name, email ) )
     `,
     )
     .order("created_at", { ascending: false });
 
   if (error || !data) return [];
-  return data;
+  return data.map(flattenTeacherPrivate);
 }
 
 export async function getAdminPayoutsWithEarnings() {
@@ -186,7 +204,7 @@ export async function getAdminPayoutsWithEarnings() {
       status,
       note,
       created_at,
-      teachers ( payout_info_placeholder, profiles ( full_name, email ) )
+      teachers ( teacher_private ( payout_info_placeholder ), profiles ( full_name, email ) )
     `,
     )
     .order("created_at", { ascending: false });
@@ -224,7 +242,7 @@ export async function getAdminPayoutsWithEarnings() {
   }, {});
 
   return payouts.map((p) => ({
-    ...p,
+    ...flattenTeacherPrivate(p),
     teacher_earnings: earningsByPayout[p.id] ?? [],
   }));
 }
@@ -277,7 +295,7 @@ export async function getAdminSessions() {
 
 export async function getMissingMeetLinks() {
   const supabase = await createClient();
-  const now = new Date().toISOString();
+  const now = nowAsStoredIso();
   const { data, error } = await supabase
     .from("bookings")
     .select(
@@ -412,7 +430,7 @@ export async function getPlatformRevenue() {
     supabase
       .from("payments")
       .select("amount, created_at")
-      .in("status", ["completed", "pending"]),
+      .eq("status", "completed"),
     supabase
       .from("payout_requests")
       .select("amount_chf, created_at")

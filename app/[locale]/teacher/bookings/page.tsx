@@ -22,7 +22,7 @@ export default async function TeacherBookingsPage({ params }: Props) {
   const supabase = await createClient();
   const { data: teacher } = await supabase
     .from("teachers")
-    .select("id, default_meet_link")
+    .select("id, teacher_private ( default_meet_link )")
     .eq("profile_id", profile.id)
     .maybeSingle();
 
@@ -41,7 +41,9 @@ export default async function TeacherBookingsPage({ params }: Props) {
       (b.status === "confirmed" && new Date(b.start_time) < new Date()),
   );
 
-  const defaultMeetLink: string | null = (teacher as { id: string; default_meet_link: string | null }).default_meet_link;
+  const teacherPriv = (teacher as any).teacher_private;
+  const defaultMeetLink: string | null =
+    (Array.isArray(teacherPriv) ? teacherPriv[0] : teacherPriv)?.default_meet_link ?? null;
 
   return (
     <DashboardLayout
