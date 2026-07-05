@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { localizedPath } from "@/lib/i18n/path";
@@ -6,21 +7,22 @@ import { createClient } from "@/lib/supabase/server";
 import type { Profile, Teacher } from "@/lib/types";
 import type { UserRole } from "@/types/database";
 
-export async function getSessionUser() {
+// cache() dedupes within a single server render: the role layout AND the page
+// both resolve the profile, so without this each authenticated page does the
+// auth.getUser() network call + profiles query twice. Cached here, they run once.
+export const getSessionUser = cache(async () => {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   return user;
-}
+});
 
-export async function getProfile(): Promise<Profile | null> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export const getProfile = cache(async (): Promise<Profile | null> => {
+  const user = await getSessionUser();
   if (!user) return null;
 
+  const supabase = await createClient();
   const { data } = await supabase
     .from("profiles")
     .select("*")
@@ -28,7 +30,7 @@ export async function getProfile(): Promise<Profile | null> {
     .single();
 
   return data as Profile | null;
-}
+});
 
 async function redirectForRole(role: UserRole, locale: Locale) {
   redirect(
