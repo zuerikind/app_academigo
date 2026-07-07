@@ -55,6 +55,11 @@ Warm, clear, professional. Short answers (2-4 sentences unless more detail is as
 ## Escalation
 If you cannot answer fully or reliably (specific teacher availability, account issues, refunds, complaints, anything not covered above), say so and point the user to the WhatsApp contact button below the chat — a human will help there. Never guess.`;
 
+// Health probe: reports whether the API key is configured (never the key itself)
+export async function GET() {
+  return Response.json({ keyConfigured: Boolean(process.env.OPENAI_API_KEY) });
+}
+
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
   const messages = body?.messages;
