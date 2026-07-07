@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { TeacherQuickStatsBar } from "@/components/teacher/teacher-quick-stats-bar";
+import { TeacherPendingDashboard } from "@/components/teacher/teacher-pending-dashboard";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeader } from "@/components/ui/page-header";
@@ -165,12 +166,7 @@ export default async function TeacherDashboardPage({ params }: Props) {
       )}
 
       {!data.isApproved && data.isActive && (
-        <div className="mb-6 flex items-start gap-3 rounded-[10px] border border-[color:var(--academy-warning)]/25 bg-[color:var(--academy-warning-soft)] px-4 py-3.5">
-          <span className="mt-[6px] h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--academy-warning)]" />
-          <p className="text-[13.5px] leading-relaxed text-[color:var(--academy-warning)]">
-            {t.reviewBanner}
-          </p>
-        </div>
+        <TeacherPendingDashboard locale={raw} dict={dict} data={data} />
       )}
 
       {data.isApproved && pendingEvals > 0 && (

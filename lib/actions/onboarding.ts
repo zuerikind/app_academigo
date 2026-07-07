@@ -172,6 +172,9 @@ export async function completeTeacherOnboarding(
     ? data.languageOther.split(",").map((l) => l.trim()).filter(Boolean)
     : [];
   const languages = [...data.languageChecked, ...otherLangs];
+  if (languages.length === 0) {
+    return { error: dict.teacher.onboarding.errors.languagesRequired };
+  }
   const addressParts = [data.payoutStreet, [data.payoutZip, data.payoutCity].filter(Boolean).join(" ")].filter(Boolean).join(", ");
   const payoutInfo = [
     data.payoutName ? `Name: ${data.payoutName}` : null,
@@ -202,7 +205,7 @@ export async function completeTeacherOnboarding(
     const { url, error: uploadError } = await uploadCv(supabase, profile.user_id, cvFile);
     if (uploadError) {
       console.error("teacher CV upload failed:", uploadError);
-      return { error: "CV upload failed. Please try again or skip the CV for now." };
+      return { error: dict.teacher.onboarding.errors.cvUploadFailed };
     }
     cvUrl = url ?? null;
   }

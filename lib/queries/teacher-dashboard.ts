@@ -52,16 +52,23 @@ export async function getTeacherDashboardData(profileId: string) {
 
   const { data: teacherRaw } = await supabase
     .from("teachers")
-    .select("*, teacher_private ( payout_info_placeholder )")
+    .select(`
+      *,
+      teacher_private ( payout_info_placeholder ),
+      teacher_subjects ( subjects ( id, name, slug ) )
+    `)
     .eq("profile_id", profileId)
     .maybeSingle();
 
   // Flatten teacher_private (payout info feeds profile-completion checks)
   const teacher = (() => {
     if (!teacherRaw) return null;
-    const { teacher_private: priv, ...rest } = teacherRaw as Record<string, any>;
+    const { teacher_private: priv, teacher_subjects: tsRows, ...rest } = teacherRaw as Record<string, any>;
     const p = Array.isArray(priv) ? priv[0] : priv;
-    return { ...rest, ...(p ?? {}) };
+    const subjects = (Array.isArray(tsRows) ? tsRows : [])
+      .map((row: { subjects?: { id: string; name: string; slug: string } | null }) => row.subjects)
+      .filter(Boolean) as { id: string; name: string; slug: string }[];
+    return { ...rest, ...(p ?? {}), applicationSubjects: subjects };
   })();
 
   if (!teacher) {
@@ -81,6 +88,10 @@ export async function getTeacherDashboardData(profileId: string) {
       monthlyEarnings: 0,
       upcomingBookings: [] as ReturnType<typeof mapBooking>[],
       pendingEvals: 0,
+      languages: [] as string[],
+      offersOnline: true,
+      offersInPerson: false,
+      applicationSubjects: [] as { id: string; name: string; slug: string }[],
     };
   }
 
@@ -116,5 +127,9 @@ export async function getTeacherDashboardData(profileId: string) {
     monthlyEarnings,
     upcomingBookings,
     pendingEvals: pendingEvalResult.count ?? 0,
+    languages: (teacher.languages as string[] | null) ?? [],
+    offersOnline: teacher.offers_online as boolean,
+    offersInPerson: teacher.offers_in_person as boolean,
+    applicationSubjects: teacher.applicationSubjects,
   };
 }

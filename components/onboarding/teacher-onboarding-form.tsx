@@ -25,6 +25,7 @@ export function TeacherOnboardingForm({
   const t = dict.teacher.onboarding;
   const [state, formAction, pending] = useActionState(action, {});
   const [showOtherLang, setShowOtherLang] = useState(false);
+  const [languageOther, setLanguageOther] = useState("");
   const [cvError, setCvError] = useState<string | null>(null);
   const [subjectError, setSubjectError] = useState(false);
   const [languageError, setLanguageError] = useState(false);
@@ -38,8 +39,19 @@ export function TeacherOnboardingForm({
       className="space-y-6"
       onSubmit={(e) => {
         let block = false;
-        if (selectedSubjects.size === 0) { setSubjectError(true); block = true; }
-        if (selectedLanguages.size === 0 && !showOtherLang) { setLanguageError(true); block = true; }
+        if (selectedSubjects.size === 0) {
+          setSubjectError(true);
+          block = true;
+        }
+        const otherLangs = languageOther
+          .split(",")
+          .map((l) => l.trim())
+          .filter(Boolean);
+        const hasLanguages = selectedLanguages.size > 0 || otherLangs.length > 0;
+        if (!hasLanguages) {
+          setLanguageError(true);
+          block = true;
+        }
         if (block) e.preventDefault();
       }}
     >
@@ -95,7 +107,11 @@ export function TeacherOnboardingForm({
             </label>
           ))}
         </div>
-        {subjectError && <p className="mt-1.5 text-[12px] text-[color:var(--academy-danger)]">{locale === "de" ? "Bitte wähle mindestens ein Fach aus." : "Please select at least one subject."}</p>}
+        {subjectError && (
+          <p className="mt-1.5 text-[12px] text-[color:var(--academy-danger)]">
+            {t.subjectsRequired}
+          </p>
+        )}
       </Field>
 
       {/* Education + Experience */}
@@ -207,9 +223,18 @@ export function TeacherOnboardingForm({
             name="languageOther"
             placeholder={t.languageOtherPlaceholder}
             className="mt-2"
+            value={languageOther}
+            onChange={(e) => {
+              setLanguageOther(e.target.value);
+              setLanguageError(false);
+            }}
           />
         )}
-        {languageError && <p className="mt-1.5 text-[12px] text-[color:var(--academy-danger)]">{locale === "de" ? "Bitte wähle mindestens eine Sprache aus." : "Please select at least one language."}</p>}
+        {languageError && (
+          <p className="mt-1.5 text-[12px] text-[color:var(--academy-danger)]">
+            {t.languagesRequired}
+          </p>
+        )}
       </Field>
 
       {/* Format */}
@@ -249,7 +274,7 @@ export function TeacherOnboardingForm({
       {/* Google Meet Link */}
       <Field>
         <Label htmlFor="defaultMeetLink" hint="Optional">
-          Google Meet Link
+          {t.defaultMeetLink}
         </Label>
         <Input
           id="defaultMeetLink"
@@ -257,11 +282,7 @@ export function TeacherOnboardingForm({
           type="url"
           placeholder="https://meet.google.com/xxx-xxxx-xxx"
         />
-        <p className="mt-1 text-[12px] text-academy-slate">
-          {locale === "de"
-            ? "Du kannst diesen Link auch später in deinen Einstellungen hinzufügen."
-            : "You can add this later from your settings."}
-        </p>
+        <p className="mt-1 text-[12px] text-academy-slate">{t.defaultMeetLinkHint}</p>
       </Field>
 
       {/* Payout information */}
