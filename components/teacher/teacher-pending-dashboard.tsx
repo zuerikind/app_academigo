@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Dictionary } from "@/messages/types";
+import type { Locale } from "@/lib/i18n/config";
 import { localizedPath } from "@/lib/i18n/path";
 import { translateSubjectName } from "@/lib/i18n/subjects";
 import type { getTeacherDashboardData } from "@/lib/queries/teacher-dashboard";
@@ -13,7 +14,7 @@ export function TeacherPendingDashboard({
   dict,
   data,
 }: {
-  locale: string;
+  locale: Locale;
   dict: Dictionary;
   data: DashboardData;
 }) {

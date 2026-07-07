@@ -130,6 +130,6 @@ export async function getTeacherDashboardData(profileId: string) {
     languages: (teacher.languages as string[] | null) ?? [],
     offersOnline: teacher.offers_online as boolean,
     offersInPerson: teacher.offers_in_person as boolean,
-    applicationSubjects: teacher.applicationSubjects,
+    applicationSubjects: teacher.applicationSubjects as { id: string; name: string; slug: string }[],
   };
 }
