@@ -471,6 +471,17 @@ export const de = {
       ],
     },
   },
+  chat: {
+    title: "Academigo Assistent",
+    intro: "Hallo! Ich beantworte Fragen zu Angebot, Preisen und Ablauf. Wie kann ich helfen?",
+    placeholder: "Frage stellen…",
+    send: "Senden",
+    open: "Chat öffnen",
+    close: "Chat schliessen",
+    error: "Etwas ist schiefgelaufen. Bitte versuche es erneut oder schreib uns auf WhatsApp.",
+    whatsapp: "Auf WhatsApp weiterfragen",
+    whatsappPrefill: "Hallo Academigo! Ich habe eine Frage:",
+  },
   about: {
     title: "Über Academigo",
     missionTitle: "Unsere Mission",
@@ -629,9 +640,17 @@ export const de = {
       payoutCityPlaceholder: "Zürich",
       payoutTwint: "Twint-Telefonnummer",
       payoutTwintPlaceholder: "+41 79 123 45 67",
+      subjectsRequired: "Bitte wähle mindestens ein Fach aus.",
+      languagesRequired: "Bitte wähle mindestens eine Sprache aus.",
+      defaultMeetLink: "Google-Meet-Link",
+      defaultMeetLinkHint:
+        "Du kannst diesen Link auch später in deinen Einstellungen hinzufügen.",
       errors: {
         required:
           "Bitte fülle alle Pflichtfelder aus und wähle mindestens ein Fach.",
+        languagesRequired: "Bitte wähle mindestens eine Sprache aus.",
+        cvUploadFailed:
+          "Dein Lebenslauf konnte nicht hochgeladen werden. Versuche eine kleinere Datei oder fahre ohne CV fort.",
         saveFailed:
           "Dein Profil konnte nicht gespeichert werden. Bitte versuche es erneut oder kontaktiere den Support.",
         avatarUploadFailed:
@@ -684,6 +703,24 @@ export const de = {
         experience: "Erfahrung",
         teaching_style: "Unterrichtsstil",
         payout_info_placeholder: "Auszahlungsinfo",
+      },
+      pending: {
+        title: "Deine Bewerbung wird geprüft",
+        stepsTitle: "So geht es weiter",
+        stepReceived: "Bewerbung eingegangen — danke für deine Anmeldung!",
+        stepReview:
+          "Das Academigo-Team prüft dein Profil, deine Fächer und dein Motivationsschreiben.",
+        stepEmail:
+          "Du erhältst eine E-Mail, sobald dein Profil freigegeben und für Lernende sichtbar ist.",
+        summaryTitle: "Zusammenfassung deiner Bewerbung",
+        summarySubjects: "Fächer",
+        summaryLanguages: "Sprachen",
+        summaryModality: "Unterrichtsformat",
+        modalityOnline: "Online",
+        modalityInPerson: "Vor Ort",
+        modalityBoth: "Online & vor Ort",
+        editProfileCta: "Profil bearbeiten",
+        faqCta: "Lehrpersonen-FAQ",
       },
     },
     profile: {

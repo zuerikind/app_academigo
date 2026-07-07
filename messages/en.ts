@@ -471,6 +471,17 @@ export const en: Dictionary = {
       ],
     },
   },
+  chat: {
+    title: "Academigo Assistant",
+    intro: "Hi! I can answer questions about our offer, pricing, and how it works. How can I help?",
+    placeholder: "Ask a question…",
+    send: "Send",
+    open: "Open chat",
+    close: "Close chat",
+    error: "Something went wrong. Please try again or message us on WhatsApp.",
+    whatsapp: "Continue on WhatsApp",
+    whatsappPrefill: "Hi Academigo! I have a question:",
+  },
   about: {
     title: "About Academigo",
     missionTitle: "Our mission",
@@ -628,9 +639,17 @@ export const en: Dictionary = {
       payoutCityPlaceholder: "Zurich",
       payoutTwint: "Twint phone number",
       payoutTwintPlaceholder: "+41 79 123 45 67",
+      subjectsRequired: "Please select at least one subject.",
+      languagesRequired: "Please select at least one language.",
+      defaultMeetLink: "Google Meet link",
+      defaultMeetLinkHint:
+        "You can add this later from your settings.",
       errors: {
         required:
           "Please complete all required fields and select at least one subject.",
+        languagesRequired: "Please select at least one language.",
+        cvUploadFailed:
+          "Your CV could not be uploaded. Try a smaller file or continue without a CV.",
         saveFailed:
           "Your profile could not be saved. Please try again or contact support.",
         avatarUploadFailed:
@@ -683,6 +702,24 @@ export const en: Dictionary = {
         experience: "Experience",
         teaching_style: "Teaching style",
         payout_info_placeholder: "Payout info",
+      },
+      pending: {
+        title: "Your application is under review",
+        stepsTitle: "What happens next",
+        stepReceived: "Application received — thank you for applying!",
+        stepReview:
+          "The Academigo team reviews your profile, subjects, and motivation letter.",
+        stepEmail:
+          "You will receive an email once your profile is approved and visible to students.",
+        summaryTitle: "Your application summary",
+        summarySubjects: "Subjects",
+        summaryLanguages: "Languages",
+        summaryModality: "Lesson format",
+        modalityOnline: "Online",
+        modalityInPerson: "In person",
+        modalityBoth: "Online & in person",
+        editProfileCta: "Edit profile",
+        faqCta: "Teacher FAQ",
       },
     },
     profile: {

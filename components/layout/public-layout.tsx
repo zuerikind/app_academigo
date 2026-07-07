@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { ChatWidget } from "@/components/chat/chat-widget";
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
 import { getSessionUser } from "@/lib/auth/session";
@@ -24,6 +25,7 @@ export async function PublicLayout({
       <Navbar isAuthenticated={!!user} />
       <main className="flex-1">{children}</main>
       <Footer locale={locale} dict={dict} tagline={footerTagline} />
+      <ChatWidget dict={dict.chat} />
     </div>
   );
 }
